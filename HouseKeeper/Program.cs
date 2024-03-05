@@ -1,7 +1,13 @@
+using HouseKeeper.DBContext;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+var provider = builder.Services.BuildServiceProvider();
+var configuration = provider.GetRequiredService<IConfiguration>();
+builder.Services.AddDbContext<HouseKeeperDBContext>(item => item.UseSqlServer(configuration.GetConnectionString("myconn")));
 
 var app = builder.Build();
 
