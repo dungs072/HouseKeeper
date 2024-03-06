@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using HouseKeeper.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace HouseKeeper.DBContext
 {
@@ -8,6 +9,12 @@ namespace HouseKeeper.DBContext
         {
 
         }
-        
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseLazyLoadingProxies();
+        }
+        public DbSet<TAIKHOAN> Accounts { get; set; }
+        public DbSet<LOAITK> AccountTypes { get; set; }
+
     }
 }
