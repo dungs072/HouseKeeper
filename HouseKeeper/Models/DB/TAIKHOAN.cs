@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace HouseKeeper.Models
+namespace HouseKeeper.Models.DB
 {
     [Table("TAIKHOAN", Schema = "dbo")]
     public class TAIKHOAN
@@ -17,7 +17,7 @@ namespace HouseKeeper.Models
         [Column("MATKHAU")]
         public string Password { get; set; }
         [ForeignKey("ID_LOAI")]
-        public virtual LOAITK AccountType {get;set; }
+        public virtual LOAITK AccountType { get; set; }
 
     }
 }

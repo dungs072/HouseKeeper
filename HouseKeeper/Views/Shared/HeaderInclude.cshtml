@@ -1,0 +1,29 @@
+﻿<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+    .alert {
+        position: fixed;
+        top: 0;
+        left: 0px;
+        z-index: 9999;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+        padding: .75rem 1.25rem;
+        border: 1px solid transparent;
+        border-radius: .25rem;
+        width: 600px;
+    }
+</style>
+<script>
+    // Function to hide any element with class 'alert' after 5 seconds
+    window.onload = function () {
+        var alertElements = document.querySelectorAll(".alert");
+        alertElements.forEach(function (element) {
+            setTimeout(function () {
+                element.style.display = "none";
+            }, 5000); // 5000 milliseconds = 5 seconds
+        });
+
+
+
+    };
+</script>

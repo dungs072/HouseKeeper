@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace HouseKeeper.Models
+namespace HouseKeeper.Models.DB
 {
     [Table("LOAI_TK", Schema = "dbo")]
     public class LOAITK

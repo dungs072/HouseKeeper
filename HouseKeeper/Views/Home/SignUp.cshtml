@@ -1,0 +1,189 @@
+﻿@using HouseKeeper.Models.Views;
+@model SignUpViewModels;
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Login / Sign up Form Fully Responsive</title>
+
+    <meta name="author" content="Untree.co">
+    <link rel="shortcut icon" href="favicon.png">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <link rel="stylesheet" href="/css/style1.css">
+
+    <partial name="HeaderInclude" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const employeeCheckbox = document.getElementById('isEmployee');
+            const employerCheckbox = document.getElementById('isEmployer');
+            const employeeFields = document.getElementById('employeeFields');
+            const employerFields = document.getElementById('employerFields');
+            employeeCheckbox.addEventListener('change', function () {
+                if (this.checked) {
+                    employerCheckbox.checked = false;
+                    employeeFields.style.display = 'block';
+                    employerFields.style.display = 'none';
+                } else {
+                    employeeFields.style.display = 'none';
+                }
+            });
+
+            employerCheckbox.addEventListener('change', function () {
+                if (this.checked) {
+                    employeeCheckbox.checked = false;
+                    employerFields.style.display = 'block';
+                    employeeFields.style.display = 'none';
+                } else {
+                    employerFields.style.display = 'none';
+                }
+            });
+           
+        });
+    </script>
+    <script>
+        window.addEventListener("load", function () {
+            var isEmployer = '@Model.IsEmployer'.toString();
+            if (isEmployer=="True") {
+                const employeeFields = document.getElementById('employeeFields');
+                const employerFields = document.getElementById('employerFields');
+                employeeFields.style.display = 'none';
+                employerFields.style.display = 'block';
+            }
+
+            var isEmployee = '@Model.IsEmployee'.toString();
+            if (isEmployee == "True") {
+                const employeeFields = document.getElementById('employeeFields');
+                const employerFields = document.getElementById('employerFields');
+                employeeFields.style.display = 'block';
+                employerFields.style.display = 'none';
+            }
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#cityOrProvince').select2();
+        });
+    </script>
+   
+</head>
+<body>
+    <partial name="BodyInclude" />
+    
+    <div class="site-wrap d-md-flex align-items-stretch">
+        <div class="bg-img" style="background-image: url('/images/img-bg-2.jpg')"></div>
+        <div class="form-wrap">
+            <div class="form-inner">
+                <h1 class="title">Sign up</h1>
+                <p class="caption mb-4">Create your account in seconds.</p>
+
+                <form form asp-action="HandleSignUp" method="post" enctype="multipart/form-data" class="pt-3">
+
+                    <div class="form-floating">
+                        <input asp-for="LastName" type="text" class="form-control" id="lastName" placeholder="Last Name" value=@Model.LastName required>
+                        <label for="name">Last Name</label>
+                    </div>
+                    <div class="form-floating">
+                        <input asp-for="FirstName" type="text" class="form-control" id="firstName" placeholder="First Name" value=@Model.FirstName required>
+                        <label for="name">First Name</label>
+                    </div>
+                    <div class="form-floating">
+                        <input asp-for="PhoneNumber" type="tel" class="form-control" id="phone" placeholder="123-456-7890" pattern="[0-9]{10}" value ="@Model.PhoneNumber" required>
+                        <label for="phone">Phone Number</label>
+                    </div>
+
+                    <div class="form-floating">
+                        <input asp-for="Gmail" type="email" class="form-control" id="email" placeholder="info@example.com" value=@Model.Gmail>
+                        <label for="email">Email Address (not required)</label>
+                    </div>
+
+                    <div class="form-floating">
+                        <span class="password-show-toggle js-password-show-toggle"><span class="uil"></span></span>
+                        <input asp-for="Password" type="password" class="form-control" id="password" placeholder="Password" value="@Model.Password" required>
+                        <label for="password">Password</label>
+                    </div>
+                    <div class="form-floating">
+                        <span class="password-show-toggle js-confirm-password-show-toggle"><span class="uil"></span></span>
+                        <input asp-for="ConfirmedPassword" type="password" class="form-control" id="confirm_password" placeholder="Confirm Password" value=@Model.ConfirmedPassword required>
+                        <label for="confirm_password">Confirm Password</label>
+                    </div>
+
+                   
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="isEmployer" , name="isEmployer" @(Model.IsEmployer ? "checked" : "")>
+                        <label for="employer" class="form-check-label">I'm an Employer</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="isEmployee" , name="isEmployee" @(Model.IsEmployee ? "checked" : "")>
+                        <label for="employee" class="form-check-label">I'm an Employee</label>
+                    </div>
+
+                    <div id="employerFields" style="display: none;">
+                        <!-- Employer specific fields go here -->
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="address" placeholder=" "><!-- Note: Placeholder should be empty or a space for floating label -->
+                            <label for="address">Address</label>
+                        </div>
+                    </div>
+
+                    <div id="employeeFields" style="display: none;">
+                        <!-- Employee specific fields go here -->
+                        <div class="form-floating">
+                            <input type="date" class="form-control" id="birthdate" placeholder=" ">
+                            <label for="birthdate">Birthdate</label>
+                        </div>
+                        <div class="form-floating">
+                            <select class="form-select" id="cityOrProvince" name="cityOrProvince">
+                                @foreach(var city in Model.Cities)
+                                {
+                                    <option value="@city.CityId">@city.CityName</option>
+                                }
+                               
+                                <!-- Add more options for other cities or provinces -->
+                            </select>
+                            <label for="cityOrProvince">City or Province</label>
+                        </div>
+                    </div>
+                  
+
+                    <div class="d-flex justify-content-between">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="remember", name="remember" required>
+                            <label for="remember" class="form-check-label">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+                        </div>
+                    </div>
+
+                    <div class="d-grid mb-4">
+                        <button type="submit" class="btn btn-primary">Create an account</button>
+                    </div>
+
+                    <div class="mb-2">Already a member? <a href="@Url.Action("Login", "Home")">Log in</a></div>
+
+                  @*   <div class="social-account-wrap">
+                        <h4 class="mb-4"><span>or continue with</span></h4>
+                        <ul class="list-unstyled social-account d-flex justify-content-between">
+                            <li><a href="#"><img src="/images/icon-google.svg" alt="Google logo"></a></li>
+                            <li><a href="#"><img src="/images/icon-facebook.svg" alt="Facebook logo"></a></li>
+                            <li><a href="#"><img src="/images/icon-apple.svg" alt="Apple logo"></a></li>
+                            <li><a href="#"><img src="/images/icon-twitter.svg" alt="Twitter logo"></a></li>
+                        </ul>
+                    </div> *@
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="/js/custom.js"></script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+</body>
+</html>

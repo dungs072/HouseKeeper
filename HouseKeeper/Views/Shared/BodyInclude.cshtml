@@ -1,0 +1,12 @@
+﻿@if (TempData["Error"] != null)
+{
+    <div class="col-md-12 alert alert-danger">
+        <span><b>Error!</b> - @TempData["Error"]</span>
+    </div>
+}
+else if (TempData["Success"] != null)
+{
+    <div class="col-md-12 alert bg-success">
+        <span class="text-light"><b>Success!</b> - @TempData["Success"]</span>
+    </div>
+}
