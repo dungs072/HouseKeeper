@@ -10,7 +10,9 @@ namespace HouseKeeper.Models.DB
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("ID_CTGV")]
         public int HouseworkDetailId { get; set; }
+        [ForeignKey("ID_LOAICV")]
         public virtual LOAICONGVIEC Job { get; set; }
+        [ForeignKey("ID_TINTUYENDUNG")]
         public virtual TINTUYENDUNG Recruitment { get; set; }
     }
 }

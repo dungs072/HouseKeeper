@@ -1,4 +1,6 @@
-﻿<html lang="en">
+﻿@using HouseKeeper.Models.Views;
+@model LoginViewModel;
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -22,15 +24,15 @@
                 <h1 class="title">Login</h1>
                 <p class="caption mb-4">Please enter your login details to sign in.</p>
 
-                <form action="#" class="pt-3">
+                <form asp-action="HandleLogin" method="post" enctype="multipart/form-data" class="pt-3">
                     <div class="form-floating">
-                        <input type="email" class="form-control" id="email" placeholder="info@example.com">
-                        <label for="email">Email Address</label>
+                        <input asp-for="LoginName" type="text" class="form-control" id="email" placeholder="info@example.com/012345" value="@Model.LoginName" required>
+                        <label for="email">Email Address/ Phone number</label>
                     </div>
 
                     <div class="form-floating">
                         <span class="password-show-toggle js-password-show-toggle"><span class="uil"></span></span>
-                        <input type="password" class="form-control" id="password" placeholder="Password">
+                        <input asp-for="Password" type="password" class="form-control" id="password" placeholder="Password" value="@Model.Password" required>
                         <label for="password">Password</label>
                     </div>
 

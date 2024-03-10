@@ -15,7 +15,7 @@ namespace HouseKeeper.Models.DB
         [Column("TEN")]
         public string FirstName { get; set; }
         [Column("DIACHI")]
-        public string Address { get; set; }
+        public string? Address { get; set; }
 
         [ForeignKey("ID_TK")]
         public virtual TAIKHOAN Account { get; set; }

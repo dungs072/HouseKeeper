@@ -17,7 +17,7 @@ namespace HouseKeeper.Models.DB
         [Column("MAXLUONG")]
         public bool MaxSalary { get; set; }
         [Column("GIOITINH")]
-        public string Gender { get; set; }
+        public string? Gender { get; set; }
         [Column("SOLUONGTUYENDUNG")]
         public int MaxApplications { get; set; }
         [Column("DOTUOI")]
@@ -27,15 +27,19 @@ namespace HouseKeeper.Models.DB
         [Column("THOIGIANDANG")]
         public DateTime PostTime { get; set; }
         [Column("HANTUYENDUNG")]
-        public DateTime RecruitDeadlineDate { get; set; }
+        public DateTime? RecruitDeadlineDate { get; set; }
         [Column("TRANGTHAI")]
         public bool Status { get; set; }
         [Column("DAUGIA")]
         public bool BidPrice { get; set; }
 
+        [ForeignKey("ID_HTTL")]
         public virtual HINHTHUCTRALUONG SalaryForm { get; set; }
+        [ForeignKey("ID_KINHNGHIEM")]
         public virtual KINHNGHIEM Experience { get; set; }
+        [ForeignKey("ID_TINHTHANHPHO")]
         public virtual TINHTHANHPHO City { get; set; }
+        [ForeignKey("ID_NGUOITHUE")]
         public virtual NGUOITHUE Employer { get; set; }
 
 

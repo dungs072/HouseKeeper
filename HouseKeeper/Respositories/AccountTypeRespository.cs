@@ -1,5 +1,6 @@
 ﻿using HouseKeeper.DBContext;
 using HouseKeeper.Models.DB;
+using HouseKeeper.Models.Views;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
@@ -11,11 +12,51 @@ namespace HouseKeeper.Respositories
         private readonly HouseKeeperDBContext dBContext;
         public AccountTypeRespository(HouseKeeperDBContext dBContext)
         {
+           
             this.dBContext = dBContext;
         }
         public async Task<List<LOAITK>> GetAccounts()
         {
             return await dBContext.AccountTypes.ToListAsync();
+        }
+        //userId:login successfully 
+        //-2: Phone number and gmail is not registered
+        //-3: Password is wrong
+        public async Task<int> Login(LoginViewModel model)
+        {
+            var accounts = await dBContext.Accounts.Where(a => a.PhoneNumber == model.LoginName || a.Gmail == model.LoginName).ToListAsync();
+            if(accounts.Count>0)
+            {
+                if (accounts[0].Password.Trim()==model.Password)
+                {
+                    return accounts[0].AccountID;
+                }
+                else
+                {
+                    return -3;
+                }
+            }
+            else
+            {
+                return -2;
+            }
+        }
+        //0: is admin
+        //1: is employer
+        //2: is employee
+        public async Task<int> GetEmployerOrEmployee(int accountId)
+        {
+            var employers = await dBContext.Employers.Where(a => a.Account.AccountID == accountId).ToListAsync();
+            if(employers.Count>0)
+            {
+                return 1;
+            }
+            var employee = await dBContext.Employees.Where(a=>a.Account.AccountID == accountId).ToListAsync();
+            if(employee.Count>0)
+            {
+                return 2;
+            }
+            return 0;
         }
         //1: create account succesffully
         //2: Phone number is duplicated

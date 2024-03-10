@@ -12,7 +12,9 @@ namespace HouseKeeper.Models.DB
         public int ApplyDetailId { get; set; }
         public DateTime Time { get; set; }
         public string State { get; set; }
+        [ForeignKey("ID_GIUPVIEC")]
         public virtual NGUOIGIUPVIEC Employee { get; set; }
+        [ForeignKey("ID_TINTUYENDUNG")]
         public virtual TINTUYENDUNG Recruitment { get; set; }
 
 

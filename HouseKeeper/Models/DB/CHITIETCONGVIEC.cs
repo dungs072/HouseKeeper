@@ -11,7 +11,9 @@ namespace HouseKeeper.Models.DB
         [Column("ID_CTCV")]
         public int JobDetailID { get; set; }
 
+        [ForeignKey("ID_GIUPVIEC")]
         public virtual NGUOIGIUPVIEC Employee { get; set; }
+        [ForeignKey("ID_LOAICV")]
         public virtual LOAICONGVIEC Job { get; set; }
     }
 }

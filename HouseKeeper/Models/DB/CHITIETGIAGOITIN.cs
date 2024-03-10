@@ -15,7 +15,9 @@ namespace HouseKeeper.Models.DB
         [Column("DATHANHTOAN")]
         public bool HasPaid { get; set; }
 
+        [ForeignKey("ID_GIAGOITIN")]
         public virtual GIAGOITIN PricePacket { get; set; }
+        [ForeignKey("ID_TINTUYENDUNG")]
         public virtual TINTUYENDUNG Recruitment { get; set; }
     }
 }

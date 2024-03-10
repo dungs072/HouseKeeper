@@ -25,6 +25,32 @@ namespace HouseKeeper.Controllers
         }
         public IActionResult Login()
         {
+            LoginViewModel viewModel = new LoginViewModel();
+            return View(viewModel);
+        }
+        public IActionResult ReturnToLogin(LoginViewModel model)
+        {
+            return View("Login", model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> HandleLogin(LoginViewModel model)
+        {
+            int result = await accountTypeRespository.Login(model);
+            if(result==-2)
+            {
+                TempData["Error"] = "Your email or phone number is not registered. Account does not exist";
+                return RedirectToAction("ReturnToLogin", model);
+            }
+            else if(result==-3)
+            {
+                TempData["Error"] = "Your password is wrong.";
+                return RedirectToAction("ReturnToLogin", model);
+            }
+            int typeResult = await accountTypeRespository.GetEmployerOrEmployee(result);
+            if(typeResult==1)
+            {
+                return View("IndexEmployer");
+            }
             return View();
         }
         public IActionResult SignUp()
