@@ -134,7 +134,7 @@
                     <div id="employeeFields" style="display: none;">
                         <!-- Employee specific fields go here -->
                         <div class="form-floating">
-                            <input type="date" class="form-control" id="birthdate" placeholder=" ">
+                            <input asp-for="BirthDate" type="date" class="form-control" id="birthdate" placeholder=" " value="@Model.BirthDate">
                             <label for="birthdate">Birthdate</label>
                         </div>
                         <div class="form-floating">

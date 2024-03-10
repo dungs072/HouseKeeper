@@ -38,7 +38,8 @@ namespace HouseKeeper.Controllers
         }
         public IActionResult ReturnToSignUp(SignUpViewModels model)
         {
-            
+            List<TINHTHANHPHO> cities = accountTypeRespository.GetCities().Result;
+            model.Cities = cities;
             return View("SignUp",model);
         }
         [HttpPost]
@@ -70,8 +71,7 @@ namespace HouseKeeper.Controllers
                 employer.LastName = model.LastName;
                 employer.Account = account;
                 int result = await accountTypeRespository.CreateEmployerAccount(account, employer);
-                List<TINHTHANHPHO> cities = accountTypeRespository.GetCities().Result;
-                model.Cities = cities;
+               
                 if (result==1)
                 {
                     TempData["Success"] = "Create new account successfully.";
@@ -99,7 +99,10 @@ namespace HouseKeeper.Controllers
                 var city = await accountTypeRespository.GetSpecificCity(int.Parse(selectedValue));
                 account.AccountType = accountType;
                 NGUOIGIUPVIEC employee = new NGUOIGIUPVIEC();
-                employee.BirthDate = model.BirthDate;
+                if(model.BirthDate.Year!=1)
+                {
+                    employee.BirthDate = model.BirthDate;
+                }
                 employee.City = city;
                 employee.FirstName = model.FirstName;
                 employee.LastName = model.LastName;

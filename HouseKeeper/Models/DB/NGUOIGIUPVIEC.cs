@@ -14,8 +14,8 @@ namespace HouseKeeper.Models.DB
         public string LastName { get; set; }
         [Column("TEN")]
         public string FirstName { get; set; }
-        [Column("NGAYSINH")]
-        public DateTime BirthDate { get; set; }
+        [Column("NGAYSINH", TypeName = "date")]
+        public DateTime? BirthDate { get; set; }
 
         [ForeignKey("ID_TINH_TP")]
         public virtual TINHTHANHPHO City { get; set; }
