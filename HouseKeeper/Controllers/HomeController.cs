@@ -32,6 +32,10 @@ namespace HouseKeeper.Controllers
         {
             return View("Login", model);
         }
+        public IActionResult IndexEmployer()
+        {
+            return View();
+        }
         [HttpPost]
         public async Task<IActionResult> HandleLogin(LoginViewModel model)
         {
@@ -50,6 +54,10 @@ namespace HouseKeeper.Controllers
             if(typeResult==1)
             {
                 return View("IndexEmployer");
+            }
+            else if(typeResult==2)
+            {
+                return View("IndexEmployee");
             }
             return View();
         }
