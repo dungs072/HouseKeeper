@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using HouseKeeper.Models.Views.Recruitments;
+@model CreateRecruitmentsViewModel;
+<!DOCTYPE html>
 <html lang="en">
 <head>
 
@@ -71,7 +73,7 @@
                     Create a new recruitment
                 </h1>
                 <p>Your recruitment form</p>
-                <form>
+                <form asp-action="HandleLogin" method="post" enctype="multipart/form-data" class="pt-3">
                     <fieldset class="nice-form-group">
                         <div class="nice-form-group">
                             <input type="radio" name="radio" id="r-1" />
@@ -94,9 +96,9 @@
                     <div class="nice-form-group">
                         <label>Gender</label>
                         <select>
-                            <option>Male</option>
-                            <option>Female</option>
-                            <option>Not require</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Null">Not require</option>
                         </select>
                     </div>
                     <div class="nice-form-group">
@@ -117,11 +119,10 @@
                         <label>Type of works</label>
                         <div class="multiselect">
                             <select multiple>
-                                <option value="1">Option 1</option>
-                                <option value="2">Option 2</option>
-                                <option value="3">Option 3</option>
-                                <option value="4">Option 4</option>
-                                <option value="5">Option 5</option>
+                                @foreach(var job in Model.jobs)
+                                {
+                                    <option value="@job.JobId">@job.JobName</option>
+                                }
                             </select>
                         </div>
                         <div class="selected-items">
@@ -131,28 +132,28 @@
                     <div class="nice-form-group">
                         <label>Type of paying</label>
                         <select>
-                            <option>hour</option>
-                            <option>day</option>
-                            <option>month</option>
+                            @foreach (var pay in Model.PaidTypes)
+                            {
+                                <option value="@pay.SalaryFormId">@pay.SalaryFormName</option>
+                            }
                         </select>
                     </div>
                     <div class="nice-form-group">
                         <label>Experience</label>
                         <select>
-                            <option>Not require</option>
-                            <option>6 months</option>
-                            <option>1 year</option>
-                            <option>2 years</option>
-                            <option>3 years+</option>
+                            @foreach (var experience in Model.Experiences)
+                            {
+                                <option value="@experience.ExperienceId">@experience.ExperienceName</option>
+                            }
                         </select>
                     </div>
                     <div class="nice-form-group">
                         <label>City/Province</label>
                         <select>
-                            <option>Ho Chi Minh</option>
-                            <option>Ha Noi</option>
-                            <option>Da Nang</option>
-                            <option>Nha Trang</option>
+                            @foreach (var city in Model.Cities)
+                            {
+                                <option value="@city.CityId">@city.CityName</option>
+                            }
                         </select>
                     </div>
                     <div class="nice-form-group">

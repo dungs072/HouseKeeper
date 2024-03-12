@@ -1,5 +1,5 @@
 ﻿using HouseKeeper.Models.DB;
-using HouseKeeper.Models.Views;
+using HouseKeeper.Models.Views.OutPage;
 
 namespace HouseKeeper.Respositories
 {

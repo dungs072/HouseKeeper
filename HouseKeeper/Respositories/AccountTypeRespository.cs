@@ -1,6 +1,6 @@
 ﻿using HouseKeeper.DBContext;
 using HouseKeeper.Models.DB;
-using HouseKeeper.Models.Views;
+using HouseKeeper.Models.Views.OutPage;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;

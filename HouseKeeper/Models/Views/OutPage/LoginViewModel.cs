@@ -1,4 +1,4 @@
-﻿namespace HouseKeeper.Models.Views
+﻿namespace HouseKeeper.Models.Views.OutPage
 {
     public class LoginViewModel
     {

@@ -13,9 +13,9 @@ namespace HouseKeeper.Models.DB
         [Column("FULLTIME")]
         public bool FullTime { get; set; }
         [Column("MINLUONG")]
-        public bool MinSalary { get; set; }
+        public float MinSalary { get; set; }
         [Column("MAXLUONG")]
-        public bool MaxSalary { get; set; }
+        public float MaxSalary { get; set; }
         [Column("GIOITINH")]
         public string? Gender { get; set; }
         [Column("SOLUONGTUYENDUNG")]

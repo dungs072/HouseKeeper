@@ -1,6 +1,6 @@
 ﻿using HouseKeeper.Models;
 using HouseKeeper.Models.DB;
-using HouseKeeper.Models.Views;
+using HouseKeeper.Models.Views.OutPage;
 using HouseKeeper.Respositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
