@@ -10,6 +10,9 @@ namespace HouseKeeper.Respositories
         Task<List<KINHNGHIEM>> GetExperiences();
         Task<List<TINHTHANHPHO>> GetCities();
         Task<List<LOAICONGVIEC>> GetJobs();
-        Task<int> CreateRecruitment(CreateRecruitmentsViewModel model);
+        Task<HINHTHUCTRALUONG> GetPaidType(int id);
+        Task<KINHNGHIEM> GetExperience(int id);
+        Task<TINHTHANHPHO> GetCity(int id);
+        Task<bool> CreateRecruitment(TINTUYENDUNG recruitment, string[] jobIds);
     }
 }

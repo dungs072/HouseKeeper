@@ -30,9 +30,31 @@ namespace HouseKeeper.Respositories
         {
             return await dBContext.Jobs.ToListAsync();
         }
-        public async Task<int>CreateRecruitment(CreateRecruitmentsViewModel model)
+        public async Task<HINHTHUCTRALUONG> GetPaidType(int id)
         {
-            return 1;
+            return await dBContext.SalaryForms.FindAsync(id);
+        }
+        public async Task<KINHNGHIEM> GetExperience(int id)
+        {
+            return await dBContext.Experiences.FindAsync(id);
+        }
+        public async Task<TINHTHANHPHO> GetCity(int id)
+        {
+            return await dBContext.Cities.FindAsync(id);
+        }
+        public async Task<bool>CreateRecruitment(TINTUYENDUNG recruitment, string[] jobIds)
+        {
+            try
+            {
+                await dBContext.Recruitments.AddAsync(recruitment);
+                await dBContext.SaveChangesAsync();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }
+            
         }
     }
 }

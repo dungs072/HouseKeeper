@@ -19,5 +19,9 @@ namespace HouseKeeper.Models.Views.Recruitments
         public List<TINHTHANHPHO> Cities { get; set; }
         public List<LOAICONGVIEC> jobs { get; set; }
 
+        public int PaidTypeId { get; set; }
+        public int ExperienceId { get; set; }
+        public int CityId { get;set; }
+        public int JobId { get; set; }
     }
 }

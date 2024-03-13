@@ -73,29 +73,29 @@
                     Create a new recruitment
                 </h1>
                 <p>Your recruitment form</p>
-                <form asp-action="HandleLogin" method="post" enctype="multipart/form-data" class="pt-3">
+                <form asp-action="HandleCreateRecruitment" method="post" enctype="multipart/form-data" class="pt-1">
                     <fieldset class="nice-form-group">
                         <div class="nice-form-group">
-                            <input type="radio" name="radio" id="r-1" />
+                            <input type="radio" name="radio" id="isFullTime" @(Model.IsFulltime ? "checked" : "") />
                             <label for="r-1">Full time</label>
                         </div>
 
                         <div class="nice-form-group">
-                            <input type="radio" name="radio" id="r-2" />
+                            <input type="radio" name="radio" id="r-2" @(!Model.IsFulltime ? "checked" : "") />
                             <label for="r-2">Part time</label>
                         </div>
                     </fieldset>
                     <div class="nice-form-group same-row">
                         <label>Min Salary (x1000 Dong)</label>
-                        <input id="min-salary" type="number" placeholder="1234" min="1"/>
+                        <input asp-for="MinSalary" id="min-salary" type="number" placeholder="1234" min="1" value=@Model.MinSalary />
                     </div>
                     <div class="nice-form-group same-row">
                         <label>Max Salary (x1000 Dong)</label>
-                        <input id="max-salary" type="number" placeholder="4321" />
+                        <input asp-for="MaxSalary" id="max-salary" type="number" placeholder="4321" value=@Model.MaxSalary />
                     </div>
                     <div class="nice-form-group">
                         <label>Gender</label>
-                        <select>
+                        <select name="@Model.Gender">
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
                             <option value="Null">Not require</option>
@@ -103,7 +103,7 @@
                     </div>
                     <div class="nice-form-group">
                         <label>Number of vacancies</label>
-                        <input type="number" placeholder="1" min="1"/>
+                        <input asp-for="NumberVacancies" type="number" placeholder="1" min="1" value=@Model.NumberVacancies />
                     </div>
                     <div class="nice-form-group">
                         <div class="nice-form-group same-row">
@@ -118,7 +118,7 @@
                     <div class="nice-form-group">
                         <label>Type of works</label>
                         <div class="multiselect">
-                            <select multiple>
+                            <select name="SelectedJobs" multiple>
                                 @foreach(var job in Model.jobs)
                                 {
                                     <option value="@job.JobId">@job.JobName</option>
@@ -131,7 +131,7 @@
                     </div>
                     <div class="nice-form-group">
                         <label>Type of paying</label>
-                        <select>
+                        <select name="@Model.PaidTypeId">
                             @foreach (var pay in Model.PaidTypes)
                             {
                                 <option value="@pay.SalaryFormId">@pay.SalaryFormName</option>
@@ -140,7 +140,7 @@
                     </div>
                     <div class="nice-form-group">
                         <label>Experience</label>
-                        <select>
+                        <select name="@Model.ExperienceId">
                             @foreach (var experience in Model.Experiences)
                             {
                                 <option value="@experience.ExperienceId">@experience.ExperienceName</option>
@@ -149,7 +149,7 @@
                     </div>
                     <div class="nice-form-group">
                         <label>City/Province</label>
-                        <select>
+                        <select name="@Model.CityId">
                             @foreach (var city in Model.Cities)
                             {
                                 <option value="@city.CityId">@city.CityName</option>
@@ -158,7 +158,7 @@
                     </div>
                     <div class="nice-form-group">
                         <label>Notes</label>
-                        <textarea rows="5" placeholder="Take note here"></textarea>
+                        <textarea asp-for="TakeNotes" rows="5" placeholder="Take note here" ></textarea>
                     </div>
                     <div class="mt-2 button-container">
                         <a href="@Url.Action("IndexEmployer", "Home")" class="btn btn-danger">Cancel</a>

@@ -28,17 +28,36 @@ namespace HouseKeeper.Controllers
             model.Experiences = experiences;
             model.Cities = cities;
             model.jobs = jobs;
+            model.MaxSalary = 25;
+            model.NumberVacancies = 1;
             return View(model);
         }
         [HttpPost]
         public async Task<IActionResult> HandleCreateRecruitment(CreateRecruitmentsViewModel model)
         {
+            var value0 = Request.Form["SelectedJobs"];
+            string[] selectedJobs = value0.ToString().Split(',');  
+            var value1 = Request.Form["isFullTime"];
+            bool isFullTime = value1 == "on";
             TINTUYENDUNG recruitment = new TINTUYENDUNG();
             recruitment.MinSalary = model.MinSalary;
             recruitment.MaxSalary = model.MaxSalary;
             recruitment.Age = model.AgeRange;
-            recruitment.FullTime = model.IsFulltime;
             recruitment.Note = model.TakeNotes;
+            recruitment.FullTime = isFullTime;
+            recruitment.MaxApplications = model.NumberVacancies;
+            recruitment.SalaryForm = await employerRespository.GetPaidType(model.PaidTypeId);
+            recruitment.Experience = await employerRespository.GetExperience(model.ExperienceId);
+            recruitment.City = await employerRespository.GetCity(model.CityId);
+            var result = employerRespository.CreateRecruitment(recruitment,selectedJobs);
+            if(result.Result)
+            {
+                TempData["Success"] = "Create new recruitment successfully!";
+            }
+            else
+            {
+                TempData["Error"] = "Server error. Failed to create new recruitment!";
+            }
             return View();// aadd more here
         }
         public IActionResult ListRecruitment()
