@@ -8,7 +8,7 @@ namespace HouseKeeper.Respositories
         Task<List<LOAITK>> GetAccounts();
 
         Task<int> Login(LoginViewModel model);
-        Task<int> GetEmployerOrEmployee(int accountId);
+        Task<LoginInfor> GetEmployerOrEmployee(int accountId);
 
         Task<LOAITK> GetSpecificAccountType(int id);
         Task<TINHTHANHPHO> GetSpecificCity(int id);

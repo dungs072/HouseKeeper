@@ -50,12 +50,13 @@ namespace HouseKeeper.Controllers
                 TempData["Error"] = "Your password is wrong.";
                 return RedirectToAction("ReturnToLogin", model);
             }
-            int typeResult = await accountTypeRespository.GetEmployerOrEmployee(result);
-            if(typeResult==1)
+            var loginInfor = await accountTypeRespository.GetEmployerOrEmployee(result);
+            HttpContext.Session.SetString("UserId", loginInfor.Id.ToString());
+            if (loginInfor.ViewIndex==1)
             {
                 return View("IndexEmployer");
             }
-            else if(typeResult==2)
+            else if(loginInfor.ViewIndex==2)
             {
                 return View("IndexEmployee");
             }

@@ -44,19 +44,22 @@ namespace HouseKeeper.Respositories
         //0: is admin
         //1: is employer
         //2: is employee
-        public async Task<int> GetEmployerOrEmployee(int accountId)
+        public async Task<LoginInfor> GetEmployerOrEmployee(int accountId)
         {
             var employers = await dBContext.Employers.Where(a => a.Account.AccountID == accountId).ToListAsync();
+            var loginInfor = new LoginInfor();
             if(employers.Count>0)
             {
-                return 1;
+                loginInfor.Id = employers[0].EmployerId;
+                loginInfor.ViewIndex = 1;
             }
             var employee = await dBContext.Employees.Where(a=>a.Account.AccountID == accountId).ToListAsync();
             if(employee.Count>0)
             {
-                return 2;
+                loginInfor.Id = employee[0].EmployeeId;
+                loginInfor.ViewIndex = 2;
             }
-            return 0;
+            return loginInfor;
         }
         //1: create account succesffully
         //2: Phone number is duplicated

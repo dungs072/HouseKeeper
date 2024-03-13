@@ -13,6 +13,8 @@ namespace HouseKeeper.Respositories
         Task<HINHTHUCTRALUONG> GetPaidType(int id);
         Task<KINHNGHIEM> GetExperience(int id);
         Task<TINHTHANHPHO> GetCity(int id);
+        Task<LOAICONGVIEC> GetJob(int id);
+        Task<NGUOITHUE> GetEmployer(int id);
         Task<bool> CreateRecruitment(TINTUYENDUNG recruitment, string[] jobIds);
     }
 }

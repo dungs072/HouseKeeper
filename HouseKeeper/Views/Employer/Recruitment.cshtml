@@ -76,7 +76,7 @@
                 <form asp-action="HandleCreateRecruitment" method="post" enctype="multipart/form-data" class="pt-1">
                     <fieldset class="nice-form-group">
                         <div class="nice-form-group">
-                            <input type="radio" name="radio" id="isFullTime" @(Model.IsFulltime ? "checked" : "") />
+                            <input type="radio" name="isFullTime" id="isFullTime" @(Model.IsFulltime ? "checked" : "") />
                             <label for="r-1">Full time</label>
                         </div>
 
@@ -108,11 +108,11 @@
                     <div class="nice-form-group">
                         <div class="nice-form-group same-row">
                             <label>Min Age</label>
-                            <input id="min-age" type="number" placeholder="18" min="18" />
+                            <input id="min-age" name="min-age" type="number" placeholder="18" min="18" />
                         </div>
                         <div class="nice-form-group same-row">
                             <label>Max Age</label>
-                            <input id="max-age" type="number" placeholder="100" max="100"/>
+                            <input id="max-age" name="max-age" type="number" placeholder="100" max="100"/>
                         </div>
                     </div>
                     <div class="nice-form-group">
@@ -131,7 +131,7 @@
                     </div>
                     <div class="nice-form-group">
                         <label>Type of paying</label>
-                        <select name="@Model.PaidTypeId">
+                        <select name="PaidTypeId">
                             @foreach (var pay in Model.PaidTypes)
                             {
                                 <option value="@pay.SalaryFormId">@pay.SalaryFormName</option>
@@ -140,7 +140,7 @@
                     </div>
                     <div class="nice-form-group">
                         <label>Experience</label>
-                        <select name="@Model.ExperienceId">
+                        <select name="ExperienceId">
                             @foreach (var experience in Model.Experiences)
                             {
                                 <option value="@experience.ExperienceId">@experience.ExperienceName</option>
@@ -149,7 +149,7 @@
                     </div>
                     <div class="nice-form-group">
                         <label>City/Province</label>
-                        <select name="@Model.CityId">
+                        <select name="CityId">
                             @foreach (var city in Model.Cities)
                             {
                                 <option value="@city.CityId">@city.CityName</option>

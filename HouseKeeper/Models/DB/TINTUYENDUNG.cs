@@ -29,9 +29,9 @@ namespace HouseKeeper.Models.DB
         [Column("HANTUYENDUNG")]
         public DateTime? RecruitDeadlineDate { get; set; }
         [Column("TRANGTHAI")]
-        public bool Status { get; set; }
+        public string Status { get; set; }
         [Column("DAUGIA")]
-        public bool BidPrice { get; set; }
+        public float BidPrice { get; set; }
 
         [ForeignKey("ID_HTTL")]
         public virtual HINHTHUCTRALUONG SalaryForm { get; set; }
