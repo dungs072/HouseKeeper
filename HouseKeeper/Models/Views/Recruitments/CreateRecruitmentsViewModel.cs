@@ -5,8 +5,8 @@ namespace HouseKeeper.Models.Views.Recruitments
     public class CreateRecruitmentsViewModel
     {
         public bool IsFulltime { get; set; }
-        public float MinSalary { get; set; }
-        public float MaxSalary { get; set; }
+        public decimal MinSalary { get; set; }
+        public decimal MaxSalary { get; set; }
         public string? Gender { get; set; }
         public int NumberVacancies { get; set; }
         public string AgeRange { get; set; }

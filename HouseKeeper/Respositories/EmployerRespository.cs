@@ -79,5 +79,41 @@ namespace HouseKeeper.Respositories
             }
             
         }
+        
+        public async Task<ListRecruitmentViewModel> GetEmployerRecruitments(int employerId)
+        {
+            ListRecruitmentViewModel model = new ListRecruitmentViewModel();
+            var recruitments = await dBContext.Recruitments.Where(a=>a.Employer.EmployerId==employerId).ToListAsync();
+            model.OnlineRecruitments = new List<TINTUYENDUNG>();
+            model.PendingApprovalRecruitments = new List<TINTUYENDUNG>();
+            model.OutDatedRecruitments = new List<TINTUYENDUNG>();
+            model.HiddenRecruitments = new List<TINTUYENDUNG>();
+            model.DisapprovalRecruitments = new List<TINTUYENDUNG>();
+            foreach(var recruitment in recruitments)
+            {
+                if (recruitment.Status == status[0])
+                {
+                    model.PendingApprovalRecruitments.Add(recruitment);
+                }
+                else if (recruitment.Status == status[1])
+                {
+                    model.DisapprovalRecruitments.Add(recruitment);
+                }
+                else if (recruitment.Status == status[2])
+                {
+                    model.OnlineRecruitments.Add(recruitment);
+                }
+                else if (recruitment.Status == status[3])
+                {
+                    model.HiddenRecruitments.Add(recruitment);
+                }
+                else if (recruitment.Status == status[4])
+                {
+                    model.OutDatedRecruitments.Add(recruitment);
+                }
+            }
+
+            return model;
+        }
     }
 }

@@ -10,7 +10,9 @@ namespace HouseKeeper.Models.DB
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("ID_CT_APPLY")]
         public int ApplyDetailId { get; set; }
+        [Column("THOIGIAN")]
         public DateTime Time { get; set; }
+        [Column("TRANGTHAI")]
         public string State { get; set; }
         [ForeignKey("ID_GIUPVIEC")]
         public virtual NGUOIGIUPVIEC Employee { get; set; }

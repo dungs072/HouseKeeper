@@ -44,9 +44,10 @@ namespace HouseKeeper.Controllers
             var value4 = Request.Form["PaidTypeId"];
             var value5 = Request.Form["ExperienceId"];
             var value6 = Request.Form["CityId"];
+            var value7 = Request.Form["Gender"];
             TINTUYENDUNG recruitment = new TINTUYENDUNG();
-            recruitment.MinSalary = model.MinSalary;
-            recruitment.MaxSalary = model.MaxSalary;
+            recruitment.MinSalary = model.MinSalary*1000;
+            recruitment.MaxSalary = model.MaxSalary*1000;
             recruitment.Age = value2+"-"+value3;
             recruitment.Note = model.TakeNotes;
             recruitment.FullTime = isFullTime;
@@ -54,6 +55,14 @@ namespace HouseKeeper.Controllers
             recruitment.SalaryForm = await employerRespository.GetPaidType(int.Parse(value4));
             recruitment.Experience = await employerRespository.GetExperience(int.Parse(value5));
             recruitment.City = await employerRespository.GetCity(int.Parse(value6));
+            if(value7=="Null")
+            {
+                recruitment.Gender = null;
+            }
+            else
+            {
+                recruitment.Gender = value7;
+            }
             recruitment.PostTime = DateTime.Now;
             recruitment.RecruitDeadlineDate = null;
             int.TryParse(HttpContext.Session.GetString("UserId"),out int employerId);
@@ -69,9 +78,11 @@ namespace HouseKeeper.Controllers
             }
             return View("Recruitment",model);
         }
-        public IActionResult ListRecruitment()
+        public async Task<IActionResult> ListRecruitment()
         {
-            return View();
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
+            ListRecruitmentViewModel model = await employerRespository.GetEmployerRecruitments(employerId);
+            return View(model);
         }
 
     }

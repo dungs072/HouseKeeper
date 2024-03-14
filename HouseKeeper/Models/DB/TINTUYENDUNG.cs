@@ -13,9 +13,9 @@ namespace HouseKeeper.Models.DB
         [Column("FULLTIME")]
         public bool FullTime { get; set; }
         [Column("MINLUONG")]
-        public float MinSalary { get; set; }
+        public decimal MinSalary { get; set; }
         [Column("MAXLUONG")]
-        public float MaxSalary { get; set; }
+        public decimal MaxSalary { get; set; }
         [Column("GIOITINH")]
         public string? Gender { get; set; }
         [Column("SOLUONGTUYENDUNG")]
@@ -31,7 +31,7 @@ namespace HouseKeeper.Models.DB
         [Column("TRANGTHAI")]
         public string Status { get; set; }
         [Column("DAUGIA")]
-        public float BidPrice { get; set; }
+        public decimal BidPrice { get; set; }
 
         [ForeignKey("ID_HTTL")]
         public virtual HINHTHUCTRALUONG SalaryForm { get; set; }
@@ -45,5 +45,22 @@ namespace HouseKeeper.Models.DB
 
         public virtual ICollection<CHITIETAPPLY> ApplyDetails { get; set; }
         public virtual ICollection<CHITIETGIAGOITIN> PricePacketDetail { get; set; }
+        public virtual ICollection<CHITIETLOAIGIUPVIEC> HouseworkDetails { get; set; }
+
+        [NotMapped]
+        public string HouseWorkName
+        {
+            get
+            {
+                string name = "";
+                var list = HouseworkDetails.ToList();
+                for(int i=0;i< list.Count-1;i++)
+                {
+                    name += list[i].Job.JobName+" - ";
+                }
+                name += list[list.Count - 1].Job.JobName;
+                return name;
+            }
+        }
     }
 }

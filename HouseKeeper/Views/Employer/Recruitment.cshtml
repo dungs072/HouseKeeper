@@ -95,7 +95,7 @@
                     </div>
                     <div class="nice-form-group">
                         <label>Gender</label>
-                        <select name="@Model.Gender">
+                        <select name="Gender">
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
                             <option value="Null">Not require</option>
@@ -108,17 +108,17 @@
                     <div class="nice-form-group">
                         <div class="nice-form-group same-row">
                             <label>Min Age</label>
-                            <input id="min-age" name="min-age" type="number" placeholder="18" min="18" />
+                            <input id="min-age" name="min-age" type="number" placeholder="18" min="18" required />
                         </div>
                         <div class="nice-form-group same-row">
                             <label>Max Age</label>
-                            <input id="max-age" name="max-age" type="number" placeholder="100" max="100"/>
+                            <input id="max-age" name="max-age" type="number" placeholder="100" max="100" required/>
                         </div>
                     </div>
                     <div class="nice-form-group">
                         <label>Type of works</label>
                         <div class="multiselect">
-                            <select name="SelectedJobs" multiple>
+                            <select name="SelectedJobs" multiple required>
                                 @foreach(var job in Model.jobs)
                                 {
                                     <option value="@job.JobId">@job.JobName</option>
@@ -208,7 +208,7 @@
         const maxSalaryInput = document.getElementById('max-salary');
 
         minSalaryInput.addEventListener('change', function () {
-            if (parseInt(minSalaryInput.value) >= parseInt(minSalaryInput.value)) {
+            if (parseInt(minSalaryInput.value) >= parseInt(maxSalaryInput.value)) {
                 minSalaryInput.value = parseInt(maxSalaryInput.value) - 1;
             }
         });
