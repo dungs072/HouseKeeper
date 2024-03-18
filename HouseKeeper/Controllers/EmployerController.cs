@@ -54,9 +54,9 @@ namespace HouseKeeper.Controllers
             recruitment.Note = model.TakeNotes;
             recruitment.FullTime = isFullTime;
             recruitment.MaxApplications = model.NumberVacancies;
-            recruitment.SalaryForm = await employerRespository.GetPaidType(int.Parse(value4));
-            recruitment.Experience = await employerRespository.GetExperience(int.Parse(value5));
-            recruitment.City = await employerRespository.GetCity(int.Parse(value6));
+            //recruitment.SalaryForm = await employerRespository.GetPaidType(int.Parse(value4));
+            //recruitment.Experience = await employerRespository.GetExperience(int.Parse(value5));
+            //recruitment.City = await employerRespository.GetCity(int.Parse(value6));
             if(value7=="Null")
             {
                 recruitment.Gender = null;
@@ -67,11 +67,12 @@ namespace HouseKeeper.Controllers
             }
             recruitment.PostTime = DateTime.Now;
             recruitment.RecruitDeadlineDate = null;
-            int.TryParse(HttpContext.Session.GetString("UserId"),out int employerId);
-            recruitment.Employer = await employerRespository.GetEmployer(employerId);
             PriceTagViewModel priceModel = new PriceTagViewModel();
             priceModel.Recruitment = recruitment;
             priceModel.JobIds = value0;
+            priceModel.SalaryId = int.Parse(value4);
+            priceModel.experienceId = int.Parse(value5);
+            priceModel.cityId = int.Parse(value6);
            
             //var result = employerRespository.CreateRecruitment(recruitment,selectedJobs);
             //if(result.Result)
@@ -117,6 +118,8 @@ namespace HouseKeeper.Controllers
                     return RedirectToAction("Index", "Home");
                 }
                 model.PricePacketId = pricePacketId;
+                string temp = JsonConvert.SerializeObject(model);
+                HttpContext.Session.SetString("PriceTagViewModel", temp);
                 return View(model);
             }
             TempData["Error"] = "Server error!";
@@ -135,6 +138,8 @@ namespace HouseKeeper.Controllers
                     return RedirectToAction("Index", "Home");
                 }
                 model.Recruitment.BidPrice = tempModel.BidPrice;
+                string temp = JsonConvert.SerializeObject(model);
+                HttpContext.Session.SetString("PriceTagViewModel", temp);
                 TempData["Success"] = "Please finish your payment";
                 return View("CheckOut",model);
             }
@@ -153,7 +158,12 @@ namespace HouseKeeper.Controllers
                     return RedirectToAction("Index", "Home");
                 }
                 string[] selectedJobs = model.JobIds.ToString().Split(',');
-                var state = await employerRespository.CreateRecruitment(model.Recruitment, selectedJobs);
+                model.Recruitment.SalaryForm = await employerRespository.GetPaidType(model.SalaryId);
+                model.Recruitment.Experience = await employerRespository.GetExperience(model.experienceId);
+                model.Recruitment.City = await employerRespository.GetCity(model.cityId);
+                int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
+                model.Recruitment.Employer = await employerRespository.GetEmployer(employerId);
+                var state = await employerRespository.CreateRecruitment(model.Recruitment, selectedJobs, model.PricePacketId);
                 if(state)
                 {
                     TempData["Success"] = "Create new recruitment successfully";

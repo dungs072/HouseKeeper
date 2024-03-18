@@ -56,14 +56,24 @@ namespace HouseKeeper.Respositories
         {
             return await dBContext.Employers.FindAsync(id);
         }
-        public async Task<bool>CreateRecruitment(TINTUYENDUNG recruitment, string[] jobIds)
+        public async Task<GIAGOITIN> GetPricePacket(int id)
+        {
+            return await dBContext.PricePackets.FindAsync(id);
+        }
+        public async Task<bool>CreateRecruitment(TINTUYENDUNG recruitment, string[] jobIds, int pricePacketId)
         {
             using var transaction = await dBContext.Database.BeginTransactionAsync();
             try
             {
                 recruitment.Status = status[0];
+           
                 await dBContext.Recruitments.AddAsync(recruitment);
                 List<CHITIETLOAIGIUPVIEC> housekeepingTypes = new List<CHITIETLOAIGIUPVIEC>();
+                CHITIETGIAGOITIN packetDetail = new CHITIETGIAGOITIN();
+                packetDetail.Recruitment = recruitment;
+                packetDetail.PricePacket = await GetPricePacket(pricePacketId);
+                packetDetail.BuyDate = DateTime.Now;
+                await dBContext.PricePacketDetails.AddAsync(packetDetail);
                 foreach(var jobId in jobIds)
                 {
                     var houseKeepingType = new CHITIETLOAIGIUPVIEC();

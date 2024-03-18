@@ -8,6 +8,9 @@ namespace HouseKeeper.Models.Views.Recruitments
         public TINTUYENDUNG Recruitment { get; set; }
         public List<GIAGOITIN> PriceTags { get; set; }
         public int PricePacketId { get; set; }
+        public int SalaryId { get;set; }
+        public int experienceId { get; set; }
+        public int cityId { get; set; }
         public decimal BidPrice { get; set; }
         public string JobIds { get; set; }
     }

@@ -16,7 +16,7 @@ namespace HouseKeeper.Respositories
         Task<TINHTHANHPHO> GetCity(int id);
         Task<LOAICONGVIEC> GetJob(int id);
         Task<NGUOITHUE> GetEmployer(int id);
-        Task<bool> CreateRecruitment(TINTUYENDUNG recruitment, string[] jobIds);
+        Task<bool> CreateRecruitment(TINTUYENDUNG recruitment, string[] jobIds, int pricePacketId);
         Task<ListRecruitmentViewModel> GetEmployerRecruitments(int employerId);
     }
 }
