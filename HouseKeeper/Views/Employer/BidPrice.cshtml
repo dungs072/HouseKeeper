@@ -1,0 +1,84 @@
+﻿@using HouseKeeper.Models.Views.Recruitments;
+@model PriceTagViewModel;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bid Price Setting</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+    }
+    .container {
+        max-width: 600px;
+        margin: 50px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+        text-align: center;
+    }
+    .bid-form {
+        margin-top: 20px;
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    label {
+        font-weight: bold;
+    }
+    input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+    }
+    input[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        background-color: #007bff;
+        color: #fff;
+        cursor: pointer;
+    }
+    input[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+
+    /* Blinking Animation */
+    .blinking-text {
+        font-size: 18px;
+        text-align: center;
+        animation: blink 1s infinite;
+    }
+
+    /* keyframes blink {
+        50% {
+            opacity: 0;
+        }
+    } */
+</style>
+</head>
+<body>
+    <div class="container">
+        <h1>Set Your Bid Price</h1>
+        <p class="blinking-text">Top 1 - Top 5 have price: 5 - 10</p>
+        <form class="bid-form" asp-action="HandleSendBidPrice" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="bidAmount">Bid Amount:</label>
+                <input asp-for="BidPrice" type="text" id="bidAmount" name="bidAmount" placeholder="Enter your bid amount" required value=@Model.BidPrice oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+            </div>
+            <input type="submit" value="Next">
+        </form>
+    </div>
+</body>
+</html>
+

@@ -10,6 +10,7 @@ namespace HouseKeeper.Respositories
         Task<List<KINHNGHIEM>> GetExperiences();
         Task<List<TINHTHANHPHO>> GetCities();
         Task<List<LOAICONGVIEC>> GetJobs();
+        Task<List<GIAGOITIN>> GetPriceTags();
         Task<HINHTHUCTRALUONG> GetPaidType(int id);
         Task<KINHNGHIEM> GetExperience(int id);
         Task<TINHTHANHPHO> GetCity(int id);

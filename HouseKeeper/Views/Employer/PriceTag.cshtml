@@ -1,0 +1,179 @@
+﻿@using HouseKeeper.Models.Views.Recruitments;
+@model PriceTagViewModel;
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Source Sans Pro", sans-serif;
+        }
+
+        body {
+            background-color: #dff9fb;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        p {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .pricing {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+
+            .plan {
+                background-color: #fff;
+                padding: 2.5rem;
+                margin: 12px;
+                border-radius: 5px;
+                text-align: center;
+                transition: 0.3s;
+                cursor: pointer;
+
+                h2 {
+                    font-size: 22px;
+                    margin-bottom: 12px;
+                }
+
+                .price {
+                    margin-bottom: 1rem;
+                    font-size: 30px;
+                }
+
+                ul.features {
+                    list-style-type: none;
+                    text-align: left;
+
+                    li {
+                        margin: 8px;
+
+                        .fas {
+                            margin-right: 4px;
+                        }
+
+                        .fa-check-circle {
+                            color: #6ab04c;
+                        }
+
+                        .fa-times-circle {
+                            color: #eb4d4b;
+                        }
+                    }
+                }
+
+                button {
+                    border: none;
+                    width: 100%;
+                    padding: 12px 35px;
+                    margin-top: 1rem;
+                    background-color: #6ab04c;
+                    color: #fff;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    font-size: 16px;
+                }
+
+                &.popular {
+                    border: 2px solid #6ab04c;
+                    position: relative;
+                    transform: scale(1.08);
+
+                    span {
+                        position: absolute;
+                        top: -20px;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        background-color: #6ab04c;
+                        color: #fff;
+                        padding: 4px 20px;
+                        font-size: 18px;
+                        border-radius: 5px;
+                    }
+                }
+
+                &:hover {
+                    box-shadow: 5px 7px 67px -28px rgba(0, 0, 0, 0.37);
+                }
+            }
+        }
+    </style>
+    <style>
+        /* Style for the back button */
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-right: 20px;
+        }
+
+        /* Hover effect */
+        .back-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <style>
+        .button-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #40E374; /* Button background color */
+            color: #ffffff; /* Text color */
+            text-decoration: none; /* Remove underline */
+            border: none; /* Remove border */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Change cursor on hover */
+            transition: background-color 0.3s ease; /* Smooth transition for background color */
+        }
+
+            .button-link:hover {
+                background-color: #0056b3; /* Darker background color on hover */
+            }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-HlQdaB2bJXvR2o6eZAa+XbQrq2jbyZeP7k+X+zXyYtGN+zPmt7jU3S3m3gRCwQ5jSp2VqWIkm4IQB5MyPzK51A==" crossorigin="anonymous" />
+
+</head>
+
+<body>
+    <div class="col-2">
+        <a href="previous_page.html" class="back-button">&larr; Back</a>
+    </div>
+    
+    <h1>Choose the plan that fits for your recruitment</h1>
+    <p>
+        Paying by credit card is required
+    </p>
+
+    <div class="pricing">
+        @foreach(var price in Model.PriceTags)
+        {
+            <div class="plan">
+                <h2>@price.PricePacketName</h2>
+                <div class="price">@string.Format("{0:#,##0} đ", price.Price)</div>
+                <ul class="features">
+                    <li><i class="fa fa-check-circle-o"></i>@price.NumberDays days</li>
+                    <li><i class="fa fa-check-circle-o"></i> Continuous Support</li>
+                </ul>
+                <a href="@Url.Action("BidPrice", "Employer",new{pricePacketId=price.PricePacketId})" class="button-link">Choose now</a>
+            </div>
+        }
+    </div>
+</body>
+</html>

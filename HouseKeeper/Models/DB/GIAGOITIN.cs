@@ -13,7 +13,7 @@ namespace HouseKeeper.Models.DB
         [Column("TENGOI")]
         public string PricePacketName { get; set; }
         [Column("GIA")]
-        public float Price { get; set; }
+        public decimal Price { get; set; }
         [Column("SOLUONGNGAY")]
         public int NumberDays { get; set; }
     }

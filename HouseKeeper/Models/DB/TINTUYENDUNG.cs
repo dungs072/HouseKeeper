@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HouseKeeper.Models.DB
 {
+
     [Table("TINTUYENDUNG", Schema = "dbo")]
     public class TINTUYENDUNG
     {
@@ -53,6 +54,7 @@ namespace HouseKeeper.Models.DB
             get
             {
                 string name = "";
+                if (HouseworkDetails == null) { return ""; }
                 var list = HouseworkDetails.ToList();
                 for(int i=0;i< list.Count-1;i++)
                 {

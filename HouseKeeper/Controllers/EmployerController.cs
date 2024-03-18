@@ -3,6 +3,8 @@ using HouseKeeper.Models.Views.OutPage;
 using HouseKeeper.Models.Views.Recruitments;
 using HouseKeeper.Respositories;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace HouseKeeper.Controllers
 {
@@ -36,7 +38,7 @@ namespace HouseKeeper.Controllers
         public async Task<IActionResult> HandleCreateRecruitment(CreateRecruitmentsViewModel model)
         {
             var value0 = Request.Form["SelectedJobs"];
-            string[] selectedJobs = value0.ToString().Split(',');  
+           // string[] selectedJobs = value0.ToString().Split(',');  
             var value1 = Request.Form["isFullTime"];
             bool isFullTime = value1 == "on";
             var value2 = Request.Form["min-age"];
@@ -67,16 +69,104 @@ namespace HouseKeeper.Controllers
             recruitment.RecruitDeadlineDate = null;
             int.TryParse(HttpContext.Session.GetString("UserId"),out int employerId);
             recruitment.Employer = await employerRespository.GetEmployer(employerId);
-            var result = employerRespository.CreateRecruitment(recruitment,selectedJobs);
-            if(result.Result)
+            PriceTagViewModel priceModel = new PriceTagViewModel();
+            priceModel.Recruitment = recruitment;
+            priceModel.JobIds = value0;
+           
+            //var result = employerRespository.CreateRecruitment(recruitment,selectedJobs);
+            //if(result.Result)
+            //{
+            //    TempData["Success"] = "Please choose your price you want!";
+            //}
+            //else
+            //{
+            //    TempData["Error"] = "Server error. Failed to create new recruitment!";
+            //}
+            string priceTagViewModelJson = JsonConvert.SerializeObject(priceModel);
+            HttpContext.Session.SetString("PriceTagViewModel",priceTagViewModelJson);
+            TempData["Success"] = "Please choose your price you want!";
+            return RedirectToAction("PriceTag");
+        }
+        public async Task<IActionResult> PriceTag()
+        {
+            string priceTagViewModelJson = HttpContext.Session.GetString("PriceTagViewModel") as string;
+            if (!string.IsNullOrEmpty(priceTagViewModelJson))
             {
-                TempData["Success"] = "Create new recruitment successfully!";
+                PriceTagViewModel model = JsonConvert.DeserializeObject<PriceTagViewModel>(priceTagViewModelJson);
+                if (model == null)
+                {
+                    TempData["Error"] = "Server error!";
+                    return RedirectToAction("Index", "Home");
+                }
+                model.PriceTags = await employerRespository.GetPriceTags();
+                TempData["Success"] = "Please set your price to display above other recruitments!";
+                return View(model);
             }
-            else
+            TempData["Error"] = "Server error!";
+            return RedirectToAction("Index", "Home");
+        }
+        public async Task<IActionResult> BidPrice(int pricePacketId)
+        {
+            string priceTagViewModelJson = HttpContext.Session.GetString("PriceTagViewModel") as string;
+            if (!string.IsNullOrEmpty(priceTagViewModelJson))
             {
-                TempData["Error"] = "Server error. Failed to create new recruitment!";
+                PriceTagViewModel model = JsonConvert.DeserializeObject<PriceTagViewModel>(priceTagViewModelJson);
+                if (model == null)
+                {
+                    TempData["Error"] = "Server error!";
+                    return RedirectToAction("Index", "Home");
+                }
+                model.PricePacketId = pricePacketId;
+                return View(model);
             }
-            return View("Recruitment",model);
+            TempData["Error"] = "Server error!";
+            return RedirectToAction("Index", "Home");
+        }
+        [HttpPost]
+        public async Task<IActionResult> HandleSendBidPrice(PriceTagViewModel tempModel)
+        {
+            string priceTagViewModelJson = HttpContext.Session.GetString("PriceTagViewModel") as string;
+            if (!string.IsNullOrEmpty(priceTagViewModelJson))
+            {
+                PriceTagViewModel model = JsonConvert.DeserializeObject<PriceTagViewModel>(priceTagViewModelJson);
+                if (model == null)
+                {
+                    TempData["Error"] = "Server error!";
+                    return RedirectToAction("Index", "Home");
+                }
+                model.Recruitment.BidPrice = tempModel.BidPrice;
+                TempData["Success"] = "Please finish your payment";
+                return View("CheckOut",model);
+            }
+            TempData["Error"] = "Server error!";
+            return RedirectToAction("Index", "Home");
+        }
+        public async Task<IActionResult> CheckOut()
+        {
+            string priceTagViewModelJson = HttpContext.Session.GetString("PriceTagViewModel") as string;
+            if (!string.IsNullOrEmpty(priceTagViewModelJson))
+            {
+                PriceTagViewModel model = JsonConvert.DeserializeObject<PriceTagViewModel>(priceTagViewModelJson);
+                if (model == null)
+                {
+                    TempData["Error"] = "Server error!";
+                    return RedirectToAction("Index", "Home");
+                }
+                string[] selectedJobs = model.JobIds.ToString().Split(',');
+                var state = await employerRespository.CreateRecruitment(model.Recruitment, selectedJobs);
+                if(state)
+                {
+                    TempData["Success"] = "Create new recruitment successfully";
+                    return RedirectToAction("ListRecruitment");
+                }
+                else
+                {
+                    TempData["Error"] = "Fail to create new recruitment";
+                    return View("CheckOut", model);
+                }
+            }
+            TempData["Error"] = "Server error!";
+            return RedirectToAction("Index", "Home");
         }
         public async Task<IActionResult> ListRecruitment()
         {
@@ -84,6 +174,7 @@ namespace HouseKeeper.Controllers
             ListRecruitmentViewModel model = await employerRespository.GetEmployerRecruitments(employerId);
             return View(model);
         }
+
 
     }
 }

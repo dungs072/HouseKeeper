@@ -32,6 +32,10 @@ namespace HouseKeeper.Respositories
         {
             return await dBContext.Jobs.ToListAsync();
         }
+        public async Task<List<GIAGOITIN>> GetPriceTags()
+        {
+            return await dBContext.PricePackets.ToListAsync();
+        }
         public async Task<HINHTHUCTRALUONG> GetPaidType(int id)
         {
             return await dBContext.SalaryForms.FindAsync(id);
