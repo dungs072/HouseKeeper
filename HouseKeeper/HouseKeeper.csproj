@@ -64,7 +64,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Employee\" />
     <Folder Include="Views\Admin\" />
   </ItemGroup>
 

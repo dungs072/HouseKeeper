@@ -117,6 +117,7 @@ namespace HouseKeeper.Controllers
                     TempData["Error"] = "Server error!";
                     return RedirectToAction("Index", "Home");
                 }
+
                 model.PricePacketId = pricePacketId;
                 string temp = JsonConvert.SerializeObject(model);
                 HttpContext.Session.SetString("PriceTagViewModel", temp);
@@ -137,7 +138,8 @@ namespace HouseKeeper.Controllers
                     TempData["Error"] = "Server error!";
                     return RedirectToAction("Index", "Home");
                 }
-                model.Recruitment.BidPrice = tempModel.BidPrice;
+                var value2 = Request.Form["bidAmount"];
+                model.Recruitment.BidPrice = int.Parse(value2);
                 string temp = JsonConvert.SerializeObject(model);
                 HttpContext.Session.SetString("PriceTagViewModel", temp);
                 TempData["Success"] = "Please finish your payment";
@@ -183,6 +185,114 @@ namespace HouseKeeper.Controllers
             int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
             ListRecruitmentViewModel model = await employerRespository.GetEmployerRecruitments(employerId);
             return View(model);
+        }
+        public async Task<IActionResult> DeleteRecruitment(int recruitmentId)
+        {
+            var result = await employerRespository.DeleteSpecificRecruitment(recruitmentId);
+            if(result)
+            {
+                TempData["Success"] = "Your money will be back to your payment account!";
+                return RedirectToAction("ListRecruitment");
+            }
+            else
+            {
+                TempData["Error"] = "Server error!";
+                return RedirectToAction("ListRecruitment");
+            }
+        }
+        public async Task<IActionResult> EditRecruitment(int recruitmentId)
+        {
+            EditRecruitmentViewModel model = new EditRecruitmentViewModel();
+            TINTUYENDUNG recruitment = await employerRespository.GetRecruitment(recruitmentId);
+            List<HINHTHUCTRALUONG> paidTypes = await employerRespository.GetPaidTypes();
+            List<KINHNGHIEM> experiences = await employerRespository.GetExperiences();
+            List<TINHTHANHPHO> cities = await employerRespository.GetCities();
+            List<LOAICONGVIEC> jobs = await employerRespository.GetJobs();
+            model.PaidTypes = paidTypes;
+            model.Experiences = experiences;
+            model.Cities = cities;
+            model.jobs = jobs;
+            model.MaxSalary = recruitment.MaxSalary;
+            model.MinSalary = recruitment.MinSalary;
+            model.AgeRange = recruitment.Age;
+            model.Gender = recruitment.Gender;
+            model.IsFulltime = recruitment.FullTime;
+            model.PostTime = recruitment.PostTime;
+            model.TakeNotes = recruitment.Note;
+            model.NumberVacancies = recruitment.MaxApplications;
+            model.ExperienceId = recruitment.Experience.ExperienceId;
+            model.PaidTypeId = recruitment.SalaryForm.SalaryFormId;
+            model.CityId = recruitment.City.CityId;
+            model.RecruitmentId = recruitmentId;
+            List<LOAICONGVIEC> selectedJobs = new List<LOAICONGVIEC>();
+            foreach(var c in recruitment.HouseworkDetails.ToList())
+            {
+                selectedJobs.Add(c.Job);
+            }
+            model.SelectedJobs = selectedJobs;
+
+            return View(model);
+        }
+        public async Task<IActionResult> BackToEditRecruitment(EditRecruitmentViewModel model)
+        {
+            TINTUYENDUNG recruitment = await employerRespository.GetRecruitment(model.RecruitmentId);
+            List<HINHTHUCTRALUONG> paidTypes = await employerRespository.GetPaidTypes();
+            List<KINHNGHIEM> experiences = await employerRespository.GetExperiences();
+            List<TINHTHANHPHO> cities = await employerRespository.GetCities();
+            List<LOAICONGVIEC> jobs = await employerRespository.GetJobs();
+            model.PaidTypes = paidTypes;
+            model.Experiences = experiences;
+            model.Cities = cities;
+            model.jobs = jobs;
+
+            List<LOAICONGVIEC> selectedJobs = new List<LOAICONGVIEC>();
+            foreach (var c in recruitment.HouseworkDetails.ToList())
+            {
+                selectedJobs.Add(c.Job);
+            }
+            model.SelectedJobs = selectedJobs;
+
+            return View("EditRecruitment",model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditRecruitment(EditRecruitmentViewModel model)
+        {
+            var value0 = Request.Form["SelectedJobs"];
+            // string[] selectedJobs = value0.ToString().Split(',');  
+            var value1 = Request.Form["isFullTime"];
+            bool isFullTime = value1 == "on";
+            var value2 = Request.Form["min-age"];
+            var value3 = Request.Form["max-age"];
+            var value4 = Request.Form["PaidTypeId"];
+            var value5 = Request.Form["ExperienceId"];
+            var value6 = Request.Form["CityId"];
+            var value7 = Request.Form["Gender"];
+            if (value7 == "Null")
+            {
+                model.Gender = null;
+            }
+            else
+            {
+                model.Gender = value7;
+            }
+            model.PostTime = DateTime.Now;
+            model.JobIds = value0;
+            model.AgeRange = value2 + "-" + value3;
+            model.PaidTypeId = int.Parse(value4);
+            model.ExperienceId = int.Parse(value5);
+            model.CityId = int.Parse(value6);
+            model.IsFulltime = isFullTime;
+            bool result = await employerRespository.EditRecruitment(model);
+            if (result)
+            {
+                TempData["Success"] = "Update recruitment successfully!";
+                return RedirectToAction("ListRecruitment");
+            }
+            else
+            {
+                TempData["Error"] = "Server error!";
+                return RedirectToAction("BackToEditRecruitment",model);
+            }
         }
 
 

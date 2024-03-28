@@ -11,6 +11,7 @@ var configuration = provider.GetRequiredService<IConfiguration>();
 builder.Services.AddDbContext<HouseKeeperDBContext>(item => item.UseSqlServer(configuration.GetConnectionString("myconn")));
 builder.Services.AddScoped<IAccountTypeRespository, AccountTypeRespository>();
 builder.Services.AddScoped<IEmployerRespository, EmployerRespository>();
+builder.Services.AddScoped<IEmployeeRespository, EmployeeRespository>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession();
 var app = builder.Build();

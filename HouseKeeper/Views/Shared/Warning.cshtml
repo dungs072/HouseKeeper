@@ -1,0 +1,92 @@
+﻿<head>
+    <script>
+        $(document).ready(function () {
+            // Handle OK button click
+            $('#confirmDelete').on('click', function () {
+                dataToPass = $('#confirmDelete').val();
+                var stringArray = dataToPass.split(':');
+                if (stringArray[0] == 'DeletePendingRecruitment') {
+
+                    var recruitmentId = parseInt(stringArray[1], 10);
+
+                    var url = '/Employer/DeleteRecruitment?recruitmentId=' + recruitmentId;
+                    window.location.href = url;
+                }
+                if (stringArray[0] == 'LearningModule') {
+                    var learingModuleId = parseInt(stringArray[1], 10);
+                    var titleId = parseInt(stringArray[2], 10);
+                    var url = '/LearningModule/DeleteLearningModule?learningModuleId=' + learingModuleId + '&TitleId=' + titleId;
+                    window.location.href = url;
+                }
+                if (stringArray[0] == 'Term') {
+                    var termId = parseInt(stringArray[1], 10);
+                    var learningModuleId = parseInt(stringArray[2], 10);
+                    var url = '/Term/DeleteTerm?termId=' + termId + '&learningModuleId=' + learningModuleId;
+                    window.location.href = url;
+                }
+                if (stringArray[0] == 'YourOwnClass') {
+                    var classId = parseInt(stringArray[1], 10);
+                    var url = '/Class/DeleteClass?classId=' + classId;
+                    window.location.href = url;
+                }
+                if (stringArray[0] == 'DetailOwnClass') {
+                    var learningModuleId = parseInt(stringArray[1], 10);
+                    var classId = parseInt(stringArray[2], 10);
+                    var url = '/Class/DeleteModuleFromClass?classId=' + classId + '&learningModuleId=' + learningModuleId;
+                    window.location.href = url;
+                }
+                if (stringArray[0] == 'ParticipantOwnClass') {
+                    var userId = parseInt(stringArray[1], 10);
+                    var url = '/Class/DeleteParticipantFromClass?userId=' + userId;
+                    window.location.href = url;
+                }
+                if (stringArray[0] == 'RejectRegister') {
+                    var userId = parseInt(stringArray[1], 10);
+                    var classId = parseInt(stringArray[2], 10);
+                    var url = '/Class/RejectRegistration?userId=' + userId + '&classId=' + classId;
+                    window.location.href = url;
+                }
+                if (stringArray[0] == 'Badge') {
+                    var achievementId = parseInt(stringArray[1], 10);
+                    var url = '/Admin/DeleteBadge?achievementId=' + achievementId;
+                    window.location.href = url;
+                }
+
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            var dataToPass = "";
+            $('.deleteButton').on('click', function () {
+                dataToPass = $(this).val()
+                var yesDeleteButton = $(document).find('#confirmDelete')
+                yesDeleteButton.val(dataToPass)
+            });
+        });
+    </script>
+</head>
+<!-- Modal -->
+<div class="modal fade" id="deleteWarningModal" tabindex="-1" role="dialog" aria-labelledby="warningModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="warningModalLabel">Warning</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="text-center mb-4">
+                    <i class="fas fa-exclamation-triangle text-danger fa-3x"></i>
+                </p>
+                <h5 class="text-center mb-3">Are you sure you want to delete it?</h5>
+                <p class="text-center">This action cannot be undone. Deleting it will permanently remove the item from your records.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" id="confirmDelete">OK</button>
+            </div>
+        </div>
+    </div>
+</div>

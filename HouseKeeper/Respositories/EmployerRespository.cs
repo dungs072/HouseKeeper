@@ -2,14 +2,15 @@
 using HouseKeeper.Models.DB;
 using HouseKeeper.Models.Views.OutPage;
 using HouseKeeper.Models.Views.Recruitments;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace HouseKeeper.Respositories
 {
-    public class EmployerRespository:IEmployerRespository
+    public class EmployerRespository : IEmployerRespository
     {
         private readonly HouseKeeperDBContext dBContext;
-        private string[] status = new string[] { "Pending approval", "Reject approval", 
+        private string[] status = new string[] { "Pending approval", "Reject approval",
                                                     "Displayed", "Hidden", "Expired" };
         public EmployerRespository(HouseKeeperDBContext dBContext)
         {
@@ -60,13 +61,17 @@ namespace HouseKeeper.Respositories
         {
             return await dBContext.PricePackets.FindAsync(id);
         }
-        public async Task<bool>CreateRecruitment(TINTUYENDUNG recruitment, string[] jobIds, int pricePacketId)
+        public async Task<TINTUYENDUNG> GetRecruitment(int id)
+        {
+            return await dBContext.Recruitments.FindAsync(id);
+        }
+        public async Task<bool> CreateRecruitment(TINTUYENDUNG recruitment, string[] jobIds, int pricePacketId)
         {
             using var transaction = await dBContext.Database.BeginTransactionAsync();
             try
             {
                 recruitment.Status = status[0];
-           
+
                 await dBContext.Recruitments.AddAsync(recruitment);
                 List<CHITIETLOAIGIUPVIEC> housekeepingTypes = new List<CHITIETLOAIGIUPVIEC>();
                 CHITIETGIAGOITIN packetDetail = new CHITIETGIAGOITIN();
@@ -74,7 +79,7 @@ namespace HouseKeeper.Respositories
                 packetDetail.PricePacket = await GetPricePacket(pricePacketId);
                 packetDetail.BuyDate = DateTime.Now;
                 await dBContext.PricePacketDetails.AddAsync(packetDetail);
-                foreach(var jobId in jobIds)
+                foreach (var jobId in jobIds)
                 {
                     var houseKeepingType = new CHITIETLOAIGIUPVIEC();
                     houseKeepingType.Recruitment = recruitment;
@@ -91,19 +96,20 @@ namespace HouseKeeper.Respositories
                 transaction.Rollback();
                 return false;
             }
-            
+
         }
-        
+        #region ListRecruitment
         public async Task<ListRecruitmentViewModel> GetEmployerRecruitments(int employerId)
         {
             ListRecruitmentViewModel model = new ListRecruitmentViewModel();
-            var recruitments = await dBContext.Recruitments.Where(a=>a.Employer.EmployerId==employerId).ToListAsync();
+            var recruitments = await dBContext.Recruitments.Where(a => a.Employer.EmployerId == employerId).
+                                    OrderByDescending(a => a.PostTime).ToListAsync();
             model.OnlineRecruitments = new List<TINTUYENDUNG>();
             model.PendingApprovalRecruitments = new List<TINTUYENDUNG>();
             model.OutDatedRecruitments = new List<TINTUYENDUNG>();
             model.HiddenRecruitments = new List<TINTUYENDUNG>();
             model.DisapprovalRecruitments = new List<TINTUYENDUNG>();
-            foreach(var recruitment in recruitments)
+            foreach (var recruitment in recruitments)
             {
                 if (recruitment.Status == status[0])
                 {
@@ -129,5 +135,65 @@ namespace HouseKeeper.Respositories
 
             return model;
         }
+        public async Task<bool> DeleteSpecificRecruitment(int recruitmentId)
+        {
+            using var transaction = await dBContext.Database.BeginTransactionAsync();
+            try
+            {
+                var recruitment = await dBContext.Recruitments.FindAsync(recruitmentId);
+                var pricesDetails = recruitment.PricePacketDetail.ToList();
+                var jobDetails = recruitment.HouseworkDetails.ToList();
+                recruitment.PricePacketDetail = null;
+                recruitment.HouseworkDetails = null;
+                // need to return money to user
+                dBContext.PricePacketDetails.RemoveRange(pricesDetails);
+                dBContext.HouseWorkDetails.RemoveRange(jobDetails);
+
+                dBContext.Recruitments.Remove(recruitment);
+                await dBContext.SaveChangesAsync();
+                transaction.Commit();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                return false;
+            }
+
+        }
+
+        public async Task<bool> EditRecruitment(EditRecruitmentViewModel model)
+        {
+            using var transaction = await dBContext.Database.BeginTransactionAsync();
+            try
+            {
+                TINTUYENDUNG recruitment = await dBContext.Recruitments.FindAsync(model.RecruitmentId);
+                if (recruitment == null)
+                {
+                    return false;
+                }
+                recruitment.Age = model.AgeRange;
+                recruitment.City = await dBContext.Cities.FindAsync(model.CityId);
+                recruitment.Experience = await dBContext.Experiences.FindAsync(model.ExperienceId);
+                recruitment.SalaryForm = await dBContext.SalaryForms.FindAsync(model.PaidTypeId);
+                recruitment.Note = model.TakeNotes;
+                recruitment.FullTime = model.IsFulltime;
+                recruitment.Gender = model.Gender;
+                recruitment.MaxApplications = model.NumberVacancies;
+                recruitment.MinSalary = model.MinSalary*1000;
+                recruitment.MaxSalary = model.MaxSalary*1000;
+                dBContext.Recruitments.Update(recruitment);
+                await dBContext.SaveChangesAsync();
+                transaction.Commit();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                transaction.Rollback();
+                return false;
+            }
+        }
+        #endregion
     }
+
 }

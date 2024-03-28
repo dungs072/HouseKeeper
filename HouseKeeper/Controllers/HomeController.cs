@@ -1,5 +1,6 @@
 ﻿using HouseKeeper.Models;
 using HouseKeeper.Models.DB;
+using HouseKeeper.Models.Views.Employee;
 using HouseKeeper.Models.Views.OutPage;
 using HouseKeeper.Respositories;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +12,13 @@ namespace HouseKeeper.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IAccountTypeRespository accountTypeRespository;
+        private readonly IEmployeeRespository employeeRespository;
         public HomeController(ILogger<HomeController> logger, 
-                IAccountTypeRespository accountTypeRespository)
+                IAccountTypeRespository accountTypeRespository, IEmployeeRespository employeeRespository)
         {
             _logger = logger;
             this.accountTypeRespository = accountTypeRespository;
+            this.employeeRespository = employeeRespository;
         }
 
         public IActionResult Index()
@@ -58,7 +61,7 @@ namespace HouseKeeper.Controllers
             }
             else if(loginInfor.ViewIndex==2)
             {
-                return View("IndexEmployee");
+                return RedirectToAction("DisplayList", "Employee",1);
             }
             return View();
         }
@@ -165,7 +168,12 @@ namespace HouseKeeper.Controllers
             }
             return RedirectToAction("Login");
         }
-
+        public IActionResult LogOut()
+        {
+            HttpContext.Session.SetString("UserId", "-1");
+            LoginViewModel model = new LoginViewModel();
+            return View("Login",model);
+        }
         public IActionResult Privacy()
         {
             return View();
