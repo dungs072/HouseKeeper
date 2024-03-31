@@ -29,19 +29,21 @@ namespace HouseKeeper.Models.DB
         public DateTime PostTime { get; set; }
         [Column("HANTUYENDUNG")]
         public DateTime? RecruitDeadlineDate { get; set; }
-        [Column("TRANGTHAI")]
-        public string Status { get; set; }
         [Column("DAUGIA")]
         public decimal BidPrice { get; set; }
+        [Column("SONHA_DUONG")]
+        public string? Address { get; set; }
 
         [ForeignKey("ID_HTTL")]
         public virtual HINHTHUCTRALUONG SalaryForm { get; set; }
         [ForeignKey("ID_KINHNGHIEM")]
         public virtual KINHNGHIEM Experience { get; set; }
-        [ForeignKey("ID_TINHTHANHPHO")]
-        public virtual TINHTHANHPHO City { get; set; }
+        [ForeignKey("ID_HUYEN")]
+        public virtual HUYEN District { get; set; }
         [ForeignKey("ID_NGUOITHUE")]
         public virtual NGUOITHUE Employer { get; set; }
+        [ForeignKey("ID_TRANGTHAI_TIN")]
+        public virtual TRANGTHAITIN Status { get; set; }
 
 
         public virtual ICollection<CHITIETAPPLY> ApplyDetails { get; set; }

@@ -16,12 +16,16 @@ namespace HouseKeeper.Models.DB
         public string FirstName { get; set; }
         [Column("NGAYSINH", TypeName = "date")]
         public DateTime? BirthDate { get; set; }
+        [Column("SONHA_DUONG")]
+        public string? Address { get; set; }
 
-        [ForeignKey("ID_TINH_TP")]
-        public virtual TINHTHANHPHO City { get; set; }
+        [ForeignKey("ID_HUYEN")]
+        public virtual HUYEN District { get; set; }
 
         [ForeignKey("ID_TK")]
         public virtual TAIKHOAN Account { get; set; }
+        [ForeignKey("ID_CCCD")]
+        public virtual DANHTINH Identity { get; set; }
 
         public virtual ICollection<CHITIETCONGVIEC> JobDetails { get; set; }
     }

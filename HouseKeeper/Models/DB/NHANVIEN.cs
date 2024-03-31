@@ -3,25 +3,21 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HouseKeeper.Models.DB
 {
-    [Table("NGUOITHUE", Schema = "dbo")]
-    public class NGUOITHUE
+    [Table("NHANVIEN", Schema = "dbo")]
+    public class NHANVIEN
     {
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("ID_NGUOITHUE")]
-        public int EmployerId { get; set; }
+        [Column("ID_NHANVIEN")]
+        public int StaffId { get; set; }
         [Column("HO")]
         public string LastName { get; set; }
         [Column("TEN")]
         public string FirstName { get; set; }
-        [Column("SONHA_DUONG")]
-        public string? Address { get; set; }
-
         [ForeignKey("ID_TK")]
         public virtual TAIKHOAN Account { get; set; }
         [ForeignKey("ID_CCCD")]
         public virtual DANHTINH Identity { get; set; }
-        [ForeignKey("ID_HUYEN")]
-        public virtual HUYEN District { get; set; }
     }
 }
