@@ -12,5 +12,6 @@ namespace HouseKeeper.Models.DB
         public int CityId { get; set; }
         [Column("TEN_TINH_TP")]
         public string CityName { get; set; }
+        public virtual ICollection<HUYEN> Districts { get; set; }
     }
 }

@@ -148,7 +148,7 @@
                     </div>
                     <div class="nice-form-group">
                         <label>City/Province</label>
-                        <select name="CityId">
+                        <select name="CityId" id="citySelect">
                             @foreach (var city in Model.Cities)
                             {
                                 <option value="@city.CityId">@city.CityName</option>
@@ -156,7 +156,20 @@
                         </select>
                     </div>
                     <div class="nice-form-group">
-                        <label>Addition</label>
+                        <label>District</label>
+                        <select name="DistrictId" id="districtSelect">
+                            @foreach (var district in Model.Districts)
+                            {
+                                <option value="@district.DistrictId" data-cityid="@district.City.CityId">@district.DistrictName</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="nice-form-group">
+                        <label>Number of vacancies</label>
+                        <input asp-for="Address" type="text" placeholder="..." value=@Model.Address />
+                    </div>
+                    <div class="nice-form-group">
+                        <label>Take note</label>
                         <textarea asp-for="TakeNotes" rows="5" placeholder="Write something" required ></textarea>
                     </div>
                     <div class="mt-2 button-container">
@@ -217,6 +230,33 @@
                 maxSalaryInput.value = parseInt(minSalaryInput.value) + 1;
             }
         });
+    </script>
+
+    <script>
+        // Get references to both select elements
+        var citySelect = document.getElementById('citySelect');
+        var districtSelect = document.getElementById('districtSelect');
+
+        // Store all district options in an array
+        var districtOptions = Array.from(districtSelect.options);
+
+        // Add event listener to city select element
+        citySelect.addEventListener('change', function () {
+            var selectedCityId = this.value;
+
+            // Remove all options from district select
+            districtSelect.innerHTML = '';
+
+            // Filter and append district options corresponding to the selected city
+            districtOptions.forEach(function (option) {
+                if (option.getAttribute('data-cityid') === selectedCityId || option.getAttribute('data-cityid') === null) {
+                    districtSelect.appendChild(option.cloneNode(true));
+                }
+            });
+        });
+
+        // Trigger change event initially to set the initial state
+        citySelect.dispatchEvent(new Event('change'));
     </script>
 </body>
 </html>

@@ -18,6 +18,7 @@ namespace HouseKeeper.Models.Views.Recruitments
         public List<HINHTHUCTRALUONG> PaidTypes { get; set; }
         public List<KINHNGHIEM> Experiences { get; set; }
         public List<TINHTHANHPHO> Cities { get; set; }
+        public List<HUYEN> Districts { get; set; }  
         public List<LOAICONGVIEC> jobs { get; set; }
 
        

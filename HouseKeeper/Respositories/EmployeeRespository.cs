@@ -21,7 +21,7 @@ namespace HouseKeeper.Respositories
             {
                 page = 1;
             }
-            var recruitments = await dBContext.Recruitments.Where(a => a.Status == status[2])
+            var recruitments = await dBContext.Recruitments.Where(a => a.Status.StatusName == status[2])
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();

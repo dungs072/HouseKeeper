@@ -37,6 +37,10 @@ namespace HouseKeeper.Respositories
         {
             return await dBContext.PricePackets.ToListAsync();
         }
+        public async Task<List<HUYEN>> GetDistricts()
+        {
+            return await dBContext.Districts.ToListAsync();
+        }
         public async Task<HINHTHUCTRALUONG> GetPaidType(int id)
         {
             return await dBContext.SalaryForms.FindAsync(id);
@@ -65,12 +69,20 @@ namespace HouseKeeper.Respositories
         {
             return await dBContext.Recruitments.FindAsync(id);
         }
+        public async Task<TRANGTHAITIN> GetRecruitmentStatus(int id)
+        {
+            return await dBContext.RecruitmentStatus.FindAsync(id);
+        }
+        public async Task<HUYEN> GetDistrict(int id)
+        {
+            return await dBContext.Districts.FindAsync(id);
+        }
         public async Task<bool> CreateRecruitment(TINTUYENDUNG recruitment, string[] jobIds, int pricePacketId)
         {
             using var transaction = await dBContext.Database.BeginTransactionAsync();
             try
             {
-                recruitment.Status = status[0];
+                recruitment.Status = await GetRecruitmentStatus(1);
 
                 await dBContext.Recruitments.AddAsync(recruitment);
                 List<CHITIETLOAIGIUPVIEC> housekeepingTypes = new List<CHITIETLOAIGIUPVIEC>();
@@ -78,7 +90,14 @@ namespace HouseKeeper.Respositories
                 packetDetail.Recruitment = recruitment;
                 packetDetail.PricePacket = await GetPricePacket(pricePacketId);
                 packetDetail.BuyDate = DateTime.Now;
+                //packetDetail.HasPaid = true;
                 await dBContext.PricePacketDetails.AddAsync(packetDetail);
+                LICHSUDAUGIA bidHistory = new LICHSUDAUGIA();
+                bidHistory.BuyDate = DateTime.Now;
+                bidHistory.IncreasePrice = recruitment.BidPrice;
+                //bidHistory.IsPaid = true;
+                bidHistory.Recruitment = recruitment;
+                await dBContext.BidHistories.AddAsync(bidHistory);
                 foreach (var jobId in jobIds)
                 {
                     var houseKeepingType = new CHITIETLOAIGIUPVIEC();
@@ -111,23 +130,23 @@ namespace HouseKeeper.Respositories
             model.DisapprovalRecruitments = new List<TINTUYENDUNG>();
             foreach (var recruitment in recruitments)
             {
-                if (recruitment.Status == status[0])
+                if (recruitment.Status.StatusName == status[0])
                 {
                     model.PendingApprovalRecruitments.Add(recruitment);
                 }
-                else if (recruitment.Status == status[1])
+                else if (recruitment.Status.StatusName == status[1])
                 {
                     model.DisapprovalRecruitments.Add(recruitment);
                 }
-                else if (recruitment.Status == status[2])
+                else if (recruitment.Status.StatusName == status[2])
                 {
                     model.OnlineRecruitments.Add(recruitment);
                 }
-                else if (recruitment.Status == status[3])
+                else if (recruitment.Status.StatusName == status[3])
                 {
                     model.HiddenRecruitments.Add(recruitment);
                 }
-                else if (recruitment.Status == status[4])
+                else if (recruitment.Status.StatusName == status[4])
                 {
                     model.OutDatedRecruitments.Add(recruitment);
                 }
@@ -173,7 +192,7 @@ namespace HouseKeeper.Respositories
                     return false;
                 }
                 recruitment.Age = model.AgeRange;
-                recruitment.City = await dBContext.Cities.FindAsync(model.CityId);
+                //recruitment.City = await dBContext.Cities.FindAsync(model.CityId);
                 recruitment.Experience = await dBContext.Experiences.FindAsync(model.ExperienceId);
                 recruitment.SalaryForm = await dBContext.SalaryForms.FindAsync(model.PaidTypeId);
                 recruitment.Note = model.TakeNotes;

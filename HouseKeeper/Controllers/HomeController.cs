@@ -141,7 +141,7 @@ namespace HouseKeeper.Controllers
                 {
                     employee.BirthDate = model.BirthDate;
                 }
-                employee.City = city;
+                //employee.City = city;
                 employee.FirstName = model.FirstName;
                 employee.LastName = model.LastName;
                 employee.Account = account;

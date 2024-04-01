@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HouseKeeper.Models.DB
 {
-    [Table("TINHTHANHPHO", Schema = "dbo")]
+    [Table("HUYEN", Schema = "dbo")]
     public class HUYEN
     {
         [Key]

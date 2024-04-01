@@ -25,11 +25,13 @@ namespace HouseKeeper.Controllers
             List<HINHTHUCTRALUONG> paidTypes = await employerRespository.GetPaidTypes();
             List<KINHNGHIEM> experiences = await employerRespository.GetExperiences();
             List<TINHTHANHPHO> cities = await employerRespository.GetCities();
+            List<HUYEN> districts = await employerRespository.GetDistricts();
             List<LOAICONGVIEC> jobs = await employerRespository.GetJobs();
             model.PaidTypes = paidTypes;
             model.Experiences = experiences;
             model.Cities = cities;
             model.jobs = jobs;
+            model.Districts = districts;
             model.MaxSalary = 25;
             model.NumberVacancies = 1;
             return View(model);
@@ -45,7 +47,7 @@ namespace HouseKeeper.Controllers
             var value3 = Request.Form["max-age"];
             var value4 = Request.Form["PaidTypeId"];
             var value5 = Request.Form["ExperienceId"];
-            var value6 = Request.Form["CityId"];
+            var value6 = Request.Form["DistrictId"];
             var value7 = Request.Form["Gender"];
             TINTUYENDUNG recruitment = new TINTUYENDUNG();
             recruitment.MinSalary = model.MinSalary*1000;
@@ -54,6 +56,7 @@ namespace HouseKeeper.Controllers
             recruitment.Note = model.TakeNotes;
             recruitment.FullTime = isFullTime;
             recruitment.MaxApplications = model.NumberVacancies;
+            recruitment.Address = model.Address;
             //recruitment.SalaryForm = await employerRespository.GetPaidType(int.Parse(value4));
             //recruitment.Experience = await employerRespository.GetExperience(int.Parse(value5));
             //recruitment.City = await employerRespository.GetCity(int.Parse(value6));
@@ -72,7 +75,7 @@ namespace HouseKeeper.Controllers
             priceModel.JobIds = value0;
             priceModel.SalaryId = int.Parse(value4);
             priceModel.experienceId = int.Parse(value5);
-            priceModel.cityId = int.Parse(value6);
+            priceModel.districtId = int.Parse(value6);
            
             //var result = employerRespository.CreateRecruitment(recruitment,selectedJobs);
             //if(result.Result)
@@ -162,7 +165,7 @@ namespace HouseKeeper.Controllers
                 string[] selectedJobs = model.JobIds.ToString().Split(',');
                 model.Recruitment.SalaryForm = await employerRespository.GetPaidType(model.SalaryId);
                 model.Recruitment.Experience = await employerRespository.GetExperience(model.experienceId);
-                model.Recruitment.City = await employerRespository.GetCity(model.cityId);
+                model.Recruitment.District = await employerRespository.GetDistrict(model.districtId);
                 int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
                 model.Recruitment.Employer = await employerRespository.GetEmployer(employerId);
                 var state = await employerRespository.CreateRecruitment(model.Recruitment, selectedJobs, model.PricePacketId);
@@ -222,7 +225,7 @@ namespace HouseKeeper.Controllers
             model.NumberVacancies = recruitment.MaxApplications;
             model.ExperienceId = recruitment.Experience.ExperienceId;
             model.PaidTypeId = recruitment.SalaryForm.SalaryFormId;
-            model.CityId = recruitment.City.CityId;
+            //model.CityId = recruitment.City.CityId;
             model.RecruitmentId = recruitmentId;
             List<LOAICONGVIEC> selectedJobs = new List<LOAICONGVIEC>();
             foreach(var c in recruitment.HouseworkDetails.ToList())
