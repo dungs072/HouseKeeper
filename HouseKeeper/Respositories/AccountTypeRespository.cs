@@ -59,6 +59,11 @@ namespace HouseKeeper.Respositories
                 loginInfor.Id = employee[0].EmployeeId;
                 loginInfor.ViewIndex = 2;
             }
+            if(employee.Count==0&&employers.Count==0)
+            {
+                loginInfor.ViewIndex = 0;
+                loginInfor.Id = accountId;
+            }
             return loginInfor;
         }
         //1: create account succesffully

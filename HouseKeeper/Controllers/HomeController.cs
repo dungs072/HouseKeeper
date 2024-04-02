@@ -63,6 +63,10 @@ namespace HouseKeeper.Controllers
             {
                 return RedirectToAction("DisplayList", "Employee",1);
             }
+            else if(loginInfor.ViewIndex==0)
+            {
+                return RedirectToAction("Index","Admin");
+            }
             return View();
         }
         public IActionResult SignUp()
