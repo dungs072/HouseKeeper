@@ -63,7 +63,13 @@
                         </div>
                     </div>
 
-                    <a href="contact.html" class="nav-item nav-link">Personal infor</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Personal</a>
+                        <div class="dropdown-menu rounded-0 m-0">
+                            <a href="job-list.html" class="dropdown-item">Your infor</a>
+                            <a href="/Home/LogOut" class="dropdown-item">Log out</a>
+                        </div>
+                    </div>
                 </div>
                 <a href="" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Search A Job<i class="fa fa-arrow-right ms-3"></i></a>
             </div>
@@ -92,7 +98,7 @@
                             <img class="flex-shrink-0 img-fluid border rounded" src="img/com-logo-2.jpg" alt="" style="width: 80px; height: 80px;">
                             <div class="text-start ps-4">
                                 <h3 class="mb-3">@Model.Recruitment.HouseWorkName</h3>
-                                <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@Model.Recruitment.District.City.CityName</span>
+                                <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@Model.Recruitment.Address, @Model.Recruitment.District.DistrictName, @Model.Recruitment.District.City.CityName</span>
                                 @if(Model.Recruitment.FullTime)
                                 {
                                     <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Full Time</span>
@@ -135,9 +141,7 @@
                             <p><i class="fa fa-angle-right text-primary me-2"></i>Experience: @Model.Recruitment.Experience.ExperienceName</p>
                             <p><i class="fa fa-angle-right text-primary me-2"></i>Gender: @Model.Recruitment.Gender</p>
                             <p><i class="fa fa-angle-right text-primary me-2"></i>Paid type: @Model.Recruitment.SalaryForm.SalaryFormName</p>
-
-                            <p class="m-0"><i class="fa fa-angle-right text-primary me-2"></i>Date Line: @Model.Recruitment.RecruitDeadlineDate</p>
-                            <p><i class="fa fa-angle-right text-primary me-2"></i>Location: @Model.Recruitment.District.City.CityName</p>
+                            <p class="m-0"><i class="fa fa-angle-right text-primary me-2"></i>Deadline: @Model.Recruitment.RecruitDeadlineDate.ToString("dd/MM/yyyy")</p>
                         </div>
                         <div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
                             <h4 class="mb-4">Company Detail</h4>

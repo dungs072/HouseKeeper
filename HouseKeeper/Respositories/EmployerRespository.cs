@@ -82,19 +82,21 @@ namespace HouseKeeper.Respositories
             using var transaction = await dBContext.Database.BeginTransactionAsync();
             try
             {
-                recruitment.Status = await GetRecruitmentStatus(1);
-
-                await dBContext.Recruitments.AddAsync(recruitment);
+               
                 List<CHITIETLOAIGIUPVIEC> housekeepingTypes = new List<CHITIETLOAIGIUPVIEC>();
                 CHITIETGIAGOITIN packetDetail = new CHITIETGIAGOITIN();
                 packetDetail.Recruitment = recruitment;
                 packetDetail.PricePacket = await GetPricePacket(pricePacketId);
                 packetDetail.BuyDate = DateTime.Now;
                 //packetDetail.HasPaid = true;
+
+                recruitment.Status = await GetRecruitmentStatus(1);
+                recruitment.RecruitDeadlineDate = DateTime.Now.AddDays(packetDetail.PricePacket.NumberDays);
+                await dBContext.Recruitments.AddAsync(recruitment);
                 await dBContext.PricePacketDetails.AddAsync(packetDetail);
                 LICHSUDAUGIA bidHistory = new LICHSUDAUGIA();
                 bidHistory.BuyDate = DateTime.Now;
-                bidHistory.IncreasePrice = recruitment.BidPrice;
+                bidHistory.IncreasePrice = recruitment.BidPrice*1000;
                 //bidHistory.IsPaid = true;
                 bidHistory.Recruitment = recruitment;
                 await dBContext.BidHistories.AddAsync(bidHistory);
@@ -162,11 +164,13 @@ namespace HouseKeeper.Respositories
                 var recruitment = await dBContext.Recruitments.FindAsync(recruitmentId);
                 var pricesDetails = recruitment.PricePacketDetail.ToList();
                 var jobDetails = recruitment.HouseworkDetails.ToList();
+                var bidHistories = recruitment.BidHistories.ToList();
                 recruitment.PricePacketDetail = null;
                 recruitment.HouseworkDetails = null;
                 // need to return money to user
                 dBContext.PricePacketDetails.RemoveRange(pricesDetails);
                 dBContext.HouseWorkDetails.RemoveRange(jobDetails);
+                dBContext.BidHistories.RemoveRange(bidHistories);
 
                 dBContext.Recruitments.Remove(recruitment);
                 await dBContext.SaveChangesAsync();
@@ -195,12 +199,14 @@ namespace HouseKeeper.Respositories
                 //recruitment.City = await dBContext.Cities.FindAsync(model.CityId);
                 recruitment.Experience = await dBContext.Experiences.FindAsync(model.ExperienceId);
                 recruitment.SalaryForm = await dBContext.SalaryForms.FindAsync(model.PaidTypeId);
+                recruitment.District = await dBContext.Districts.FindAsync(model.DistrictId);
                 recruitment.Note = model.TakeNotes;
                 recruitment.FullTime = model.IsFulltime;
                 recruitment.Gender = model.Gender;
                 recruitment.MaxApplications = model.NumberVacancies;
-                recruitment.MinSalary = model.MinSalary*1000;
-                recruitment.MaxSalary = model.MaxSalary*1000;
+                recruitment.MinSalary = model.MinSalary;
+                recruitment.MaxSalary = model.MaxSalary;
+                recruitment.Address = model.Address;
                 dBContext.Recruitments.Update(recruitment);
                 await dBContext.SaveChangesAsync();
                 transaction.Commit();

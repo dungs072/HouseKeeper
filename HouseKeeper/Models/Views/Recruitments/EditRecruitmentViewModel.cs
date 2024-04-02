@@ -12,6 +12,7 @@ namespace HouseKeeper.Models.Views.Recruitments
         public int NumberVacancies { get; set; }
         public string AgeRange { get; set; }
         public string? TakeNotes { get; set; }
+        public string Address { get; set; }
 
         public DateTime PostTime { get; set; }
 
@@ -24,6 +25,7 @@ namespace HouseKeeper.Models.Views.Recruitments
        
         public int PaidTypeId { get; set; }
         public int ExperienceId { get; set; }
+        public int DistrictId { get; set; }
         public int CityId { get; set; }
 
         public string JobIds { get; set; }

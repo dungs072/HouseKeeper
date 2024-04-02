@@ -69,7 +69,7 @@ namespace HouseKeeper.Controllers
                 recruitment.Gender = value7;
             }
             recruitment.PostTime = DateTime.Now;
-            recruitment.RecruitDeadlineDate = null;
+            recruitment.RecruitDeadlineDate = DateTime.Now;
             PriceTagViewModel priceModel = new PriceTagViewModel();
             priceModel.Recruitment = recruitment;
             priceModel.JobIds = value0;
@@ -211,9 +211,11 @@ namespace HouseKeeper.Controllers
             List<KINHNGHIEM> experiences = await employerRespository.GetExperiences();
             List<TINHTHANHPHO> cities = await employerRespository.GetCities();
             List<LOAICONGVIEC> jobs = await employerRespository.GetJobs();
+            List<HUYEN> districts = await employerRespository.GetDistricts();
             model.PaidTypes = paidTypes;
             model.Experiences = experiences;
             model.Cities = cities;
+            model.Districts = districts;
             model.jobs = jobs;
             model.MaxSalary = recruitment.MaxSalary;
             model.MinSalary = recruitment.MinSalary;
@@ -225,8 +227,10 @@ namespace HouseKeeper.Controllers
             model.NumberVacancies = recruitment.MaxApplications;
             model.ExperienceId = recruitment.Experience.ExperienceId;
             model.PaidTypeId = recruitment.SalaryForm.SalaryFormId;
-            //model.CityId = recruitment.City.CityId;
+            model.DistrictId = recruitment.District.DistrictId;
+            model.CityId = recruitment.District.City.CityId;
             model.RecruitmentId = recruitmentId;
+            model.Address = recruitment.Address;
             List<LOAICONGVIEC> selectedJobs = new List<LOAICONGVIEC>();
             foreach(var c in recruitment.HouseworkDetails.ToList())
             {
@@ -242,10 +246,12 @@ namespace HouseKeeper.Controllers
             List<HINHTHUCTRALUONG> paidTypes = await employerRespository.GetPaidTypes();
             List<KINHNGHIEM> experiences = await employerRespository.GetExperiences();
             List<TINHTHANHPHO> cities = await employerRespository.GetCities();
+            List<HUYEN> districts = await employerRespository.GetDistricts();
             List<LOAICONGVIEC> jobs = await employerRespository.GetJobs();
             model.PaidTypes = paidTypes;
             model.Experiences = experiences;
             model.Cities = cities;
+            model.Districts = districts;
             model.jobs = jobs;
 
             List<LOAICONGVIEC> selectedJobs = new List<LOAICONGVIEC>();
@@ -268,7 +274,7 @@ namespace HouseKeeper.Controllers
             var value3 = Request.Form["max-age"];
             var value4 = Request.Form["PaidTypeId"];
             var value5 = Request.Form["ExperienceId"];
-            var value6 = Request.Form["CityId"];
+            var value6 = Request.Form["DistrictId"];
             var value7 = Request.Form["Gender"];
             if (value7 == "Null")
             {
@@ -283,7 +289,7 @@ namespace HouseKeeper.Controllers
             model.AgeRange = value2 + "-" + value3;
             model.PaidTypeId = int.Parse(value4);
             model.ExperienceId = int.Parse(value5);
-            model.CityId = int.Parse(value6);
+            model.DistrictId = int.Parse(value6);
             model.IsFulltime = isFullTime;
             bool result = await employerRespository.EditRecruitment(model);
             if (result)

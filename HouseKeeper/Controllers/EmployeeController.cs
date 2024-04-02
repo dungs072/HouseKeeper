@@ -16,13 +16,12 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> DisplayList(int page)
         {
-            //ListRecruitmentViewModel listRecruitmentViewModel = new ListRecruitmentViewModel();
-            //listRecruitmentViewModel.Recruitments = await employeeRespository.GetRecruitments();
-            //return View("IndexEmployee", listRecruitmentViewModel);
             try
             {
                 Models.Views.Employee.ListRecruitmentViewModel listRecruitmentViewModel = new Models.Views.Employee.ListRecruitmentViewModel();
-                listRecruitmentViewModel.Recruitments = await employeeRespository.GetRecruitments(page);
+                listRecruitmentViewModel.Recruitments = await employeeRespository.GetRecruitments(page,"",null,null);
+                listRecruitmentViewModel.Cities = await employeeRespository.GetCities();
+                listRecruitmentViewModel.Districts = await employeeRespository.GetDistricts();
                 return View("IndexEmployee", listRecruitmentViewModel);
             }
             catch (Exception ex)
@@ -32,7 +31,7 @@ namespace HouseKeeper.Controllers
         }
         public async Task<ActionResult> LoadMoreItems(int currentPage)
         {
-            var items = await employeeRespository.GetRecruitments(currentPage);
+            var items = await employeeRespository.GetRecruitments(currentPage, "", null, null);
             Models.Views.Employee.ListRecruitmentViewModel model = new Models.Views.Employee.ListRecruitmentViewModel();
             model.Recruitments = items;
             return PartialView("ListRecruitmentPartital", model);
@@ -42,6 +41,14 @@ namespace HouseKeeper.Controllers
             JobDetailViewModel model = new JobDetailViewModel();
             model.Recruitment = await employeeRespository.GetRecruitment(recruitmentId);
             return View(model);
+        }
+        public async Task<ActionResult> SearchJob(string keyword, int? cityId, int? districtId)
+        {
+            Models.Views.Employee.ListRecruitmentViewModel listRecruitmentViewModel = new Models.Views.Employee.ListRecruitmentViewModel();
+            listRecruitmentViewModel.Recruitments = await employeeRespository.GetRecruitments(1, keyword, cityId, districtId);
+            listRecruitmentViewModel.Cities = await employeeRespository.GetCities();
+            listRecruitmentViewModel.Districts = await employeeRespository.GetDistricts();
+            return View("IndexEmployee", listRecruitmentViewModel);
         }
     }
 }

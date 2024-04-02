@@ -90,12 +90,12 @@
                         <input name="RecruitmentId" id="RecruitmentId" type="number" value=@Model.RecruitmentId />
                     </div>
                     <div class="nice-form-group same-row">
-                        <label>Min Salary (x1000 Dong)</label>
-                        <input asp-for="MinSalary" id="min-salary" type="number" placeholder="1234" min="1" value=@Model.MinSalary />
+                        <label>Min Salary</label>
+                        <input asp-for="MinSalary" id="min-salary" type="number" placeholder="1234" min="1" value=@Model.MinSalary.ToString("0") />
                     </div>
                     <div class="nice-form-group same-row">
-                        <label>Max Salary (x1000 Dong)</label>
-                        <input asp-for="MaxSalary" id="max-salary" type="number" placeholder="4321" value=@Model.MaxSalary />
+                        <label>Max Salary</label>
+                        <input asp-for="MaxSalary" id="max-salary" type="number" placeholder="4321" value=@Model.MaxSalary.ToString("0") />
                     </div>
                     <div class="nice-form-group">
                         <label>Gender</label>
@@ -159,7 +159,7 @@
                     </div>
                     <div class="nice-form-group">
                         <label>City/Province</label>
-                        <select name="CityId" asp-for="CityId">
+                        <select name="CityId" id="citySelect" asp-for="CityId">
                             @foreach (var city in Model.Cities)
                             {
                                 <option value="@city.CityId">@city.CityName</option>
@@ -167,11 +167,24 @@
                         </select>
                     </div>
                     <div class="nice-form-group">
-                        <label>Addition</label>
+                        <label>District</label>
+                        <select name="DistrictId" id="districtSelect" asp-for="DistrictId">
+                            @foreach (var district in Model.Districts)
+                            {
+                                <option value="@district.DistrictId" data-cityid="@district.City.CityId">@district.DistrictName</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="nice-form-group">
+                        <label>Address</label>
+                        <input asp-for="Address" type="text" placeholder="..." value=@Model.Address />
+                    </div>
+                    <div class="nice-form-group">
+                        <label>Take note</label>
                         <textarea asp-for="TakeNotes" rows="5" placeholder="Write something" required></textarea>
                     </div>
                     <div class="mt-2 button-container">
-                        <a href="@Url.Action("IndexEmployer", "Home")" class="btn btn-danger">Cancel</a>
+                        <a href="@Url.Action("ListRecruitment", "Employer")" class="btn btn-danger">Cancel</a>
                         <button type="submit" class="btn btn-success">Update</button>
                     </div>
 
@@ -238,6 +251,33 @@
         var maxAge = parseInt(valueFromString.split('-')[1]);
         inputMinAgeElement.value = minAge;
         inputMaxAgeElement.value = maxAge;
+    </script>
+
+    <script>
+        // Get references to both select elements
+        var citySelect = document.getElementById('citySelect');
+        var districtSelect = document.getElementById('districtSelect');
+
+        // Store all district options in an array
+        var districtOptions = Array.from(districtSelect.options);
+
+        // Add event listener to city select element
+        citySelect.addEventListener('change', function () {
+            var selectedCityId = this.value;
+
+            // Remove all options from district select
+            districtSelect.innerHTML = '';
+
+            // Filter and append district options corresponding to the selected city
+            districtOptions.forEach(function (option) {
+                if (option.getAttribute('data-cityid') === selectedCityId || option.getAttribute('data-cityid') === null) {
+                    districtSelect.appendChild(option.cloneNode(true));
+                }
+            });
+        });
+
+        // Trigger change event initially to set the initial state
+        citySelect.dispatchEvent(new Event('change'));
     </script>
 </body>
 </html>

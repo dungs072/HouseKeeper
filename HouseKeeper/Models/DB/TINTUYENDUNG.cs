@@ -28,7 +28,7 @@ namespace HouseKeeper.Models.DB
         [Column("THOIGIANDANG")]
         public DateTime PostTime { get; set; }
         [Column("HANTUYENDUNG")]
-        public DateTime? RecruitDeadlineDate { get; set; }
+        public DateTime RecruitDeadlineDate { get; set; }
         [Column("DAUGIA")]
         public decimal BidPrice { get; set; }
         [Column("SONHA_DUONG")]
@@ -49,6 +49,8 @@ namespace HouseKeeper.Models.DB
         public virtual ICollection<CHITIETAPPLY> ApplyDetails { get; set; }
         public virtual ICollection<CHITIETGIAGOITIN> PricePacketDetail { get; set; }
         public virtual ICollection<CHITIETLOAIGIUPVIEC> HouseworkDetails { get; set; }
+        public virtual ICollection<LICHSUDAUGIA> BidHistories { get; set; }
+        public virtual ICollection<CHITIETTUCHOI> RejectionDetails { get; set; }
 
         [NotMapped]
         public string HouseWorkName

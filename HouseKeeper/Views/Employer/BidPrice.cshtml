@@ -75,7 +75,7 @@
         <p class="blinking-text">Top 1 - Top 5 have price: 5 - 10</p>
         <form class="bid-form" asp-action="HandleSendBidPrice" method="post" enctype="multipart/form-data">
             <div class="form-group">
-                <label for="bidAmount">Bid Amount:</label>
+                <label for="bidAmount">Bid Amount (x1000 dong):</label>
                 <input asp-for="BidPrice" type="text" id="bidAmount" name="bidAmount" placeholder="Enter your bid amount" required value=@Model.BidPrice oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
             </div>
             <input type="submit" value="Next">

@@ -32,6 +32,8 @@ namespace HouseKeeper.DBContext
         public DbSet<HUYEN> Districts { get; set; } 
         public DbSet<TRANGTHAITIN> RecruitmentStatus { get; set; }
         public DbSet<LICHSUDAUGIA> BidHistories { get; set; }
-        
+        public DbSet<LYDOTUCHOI> Rejections { get; set; }
+        public DbSet<CHITIETTUCHOI> RejectionDetails { get; set; }
+
     }
 }
