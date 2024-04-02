@@ -12,6 +12,7 @@ builder.Services.AddDbContext<HouseKeeperDBContext>(item => item.UseSqlServer(co
 builder.Services.AddScoped<IAccountTypeRespository, AccountTypeRespository>();
 builder.Services.AddScoped<IEmployerRespository, EmployerRespository>();
 builder.Services.AddScoped<IEmployeeRespository, EmployeeRespository>();
+builder.Services.AddScoped<IAdminRespository, AdminRespository>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession();
 var app = builder.Build();
