@@ -1,5 +1,5 @@
 ﻿@using HouseKeeper.Models.Views.Admin;
-@model PaidTypeViewModel;
+@model PricePacketViewModel;
 <!DOCTYPE html>
 <html lang="en">
 
@@ -42,18 +42,18 @@
             // Handle OK button click
             $('#confirmEditJobType').on('click', function () {
                 dataToPass = $('#confirmEditJobType').val();
-                var jobName = $('#jobTypeName').val();
+                var rejectionName = $('#jobTypeName').val();
                 var stringArray = dataToPass.split(':');
                 if (stringArray[0] == 'EditJobType') {
 
-                    var jobTypeId = parseInt(stringArray[1], 10);
-                    var url = '/Admin/EditPaidType?paidTypeId=' + jobTypeId + '&paidTypeName=' + jobName;
+                    var rejectionId = parseInt(stringArray[1], 10);
+                    var url = '/Admin/EditRejection?rejectionId=' + rejectionId + '&rejectionName=' + rejectionName;
                     window.location.href = url;
                 }
             });
             $('#confirmAddJobType').on('click', function () {
                 var jobName = $('#newJobTypeName').val();
-                var url = '/Admin/AddPaidType?paidTypeName=' + jobName;
+                var url = '/Admin/AddRejection?rejectionName=' + jobName;
                 window.location.href = url;
             });
         });
@@ -128,33 +128,35 @@
         <!-- Jobs Start -->
         <div class="container-xxl py-5">
             <div class="container">
-                <h1 class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">Paid Type</h1>
+                <h1 class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">Price Packets</h1>
                 <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.3s">
                     <div class="tab-content">
                         <div id="tab-1" class="tab-pane fade show p-0 active">
-                            @foreach(var item in Model.PaidTypes)
+                            @foreach(var item in Model.PricePackets)
                             {
                                 <div class="job-item p-4 mb-4">
                                     <div class="row g-4">
                                         <div class="col-sm-12 col-md-8 d-flex align-items-center">
                                             <img class="flex-shrink-0 img-fluid border rounded" src="/img/com-logo-1.jpg" alt="" style="width: 80px; height: 80px;">
                                             <div class="text-start ps-4">
-                                                <h5 class="mb-3">@item.SalaryFormName</h5>
+                                                <h5 class="mb-3">@item.PricePacketName</h5>
+                                                <span class="text-truncate me-3"><i class="far fa-money-bill-alt text-primary me-2"></i>Price: @string.Format("{0:0,0} VND", @item.Price)</span>
+                                                <span class="text-truncate me-0"><i class="fa fa-hourglass-half text-primary me-2"></i>Number days: @item.NumberDays</span>
                                             </div>
                                         </div>
                                         <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
                                             <div class="d-flex mb-3">
-                                                <button class="btn btn-primary editButton btn_function" data-toggle="modal" data-target="#editJobTypeModal" value="EditJobType:@item.SalaryFormId:@item.SalaryFormName">Edit</button>
-                                                @if(item.Recruitments.Count==0)
+                                                <button class="btn btn-primary editButton btn_function" data-toggle="modal" data-target="#editJobTypeModal" value="EditJobType:@item.PricePacketId:@item.PricePacketName:@item.Price:@item.NumberDays">Edit</button>
+                                                @if(item.PricePacketDetails.Count==0)
                                                 {
-                                                    <button class="btn btn-danger deleteButton btn_function" data-toggle="modal" data-target="#deleteWarningModal" value="DeletePaidType:@item.SalaryFormId"><i class="fas fa-trash-alt"></i></button>
+                                                    <button class="btn btn-danger deleteButton btn_function" data-toggle="modal" data-target="#deleteWarningModal" value="DeleteRejection:@item.PricePacketId"><i class="fas fa-trash-alt"></i></button>
                                                 }
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             }
-                            <button class="btn btn-primary addButton py-3 px-5" data-toggle="modal" data-target="#addJobTypeModal" value="AddJobType">Add more Paid Type</button>
+                            <button class="btn btn-primary addButton py-3 px-5" data-toggle="modal" data-target="#addJobTypeModal" value="AddJobType">Add more Rejection type</button>
                         </div>
 
                     </div>
@@ -182,14 +184,14 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editJobTypeModalLabel">Edit Paid Type Name</h5>
+                    <h5 class="modal-title" id="editJobTypeModalLabel">Edit Rejection Type Name</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="jobTypeName">New Paid Type Name:</label>
+                        <label for="jobTypeName">New Rejection Type Name:</label>
                         <input type="text" class="form-control" id="jobTypeName" placeholder="Enter New Name">
                     </div>
                 </div>
@@ -206,20 +208,20 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addJobTypeModalLabel">Add New Paid Type</h5>
+                    <h5 class="modal-title" id="addJobTypeModalLabel">Add Rejection Type</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="newJobTypeName">New Paid Type Name:</label>
+                        <label for="newJobTypeName">New Rejection Type Name:</label>
                         <input type="text" class="form-control" id="newJobTypeName" placeholder="Enter New Name">
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-success" id="confirmAddJobType">Add Job Type</button>
+                    <button type="button" class="btn btn-success" id="confirmAddJobType">Add Rejection Type</button>
                 </div>
             </div>
         </div>

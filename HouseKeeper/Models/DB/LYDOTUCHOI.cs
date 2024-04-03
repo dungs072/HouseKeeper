@@ -12,5 +12,6 @@ namespace HouseKeeper.Models.DB
         public int RejectionId { get; set; }
         [Column("LYDO")]
         public string RejectionName { get; set; }
+        public virtual ICollection<CHITIETTUCHOI> RejectionDetails { get; set; }
     }
 }

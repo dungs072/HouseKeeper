@@ -16,5 +16,6 @@ namespace HouseKeeper.Models.DB
         public decimal Price { get; set; }
         [Column("SOLUONGNGAY")]
         public int NumberDays { get; set; }
+        public virtual ICollection<CHITIETGIAGOITIN> PricePacketDetails { get; set; }
     }
 }

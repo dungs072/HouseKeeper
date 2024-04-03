@@ -158,5 +158,101 @@ namespace HouseKeeper.Controllers
             return RedirectToAction("ShowExperience");
         }
         #endregion
+
+        #region Rejection
+        public async Task<IActionResult> ShowRejection()
+        {
+            RejectionViewModel model = new RejectionViewModel();
+            model.Rejections = await adminRespository.GetRejections();
+            return View("Rejection", model);
+        }
+        public async Task<IActionResult> AddRejection(string rejectionName)
+        {
+            var result = await adminRespository.AddRejection(rejectionName);
+            if (result)
+            {
+                TempData["Success"] = "Add rejection successfully!";
+            }
+            else
+            {
+                TempData["Error"] = "Server error! Rejection name is duplicate!!";
+            }
+            return RedirectToAction("ShowRejection");
+        }
+        public async Task<IActionResult> EditRejection(int rejectionId, string rejectionName)
+        {
+            var result = await adminRespository.EditRejection(rejectionId, rejectionName);
+            if (result)
+            {
+                TempData["Success"] = "Edit rejection successfully!";
+            }
+            else
+            {
+                TempData["Error"] = "Server error! rejection name is duplicate!!";
+            }
+            return RedirectToAction("ShowRejection");
+        }
+        public async Task<IActionResult> DeleteRejection(int rejectionId)
+        {
+            var result = await adminRespository.DeleteRejection(rejectionId);
+            if (result)
+            {
+                TempData["Success"] = "Delete rejection successfully!";
+            }
+            else
+            {
+                TempData["Error"] = "Server error!";
+            }
+            return RedirectToAction("ShowRejection");
+        }
+        #endregion
+
+        #region Rejection
+        public async Task<IActionResult> ShowPricePackets()
+        {
+            PricePacketViewModel model = new PricePacketViewModel();
+            model.PricePackets = await adminRespository.GetPricePackets();
+            return View("PricePacket", model);
+        }
+        public async Task<IActionResult> AddPricePacket(string rejectionName)
+        {
+            var result = await adminRespository.AddRejection(rejectionName);
+            if (result)
+            {
+                TempData["Success"] = "Add rejection successfully!";
+            }
+            else
+            {
+                TempData["Error"] = "Server error! Rejection name is duplicate!!";
+            }
+            return RedirectToAction("ShowRejection");
+        }
+        public async Task<IActionResult> EditPricePacket(int rejectionId, string rejectionName)
+        {
+            var result = await adminRespository.EditRejection(rejectionId, rejectionName);
+            if (result)
+            {
+                TempData["Success"] = "Edit rejection successfully!";
+            }
+            else
+            {
+                TempData["Error"] = "Server error! rejection name is duplicate!!";
+            }
+            return RedirectToAction("ShowRejection");
+        }
+        public async Task<IActionResult> DeletePricePacket(int rejectionId)
+        {
+            var result = await adminRespository.DeleteRejection(rejectionId);
+            if (result)
+            {
+                TempData["Success"] = "Delete rejection successfully!";
+            }
+            else
+            {
+                TempData["Error"] = "Server error!";
+            }
+            return RedirectToAction("ShowRejection");
+        }
+        #endregion
     }
 }

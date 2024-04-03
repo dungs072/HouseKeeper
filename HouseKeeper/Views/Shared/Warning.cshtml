@@ -30,6 +30,12 @@
                     var url = '/Admin/DeleteExperience?experienceId=' + expId;
                     window.location.href = url;
                 }
+                if (stringArray[0] == 'DeleteRejection') {
+                    var rejectionId = parseInt(stringArray[1], 10);
+
+                    var url = '/Admin/DeleteRejection?rejectionId=' + rejectionId;
+                    window.location.href = url;
+                }
 
             });
         });

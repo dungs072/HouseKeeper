@@ -170,5 +170,117 @@ namespace HouseKeeper.Respositories
             }
         }
         #endregion
+
+        #region Rejection
+        public async Task<List<LYDOTUCHOI>> GetRejections()
+        {
+            return await dBContext.Rejections.ToListAsync();
+        }
+        public async Task<bool> AddRejection(string rejectionName)
+        {
+            try
+            {
+                LYDOTUCHOI rejection = new LYDOTUCHOI();
+                rejection.RejectionName = rejectionName;
+                dBContext.Rejections.Add(rejection);
+                dBContext.SaveChanges();
+                return true;
+
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+        public async Task<bool> EditRejection(int rejectionId, string rejectionName)
+        {
+            try
+            {
+                var rejection = await dBContext.Rejections.FindAsync(rejectionId);
+                rejection.RejectionName = rejectionName;
+                dBContext.Rejections.Update(rejection);
+                dBContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
+        public async Task<bool> DeleteRejection(int rejectionId)
+        {
+            try
+            {
+                var rejection = await dBContext.Rejections.FindAsync(rejectionId);
+                dBContext.Rejections.Remove(rejection);
+                dBContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+        #endregion
+
+        #region PricePacket
+        public async Task<List<GIAGOITIN>> GetPricePackets()
+        {
+            return await dBContext.PricePackets.ToListAsync();
+        }
+        public async Task<bool> AddPricePacket(string pricePacketName, dynamic price, int numberDays)
+        {
+            try
+            {
+                GIAGOITIN pricePacket = new GIAGOITIN();
+                pricePacket.PricePacketName = pricePacketName;
+                pricePacket.Price = price;
+                pricePacket.NumberDays = numberDays;
+                dBContext.PricePackets.Add(pricePacket);
+                dBContext.SaveChanges();
+                return true;
+
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+        public async Task<bool> EditPricePacket(int pricePacketId, string pricePacketName, dynamic price, int numberDays)
+        {
+            try
+            {
+                var pricePacket = await dBContext.PricePackets.FindAsync(pricePacketId);
+                pricePacket.PricePacketName = pricePacketName;
+                pricePacket.Price = price;
+                pricePacket.NumberDays = numberDays;
+                dBContext.PricePackets.Update(pricePacket);
+                dBContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
+        public async Task<bool> DeletePricePacket(int pricePacketId)
+        {
+            try
+            {
+                var pricePacket = await dBContext.PricePackets.FindAsync(pricePacketId);
+                dBContext.PricePackets.Remove(pricePacket);
+                dBContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+        #endregion
     }
 }

@@ -19,5 +19,15 @@ namespace HouseKeeper.Respositories
         Task<bool> AddExperience(string experienceName);
         Task<bool> EditExperience(int experienceId, string experienceName);
         Task<bool> DeleteExperience(int experienceId);
+        //Rejection
+        Task<List<LYDOTUCHOI>> GetRejections();
+        Task<bool> AddRejection(string rejectionName);
+        Task<bool> EditRejection(int rejectionId, string rejectionName);
+        Task<bool> DeleteRejection(int rejectionId);
+        //Price packet
+        Task<List<GIAGOITIN>> GetPricePackets();
+        Task<bool> AddPricePacket(string pricePacketName, dynamic price, int numberDays);
+        Task<bool> EditPricePacket(int pricePacketId, string pricePacketName, dynamic price, int numberDays);
+        Task<bool> DeletePricePacket(int pricePacketId);
     }
 }
