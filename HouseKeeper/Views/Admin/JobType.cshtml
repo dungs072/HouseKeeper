@@ -31,9 +31,52 @@
 
     <!-- Template Stylesheet -->
     <link href="/css/style.css" rel="stylesheet">
+    <style>
+        .btn_function {
+            margin-right: 10px; /* Adjust the value as needed */
+        }
+    </style>
+    <partial name="HeaderInclude" />
+    <script>
+        $(document).ready(function () {
+            // Handle OK button click
+            $('#confirmEditJobType').on('click', function () {
+                dataToPass = $('#confirmEditJobType').val();
+                var jobName = $('#jobTypeName').val();
+                var stringArray = dataToPass.split(':');
+                if (stringArray[0] == 'EditJobType') {
+
+                    var jobTypeId = parseInt(stringArray[1], 10);
+                    var url = '/Admin/EditJobType?jobId=' + jobTypeId + '&jobName=' +jobName;
+                    window.location.href = url;
+                }
+            });
+            $('#confirmAddJobType').on('click', function () {
+                var jobName = $('#newJobTypeName').val();
+                var url = '/Admin/AddJobType?jobName=' + jobName;
+                window.location.href = url;
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            var dataToPass = "";
+            
+            $('.editButton').on('click', function () {
+                dataToPass = $(this).val();
+                var temp = dataToPass.split(':');
+                var confirmEditButton = $(document).find('#confirmEditJobType');
+                var jobNameButton = $(document).find('#jobTypeName');
+                confirmEditButton.val(dataToPass);
+                jobNameButton.val(temp[2]);
+
+            });
+        });
+    </script>
 </head>
 
 <body>
+    <partial name="BodyInclude" />
     <div class="container-xxl bg-white p-0">
         <!-- Spinner Start -->
         <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
@@ -88,23 +131,24 @@
                                 <div class="job-item p-4 mb-4">
                                     <div class="row g-4">
                                         <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                                            <img class="flex-shrink-0 img-fluid border rounded" src="img/com-logo-1.jpg" alt="" style="width: 80px; height: 80px;">
+                                            <img class="flex-shrink-0 img-fluid border rounded" src="/img/com-logo-1.jpg" alt="" style="width: 80px; height: 80px;">
                                             <div class="text-start ps-4">
                                                 <h5 class="mb-3">@item.JobName</h5>
                                             </div>
                                         </div>
                                         <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
                                             <div class="d-flex mb-3">
-                                                <a class="btn btn-light btn-square me-3" href=""><i class="far fa-heart text-primary"></i></a>
-                                                <a class="btn btn-primary" href="">Edit</a>
-                                                <a class="btn btn-primary" href="">Delete</a>
+                                                <button class="btn btn-primary editButton btn_function" data-toggle="modal" data-target="#editJobTypeModal" value="EditJobType:@item.JobId:@item.JobName">Edit</button>
+                                                @if(item.JobDetails.Count==0&&item.JobTypeDetails.Count==0)
+                                                {
+                                                    <button class="btn btn-danger deleteButton btn_function" data-toggle="modal" data-target="#deleteWarningModal" value="DeleteJobType:@item.JobId"><i class="fas fa-trash-alt"></i></button>
+                                                }
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             }
-                           
-                            <a class="btn btn-primary py-3 px-5" href="">Add more Job Type</a>
+                            <button class="btn btn-primary addButton py-3 px-5" data-toggle="modal" data-target="#addJobTypeModal" value="AddJobType">Add more Job Type</button>
                         </div>
 
                     </div>
@@ -123,9 +167,57 @@
     <script src="/lib/easing/easing.min.js"></script>
     <script src="/lib/waypoints/waypoints.min.js"></script>
     <script src="/lib/owlcarousel/owl.carousel.min.js"></script>
-
+    <partial name="Warning" />
     <!-- Template Javascript -->
     <script src="/js/main.js"></script>
+
+    <!-- Edit Modal -->
+    <div class="modal fade" id="editJobTypeModal" tabindex="-1" role="dialog" aria-labelledby="editJobTypeModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editJobTypeModalLabel">Edit Job Type Name</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="jobTypeName">New Job Type Name:</label>
+                        <input type="text" class="form-control" id="jobTypeName" placeholder="Enter New Name">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" id="confirmEditJobType">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Modal -->
+    <div class="modal fade" id="addJobTypeModal" tabindex="-1" role="dialog" aria-labelledby="addJobTypeModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addJobTypeModalLabel">Add New Job Type</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="newJobTypeName">New Job Type Name:</label>
+                        <input type="text" class="form-control" id="newJobTypeName" placeholder="Enter New Name">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" id="confirmAddJobType">Add Job Type</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

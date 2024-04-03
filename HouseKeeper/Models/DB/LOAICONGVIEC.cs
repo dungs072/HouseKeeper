@@ -12,5 +12,8 @@ namespace HouseKeeper.Models.DB
         public int JobId { get; set; }
         [Column("TEN_CV")]
         public string JobName { get; set; }
+
+        public virtual ICollection<CHITIETCONGVIEC> JobDetails { get; set; }
+        public virtual ICollection<CHITIETLOAIGIUPVIEC> JobTypeDetails { get; set; }
     }
 }

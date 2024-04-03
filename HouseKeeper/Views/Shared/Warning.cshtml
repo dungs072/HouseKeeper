@@ -12,43 +12,10 @@
                     var url = '/Employer/DeleteRecruitment?recruitmentId=' + recruitmentId;
                     window.location.href = url;
                 }
-                if (stringArray[0] == 'LearningModule') {
-                    var learingModuleId = parseInt(stringArray[1], 10);
-                    var titleId = parseInt(stringArray[2], 10);
-                    var url = '/LearningModule/DeleteLearningModule?learningModuleId=' + learingModuleId + '&TitleId=' + titleId;
-                    window.location.href = url;
-                }
-                if (stringArray[0] == 'Term') {
-                    var termId = parseInt(stringArray[1], 10);
-                    var learningModuleId = parseInt(stringArray[2], 10);
-                    var url = '/Term/DeleteTerm?termId=' + termId + '&learningModuleId=' + learningModuleId;
-                    window.location.href = url;
-                }
-                if (stringArray[0] == 'YourOwnClass') {
-                    var classId = parseInt(stringArray[1], 10);
-                    var url = '/Class/DeleteClass?classId=' + classId;
-                    window.location.href = url;
-                }
-                if (stringArray[0] == 'DetailOwnClass') {
-                    var learningModuleId = parseInt(stringArray[1], 10);
-                    var classId = parseInt(stringArray[2], 10);
-                    var url = '/Class/DeleteModuleFromClass?classId=' + classId + '&learningModuleId=' + learningModuleId;
-                    window.location.href = url;
-                }
-                if (stringArray[0] == 'ParticipantOwnClass') {
-                    var userId = parseInt(stringArray[1], 10);
-                    var url = '/Class/DeleteParticipantFromClass?userId=' + userId;
-                    window.location.href = url;
-                }
-                if (stringArray[0] == 'RejectRegister') {
-                    var userId = parseInt(stringArray[1], 10);
-                    var classId = parseInt(stringArray[2], 10);
-                    var url = '/Class/RejectRegistration?userId=' + userId + '&classId=' + classId;
-                    window.location.href = url;
-                }
-                if (stringArray[0] == 'Badge') {
-                    var achievementId = parseInt(stringArray[1], 10);
-                    var url = '/Admin/DeleteBadge?achievementId=' + achievementId;
+                if (stringArray[0] == 'DeleteJobType') { 
+                    var jobTypeId = parseInt(stringArray[1], 10);
+
+                    var url = '/Admin/DeleteJobType?jobId=' + jobTypeId;
                     window.location.href = url;
                 }
 
