@@ -62,5 +62,113 @@ namespace HouseKeeper.Respositories
             }
         }
         #endregion
+
+        #region Paid Type
+        public async Task<List<HINHTHUCTRALUONG>> GetPaidTypes()
+        {
+            return await dBContext.SalaryForms.ToListAsync();
+        }
+        public async Task<bool> AddPaidType(string paidTypeName)
+        {
+            try
+            {
+                HINHTHUCTRALUONG paidType = new HINHTHUCTRALUONG();
+                paidType.SalaryFormName = paidTypeName;
+                dBContext.SalaryForms.Add(paidType);
+                dBContext.SaveChanges();
+                return true;
+
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+        public async Task<bool> EditPaidType(int paidTypeId, string paidTypeName)
+        {
+            try
+            {
+                var paidType = await dBContext.SalaryForms.FindAsync(paidTypeId);
+                paidType.SalaryFormName = paidTypeName;
+                dBContext.SalaryForms.Update(paidType);
+                dBContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
+        public async Task<bool> DeletePaidType(int paidTypeId)
+        {
+            try
+            {
+                var paidType = await dBContext.SalaryForms.FindAsync(paidTypeId);
+                dBContext.SalaryForms.Remove(paidType);
+                dBContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+        #endregion
+
+        #region Experience
+        public async Task<List<KINHNGHIEM>> GetExperiences()
+        {
+            return await dBContext.Experiences.ToListAsync();
+        }
+        public async Task<bool> AddExperience(string experienceName)
+        {
+            try
+            {
+                KINHNGHIEM exp = new KINHNGHIEM();
+                exp.ExperienceName = experienceName;
+                dBContext.Experiences.Add(exp);
+                dBContext.SaveChanges();
+                return true;
+
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+        public async Task<bool> EditExperience(int experienceId, string experienceName)
+        {
+            try
+            {
+                var exp = await dBContext.Experiences.FindAsync(experienceId);
+                exp.ExperienceName = experienceName;
+                dBContext.Experiences.Update(exp);
+                dBContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
+        public async Task<bool> DeleteExperience(int experienceId)
+        {
+            try
+            {
+                var exp = await dBContext.Experiences.FindAsync(experienceId);
+                dBContext.Experiences.Remove(exp);
+                dBContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+        #endregion
     }
 }

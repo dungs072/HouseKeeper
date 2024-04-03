@@ -12,5 +12,6 @@ namespace HouseKeeper.Models.DB
         public int SalaryFormId { get; set; }
         [Column("TENHINHTHUC")]
         public string SalaryFormName { get; set; }
+        public virtual ICollection<TINTUYENDUNG> Recruitments { get; set; }
     }
 }

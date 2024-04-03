@@ -18,6 +18,18 @@
                     var url = '/Admin/DeleteJobType?jobId=' + jobTypeId;
                     window.location.href = url;
                 }
+                if (stringArray[0] == 'DeletePaidType') {
+                    var paidTypeId = parseInt(stringArray[1], 10);
+
+                    var url = '/Admin/DeletePaidType?paidTypeId=' + paidTypeId;
+                    window.location.href = url;
+                }
+                if (stringArray[0] == 'DeleteExperience') {
+                    var expId = parseInt(stringArray[1], 10);
+
+                    var url = '/Admin/DeleteExperience?experienceId=' + expId;
+                    window.location.href = url;
+                }
 
             });
         });

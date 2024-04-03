@@ -62,5 +62,101 @@ namespace HouseKeeper.Controllers
             return RedirectToAction("ShowJobType");
         }
         #endregion
+
+        #region PaidType
+        public async Task<IActionResult> ShowPaidType()
+        {
+            PaidTypeViewModel model = new PaidTypeViewModel();
+            model.PaidTypes = await adminRespository.GetPaidTypes();
+            return View("PaidType", model);
+        }
+        public async Task<IActionResult> AddPaidType(string paidTypeName)
+        {
+            var result = await adminRespository.AddPaidType(paidTypeName);
+            if (result)
+            {
+                TempData["Success"] = "Add paid type successfully!";
+            }
+            else
+            {
+                TempData["Error"] = "Server error! Paid type name is duplicate!!";
+            }
+            return RedirectToAction("ShowPaidType");
+        }
+        public async Task<IActionResult> EditPaidType(int paidTypeId, string paidTypeName)
+        {
+            var result = await adminRespository.EditPaidType(paidTypeId, paidTypeName);
+            if (result)
+            {
+                TempData["Success"] = "Edit paid type successfully!";
+            }
+            else
+            {
+                TempData["Error"] = "Server error! Paid type name is duplicate!!";
+            }
+            return RedirectToAction("ShowPaidType");
+        }
+        public async Task<IActionResult> DeletePaidType(int paidTypeId)
+        {
+            var result = await adminRespository.DeletePaidType(paidTypeId);
+            if (result)
+            {
+                TempData["Success"] = "Delete paid type successfully!";
+            }
+            else
+            {
+                TempData["Error"] = "Server error!";
+            }
+            return RedirectToAction("ShowPaidType");
+        }
+        #endregion
+
+        #region Experience
+        public async Task<IActionResult> ShowExperience()
+        {
+            ExperienceViewModel model = new ExperienceViewModel();
+            model.Experiences = await adminRespository.GetExperiences();
+            return View("Experience", model);
+        }
+        public async Task<IActionResult> AddExperience(string experienceName)
+        {
+            var result = await adminRespository.AddExperience(experienceName);
+            if (result)
+            {
+                TempData["Success"] = "Add experience successfully!";
+            }
+            else
+            {
+                TempData["Error"] = "Server error! Experience name is duplicate!!";
+            }
+            return RedirectToAction("ShowExperience");
+        }
+        public async Task<IActionResult> EditExperience(int experienceId, string experienceName)
+        {
+            var result = await adminRespository.EditExperience(experienceId, experienceName);
+            if (result)
+            {
+                TempData["Success"] = "Edit experience successfully!";
+            }
+            else
+            {
+                TempData["Error"] = "Server error! experience name is duplicate!!";
+            }
+            return RedirectToAction("ShowExperience");
+        }
+        public async Task<IActionResult> DeleteExperience(int experienceId)
+        {
+            var result = await adminRespository.DeleteExperience(experienceId);
+            if (result)
+            {
+                TempData["Success"] = "Delete experience successfully!";
+            }
+            else
+            {
+                TempData["Error"] = "Server error!";
+            }
+            return RedirectToAction("ShowExperience");
+        }
+        #endregion
     }
 }

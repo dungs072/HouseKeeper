@@ -13,5 +13,6 @@ namespace HouseKeeper.Models.DB
         public int ExperienceId { get; set; }
         [Column("TEN_KINHNGHIEM")]
         public string ExperienceName { get; set; }
+        public virtual ICollection<TINTUYENDUNG> Recruitments { get; set; }
     }
 }
