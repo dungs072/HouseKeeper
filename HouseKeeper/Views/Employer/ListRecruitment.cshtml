@@ -135,10 +135,10 @@
                                         </div>
                                         <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
                                             <div class="d-flex mb-3">
-                                                <a class="btn btn-light btn-square me-3" href=""><i class="far fa-heart text-primary"></i></a>
-                                                <a class="btn btn-primary" href="">Apply Now</a>
+                                                <a class="btn btn-primary" href="JobDetail?recruitmentId=@item.RecruitmentId">See more</a>
+
                                             </div>
-                                            <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: @item.PostTime </small>
+                                            <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: @item.PostTime.ToString("dd/MM/yyyy") </small>
                                         </div>
                                     </div>
                                 </div>
@@ -174,7 +174,7 @@
                                                 <a class="btn btn-primary btn_function" href="EditRecruitment?recruitmentID=@item.RecruitmentId">Edit</a>
                                                 <button class="btn btn-danger deleteButton btn_function" data-toggle="modal" data-target="#deleteWarningModal" value="DeletePendingRecruitment:@item.RecruitmentId"><i class="fas fa-trash-alt"></i></button>
                                             </div>
-                                            <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: @item.PostTime</small>
+                                            <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: @item.PostTime.ToString("dd/MM/yyyy")</small>
                                         </div>
                                     </div>
                                 </div>
@@ -208,7 +208,7 @@
                                                 <a class="btn btn-light btn-square me-3" href=""><i class="far fa-heart text-primary"></i></a>
                                                 <a class="btn btn-primary" href="">Apply Now</a>
                                             </div>
-                                            <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: @item.PostTime</small>
+                                            <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: @item.PostTime.ToString("dd/MM/yyyy")</small>
                                         </div>
                                     </div>
                                 </div>
@@ -242,7 +242,7 @@
                                                 <a class="btn btn-light btn-square me-3" href=""><i class="far fa-heart text-primary"></i></a>
                                                 <a class="btn btn-primary" href="">Apply Now</a>
                                             </div>
-                                            <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: @item.PostTime</small>
+                                            <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: @item.PostTime.ToString("dd/MM/yyyy")</small>
                                         </div>
                                     </div>
                                 </div>
@@ -276,7 +276,7 @@
                                                 <a class="btn btn-light btn-square me-3" href=""><i class="far fa-heart text-primary"></i></a>
                                                 <a class="btn btn-primary" href="">Apply Now</a>
                                             </div>
-                                            <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: @item.PostTime</small>
+                                            <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: @item.PostTime.ToString("dd/MM/yyyy")</small>
                                         </div>
                                     </div>
                                 </div>

@@ -304,6 +304,13 @@ namespace HouseKeeper.Controllers
             }
         }
 
+        public async Task<ActionResult> JobDetail(int recruitmentId)
+        {
+            Models.Views.Employee.JobDetailViewModel model = new Models.Views.Employee.JobDetailViewModel();
+            model.Recruitment = await employerRespository.GetRecruitment(recruitmentId);
+            return View(model);
+        }
+
 
     }
 }

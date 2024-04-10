@@ -36,6 +36,12 @@
                     var url = '/Admin/DeleteRejection?rejectionId=' + rejectionId;
                     window.location.href = url;
                 }
+                if (stringArray[0] == 'DeletePricePacket') {
+                    var pricePacketId = parseInt(stringArray[1], 10);
+
+                    var url = '/Admin/DeletePricePacket?pricePacketId=' + pricePacketId;
+                    window.location.href = url;
+                }
 
             });
         });
