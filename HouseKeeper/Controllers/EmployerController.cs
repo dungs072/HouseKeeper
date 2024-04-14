@@ -111,6 +111,7 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> BidPrice(int pricePacketId)
         {
+
             string priceTagViewModelJson = HttpContext.Session.GetString("PriceTagViewModel") as string;
             if (!string.IsNullOrEmpty(priceTagViewModelJson))
             {
@@ -120,7 +121,23 @@ namespace HouseKeeper.Controllers
                     TempData["Error"] = "Server error!";
                     return RedirectToAction("Index", "Home");
                 }
+                var onlineRecruitment = await employerRespository.GetOnlineRecruitments();
+                List<RecruitmentBidViewModel> bids = new List<RecruitmentBidViewModel>();
+                foreach(var recruitment in onlineRecruitment)
+                {
+                    var bid = new RecruitmentBidViewModel();
+                    bid.MaxSalary = recruitment.MaxSalary;
+                    bid.MinSalary = recruitment.MinSalary;
+                    bid.BidPrice = recruitment.BidPrice;
+                    bid.MaxApplications = recruitment.MaxApplications;
+                    bid.RecruitDeadlineDate = recruitment.RecruitDeadlineDate;
+                    bid.PostTime = recruitment.PostTime;
+                    bid.RecruiterName = recruitment.Employer.LastName+" "+recruitment.Employer.FirstName;
+                    bids.Add(bid);
 
+                }
+               
+                model.OnlineRecruitments = bids;
                 model.PricePacketId = pricePacketId;
                 string temp = JsonConvert.SerializeObject(model);
                 HttpContext.Session.SetString("PriceTagViewModel", temp);
@@ -143,6 +160,10 @@ namespace HouseKeeper.Controllers
                 }
                 var value2 = Request.Form["bidAmount"];
                 model.Recruitment.BidPrice = int.Parse(value2);
+                var pricePacket = await employerRespository.GetPricePacket(model.PricePacketId);
+                model.PricePacketName = pricePacket.PricePacketName;
+                model.Price = pricePacket.Price;
+                model.NumberDays = pricePacket.NumberDays;
                 string temp = JsonConvert.SerializeObject(model);
                 HttpContext.Session.SetString("PriceTagViewModel", temp);
                 TempData["Success"] = "Please finish your payment";

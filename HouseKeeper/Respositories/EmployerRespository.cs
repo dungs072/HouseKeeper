@@ -41,6 +41,11 @@ namespace HouseKeeper.Respositories
         {
             return await dBContext.Districts.ToListAsync();
         }
+        public async Task<List<TINTUYENDUNG>> GetOnlineRecruitments()
+        {
+            return await dBContext.Recruitments.Where(a => a.Status.StatusName == status[2]).
+                        OrderByDescending(a=>a.BidPrice).Take(10).ToListAsync();
+        }
         public async Task<HINHTHUCTRALUONG> GetPaidType(int id)
         {
             return await dBContext.SalaryForms.FindAsync(id);

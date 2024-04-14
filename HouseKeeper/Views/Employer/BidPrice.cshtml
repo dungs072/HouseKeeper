@@ -59,27 +59,66 @@
         text-align: center;
         animation: blink 1s infinite;
     }
-
-    /* keyframes blink {
-        50% {
-            opacity: 0;
-        }
-    } */
 </style>
+    <style>
+        table {
+            width: 100%; /* Make the table fill the entire container */
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px; /* Increase padding for a wider appearance */
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
     <partial name="HeaderInclude" />
 </head>
 <body>
     <partial name="BodyInclude" />
+
     <div class="container">
         <h1>Set Your Bid Price</h1>
-        <p class="blinking-text">Top 1 - Top 5 have price: 5 - 10</p>
+        
         <form class="bid-form" asp-action="HandleSendBidPrice" method="post" enctype="multipart/form-data">
             <div class="form-group">
-                <label for="bidAmount">Bid Amount (x1000 dong):</label>
-                <input asp-for="BidPrice" type="text" id="bidAmount" name="bidAmount" placeholder="Enter your bid amount" required value=@Model.BidPrice oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                <label for="bidAmount">Bid Amount :</label>
+                <input type="number" id="bidAmount" name="bidAmount" placeholder="Enter your bid amount" required>
             </div>
             <input type="submit" value="Next">
         </form>
+        <p class="blinking-text">Top 1 - Top 5</p>
+        <div id="tab-5" class="tab-pane fade show p-0">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Recruiter</th>
+                        <th>Bid Price</th>
+                        <th>Date Line</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.OnlineRecruitments)
+                    {
+                        <tr>
+                            <td>@item.RecruiterName</td>
+                            <td>@string.Format("{0:0,0} VND", item.BidPrice)</td>
+                            <td>@item.PostTime.ToString("dd/MM/yyyy")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+         
+        </div>
+        
     </div>
 </body>
 </html>

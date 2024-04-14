@@ -49,21 +49,19 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <img src='https://dl.dropboxusercontent.com/s/sim84r2xfedj99n/%24_32.JPG'
+                                    <img src='https://dl.dropboxusercontent.com/s/qbj9tsbvthqq72c/Vintage-20L-Backpack-by-Fj%C3%A4llr%C3%A4ven.jpg'
                                          class='full-width'></img>
                                 </td>
                                 <td>
-                                    <br> <span class='thin'>Nike</span>
-                                    <br> Free Run 3.0 Women<br> <span class='thin small'>
-                                        Color: Grey/Orange, Size:
-                                        10.5<br><br>
-                                    </span>
+                                    
+                                    <br> PricePacket Type: <span class='thin'>@Model.PricePacketName</span>
+                                    <br> Number days: @Model.NumberDays<br>
                                 </td>
 
                             </tr>
                             <tr>
                                 <td>
-                                    <div class='price'>$99.95</div>
+                                    <div class='price'>@string.Format("{0:0,0} VND", @Model.Price)</div>
                                 </td>
                             </tr>
                         </tbody>
@@ -78,49 +76,20 @@
                                          class='full-width'></img>
                                 </td>
                                 <td>
-                                    <br> <span class='thin'>Fjällräven</span>
-                                    <br>Vintage Backpack<br> <span class='thin small'> Color: Olive, Size: 20L</span>
+                                    <br> <span class='thin'>Bid price </span>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <div class='price'>$235.95</div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div class='line'></div>
-                    <table class='order-table'>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <img src='https://dl.dropboxusercontent.com/s/nbr4koso8dpoggs/6136C1p5FjL._SL1500_.jpg'
-                                         class='full-width'></img>
-                                </td>
-                                <td>
-                                    <br> <span class='thin'>Monobento</span>
-                                    <br>Double Lunchbox<br> <span class='thin small'> Color: Pink, Size: Medium</span>
-                                </td>
-
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class='price'>$25.95</div>
+                                    <div class='price'>@string.Format("{0:0,0} VND", @Model.Recruitment.BidPrice)</div>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                     <div class='line'></div>
                     <div class='total'>
-                        <span style='float:left;'>
-                            <div class='thin dense'>VAT 19%</div>
-                            <div class='thin dense'>Delivery</div>
-                            TOTAL
-                        </span>
                         <span style='float:right; text-align:right;'>
-                            <div class='thin dense'>$68.75</div>
-                            <div class='thin dense'>$4.95</div>
-                            $435.55
+                            <div class='price'>TOTAL: @string.Format("{0:0,0} VND", @Model.Recruitment.BidPrice+@Model.Price)</div>
                         </span>
                     </div>
                 </div>
