@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace HouseKeeper.Models.Views.Recruitments
+namespace HouseKeeper.Models.Views.Employer
 {
     public class RecruitmentBidViewModel
     {

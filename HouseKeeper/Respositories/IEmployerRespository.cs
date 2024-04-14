@@ -1,5 +1,5 @@
 ﻿using HouseKeeper.Models.DB;
-using HouseKeeper.Models.Views.Recruitments;
+using HouseKeeper.Models.Views.Employer;
 using Microsoft.EntityFrameworkCore;
 
 namespace HouseKeeper.Respositories
@@ -26,5 +26,8 @@ namespace HouseKeeper.Respositories
         Task<ListRecruitmentViewModel> GetEmployerRecruitments(int employerId);
         Task<bool> DeleteSpecificRecruitment(int recruitmentId);
         Task<bool> EditRecruitment(EditRecruitmentViewModel model);
+        Task<bool> HideRecruitment(int recruitmentId);
+        Task<bool> UnHideRecruitment(int recruitmentId);
+        Task<bool> AddBidPrice(int recruitmentId, decimal price);
     }
 }

@@ -1,10 +1,11 @@
 ﻿using HouseKeeper.Models.DB;
 using HouseKeeper.Models.Views.OutPage;
-using HouseKeeper.Models.Views.Recruitments;
+using HouseKeeper.Models.Views.Employer;
 using HouseKeeper.Respositories;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NuGet.Packaging.Signing;
 
 namespace HouseKeeper.Controllers
 {
@@ -332,6 +333,73 @@ namespace HouseKeeper.Controllers
             return View(model);
         }
 
+        public async Task<ActionResult> HideRecruitment(int recruitmentId)
+        {
+            var result = await employerRespository.HideRecruitment(recruitmentId);
+            if (result)
+            {
+                TempData["Success"] = "Hide recruitment successfully!";
+                
+            }
+            else
+            {
+                TempData["Error"] = "Server error!";
+            }
+            return RedirectToAction("ListRecruitment");
+        }
+        public async Task<ActionResult> UnHideRecruitment(int recruitmentId)
+        {
+            var result = await employerRespository.UnHideRecruitment(recruitmentId);
+            if (result)
+            {
+                TempData["Success"] = "UnHide recruitment successfully!";
+
+            }
+            else
+            {
+                TempData["Error"] = "Server error!";
+            }
+            return RedirectToAction("ListRecruitment");
+        }
+        public async Task<ActionResult> ShowBidPrice(int recruitmentId)
+        {
+            var model = new BidPriceSettingViewModel();
+            var onlineRecruitments = await employerRespository.GetOnlineRecruitments();
+            model.OnlineRecruitments = new List<RecruitmentBidViewModel>();
+            model.RecruitmentId = recruitmentId;
+            foreach (var recruitment in onlineRecruitments)
+            {
+                var bid = new RecruitmentBidViewModel();
+                bid.MaxSalary = recruitment.MaxSalary;
+                bid.MinSalary = recruitment.MinSalary;
+                bid.BidPrice = recruitment.BidPrice;
+                bid.MaxApplications = recruitment.MaxApplications;
+                bid.RecruitDeadlineDate = recruitment.RecruitDeadlineDate;
+                bid.PostTime = recruitment.PostTime;
+                bid.RecruiterName = recruitment.Employer.LastName + " " + recruitment.Employer.FirstName;
+                model.OnlineRecruitments.Add(bid);
+            }
+            return View("AddBidPrice", model);
+        }
+        public async Task<ActionResult> AddBidPrice(BidPriceSettingViewModel model)
+        {
+            TempData["Success"] = "Please check out!";
+            return View("AddCheckOut",model);
+        }
+        public async Task<ActionResult> AddBidPriceCheckOut(int recruitmentId,decimal bidPrice)
+        {
+            var result = await employerRespository.AddBidPrice(recruitmentId,bidPrice);
+            if (result)
+            {
+                TempData["Success"] = "Add bid price to recruitment successfully!";
+
+            }
+            else
+            {
+                TempData["Error"] = "Server error!";
+            }
+            return RedirectToAction("ListRecruitment");
+        }
 
     }
 }

@@ -1,6 +1,6 @@
 ﻿using HouseKeeper.Models.DB;
 
-namespace HouseKeeper.Models.Views.Recruitments
+namespace HouseKeeper.Models.Views.Employer
 {
 
     public class PriceTagViewModel
@@ -17,5 +17,11 @@ namespace HouseKeeper.Models.Views.Recruitments
         public string PricePacketName { get;set; }
         public decimal Price { get; set; }
         public int NumberDays { get; set; }
+    }
+    public class BidPriceSettingViewModel
+    {
+        public decimal Price { get; set; }
+        public int RecruitmentId { get; set; }
+        public List<RecruitmentBidViewModel> OnlineRecruitments { get; set; }
     }
 }

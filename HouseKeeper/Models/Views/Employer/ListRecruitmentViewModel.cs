@@ -1,6 +1,6 @@
 ﻿using HouseKeeper.Models.DB;
 
-namespace HouseKeeper.Models.Views.Recruitments
+namespace HouseKeeper.Models.Views.Employer
 {
     public class ListRecruitmentViewModel
     {
