@@ -1,0 +1,79 @@
+﻿@using HouseKeeper.Models.Views.Recruitments;
+@model ListRecruitmentViewModel;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <partial name="DefaultHeaderInclude" />
+    <style >
+        .btn_function {
+            margin-right: 10px; /* Adjust this value as needed */
+        }
+    </style>
+</head>
+
+<body>
+    <partial name="BodyInclude" />
+
+    <div class="container-xxl bg-white p-0">
+
+        <!-- Spinner-->
+        <partial name="Spinner" />
+
+        <!-- Navbar-->
+        <partial name="Partical/StaffNav" />
+
+        <!-- Jobs Start -->
+        <div class="container-xxl py-5 align-items-center">
+            @foreach (var item in Model.PendingApprovalRecruitments)
+            {
+                <div class="job-item p-4 mb-4">
+                    <div class="row g-4">
+                        <div class="col-sm-12 col-md-8 d-flex align-items-center">
+                            <img class="flex-shrink-0 img-fluid border rounded" src="/img/com-logo-1.jpg" alt="" style="width: 80px; height: 80px;">
+                            <div class="text-start ps-4">
+                                <h5 class="mb-3">@item.HouseWorkName</h5>
+                                <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@item.District.DistrictName / @item.District.City.CityName</span>
+                                @if (item.FullTime)
+                                {
+                                    <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Full Time</span>
+                                }
+                                else
+                                {
+                                    <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Part Time</span>
+                                }
+                                <span class="text-truncate me-3"><i class="far fa-money-bill-alt text-primary me-2"></i>@string.Format("{0:0,0} VND", @item.MinSalary) - @string.Format("{0:0,0} VND", @item.MaxSalary)</span>
+                                <span class="text-truncate me-0"><i class="fa fa-hourglass-half text-primary me-2"></i>@item.SalaryForm.SalaryFormName</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
+                            <div class="d-flex mb-3">
+                                <a class="btn btn-info btn_function" href="ShowRecruitmentDetail?recruitmentID=@item.RecruitmentId">Detail</a>
+                            </div>
+                            <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: @item.PostTime.ToString("dd/MM/yyyy")</small>
+                        </div>
+
+                        
+
+                    </div>
+                </div>
+            }
+
+            <a class="btn btn-primary py-3 px-5" href="">Browse More Jobs</a>
+
+            <!-- Footer -->
+            <partial name="FooterInclude" />
+
+            <!-- Back to Top -->
+            <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+        </div>
+        <!-- Jobs End -->
+
+        
+    </div>
+
+    <!-- Script -->
+    <partial name="ScriptInclude" />
+</body>
+
+</html>

@@ -42,6 +42,8 @@ namespace HouseKeeper.Models.DB
         public virtual HUYEN District { get; set; }
         [ForeignKey("ID_NGUOITHUE")]
         public virtual NGUOITHUE Employer { get; set; }
+        [ForeignKey("ID_NHANVIEN")]
+        public virtual NHANVIEN? Staff { get; set; }
         [ForeignKey("ID_TRANGTHAI_TIN")]
         public virtual TRANGTHAITIN Status { get; set; }
 

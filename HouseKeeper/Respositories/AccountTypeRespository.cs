@@ -44,6 +44,7 @@ namespace HouseKeeper.Respositories
         //0: is admin
         //1: is employer
         //2: is employee
+        //4: is staff
         public async Task<LoginInfor> GetEmployerOrEmployee(int accountId)
         {
             var employers = await dBContext.Employers.Where(a => a.Account.AccountID == accountId).ToListAsync();
@@ -59,7 +60,14 @@ namespace HouseKeeper.Respositories
                 loginInfor.Id = employee[0].EmployeeId;
                 loginInfor.ViewIndex = 2;
             }
-            if(employee.Count==0&&employers.Count==0)
+            var staff = await dBContext.Staffs.Where(a => a.Account.AccountID == accountId).ToListAsync();
+            if(staff.Count>0)
+            {
+                loginInfor.Id = staff[0].StaffId;
+                loginInfor.ViewIndex = 3;
+            }
+
+            if(employee.Count==0&&employers.Count==0&&staff.Count==0)
             {
                 loginInfor.ViewIndex = 0;
                 loginInfor.Id = accountId;

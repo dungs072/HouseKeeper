@@ -13,6 +13,7 @@ builder.Services.AddScoped<IAccountTypeRespository, AccountTypeRespository>();
 builder.Services.AddScoped<IEmployerRespository, EmployerRespository>();
 builder.Services.AddScoped<IEmployeeRespository, EmployeeRespository>();
 builder.Services.AddScoped<IAdminRespository, AdminRespository>();
+builder.Services.AddScoped<IStaffRespository, StaffRespository>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession();
 var app = builder.Build();
