@@ -1,4 +1,5 @@
 ﻿using HouseKeeper.Contanst;
+using HouseKeeper.Enum.Staff;
 using HouseKeeper.Models.DB;
 using HouseKeeper.Models.Views.Staff;
 using Microsoft.AspNetCore.Mvc;
@@ -16,9 +17,15 @@ namespace HouseKeeper.Respositories
         }
 
         // Get all recruitment is pending approval
-        public async Task<List<Models.DB.TINTUYENDUNG>> GetRecruitmentsPendingApproval()
+        public async Task<List<Models.DB.TINTUYENDUNG>> GetRecruitmentNotHandled()
         {
-            return await dBContext.Recruitments.Where(a => a.Status.StatusName == RecruitmentsStatus.PendingApproval).ToListAsync();
+            return await dBContext.Recruitments.Where(a => a.Status.StatusName == RecruitmentsStatus.PendingApproval && a.Staff == null).ToListAsync();
+        }
+
+        // Get all recruitment are handled by staff
+        public async Task<List<Models.DB.TINTUYENDUNG>> ListRecruitmentAreHandledByStaff(int staffId)
+        {
+            return await dBContext.Recruitments.Where(a => a.Status.StatusName == RecruitmentsStatus.PendingApproval && a.Staff != null && a.Staff.StaffId == staffId).ToListAsync();
         }
 
         // Accept recruitment by id and change status to Displayed
@@ -38,7 +45,6 @@ namespace HouseKeeper.Respositories
                     transaction.Rollback();
                     return false;
                 }
-
 
                 // Associate the new Status object with the Recruitment object
                 recruitment.Status = await dBContext.RecruitmentStatus.FindAsync(RecruitmentsStatus.GetStatusId(RecruitmentsStatus.Displayed));
@@ -68,6 +74,7 @@ namespace HouseKeeper.Respositories
                     .FirstOrDefaultAsync(r => r.RecruitmentId == model.RecruitmentId);
                 recruitment.Staff = await dBContext.Staffs.FindAsync(model.StaffId);
                 recruitment.Status = await dBContext.RecruitmentStatus.FindAsync(RecruitmentsStatus.GetStatusId(RecruitmentsStatus.RejectApproval));
+                var currentTime = DateTime.Now;
                 for (int i = 0; i < model.RejectionId.Count; i++)
                 {
                     if (model.IsSelectedList[i] == false)
@@ -77,7 +84,7 @@ namespace HouseKeeper.Respositories
                     var rejectionDetail = new CHITIETTUCHOI();
                     rejectionDetail.Recruitment = recruitment;
                     rejectionDetail.Rejection = await dBContext.Rejections.FindAsync(model.RejectionId[i]);
-                    rejectionDetail.Time = DateTime.Now;
+                    rejectionDetail.Time = currentTime;
                     rejectionDetail.Note = model.NoteList[i];
                     await dBContext.RejectionDetails.AddAsync(rejectionDetail);
                 }
@@ -96,9 +103,34 @@ namespace HouseKeeper.Respositories
 
 
         // Get recruitment by id
-        public async Task<TINTUYENDUNG> GetRecruitment(int recruitmentId)
+        public async Task<Tuple<EnumStaff.ModerationStatus, TINTUYENDUNG>> GetRecruitment(int recruitmentId, int staffId)
         {
-            return await dBContext.Recruitments.FindAsync(recruitmentId);
+            var recruitment = await dBContext.Recruitments.FindAsync(recruitmentId);
+            if (recruitment == null)
+            {
+                return new Tuple<EnumStaff.ModerationStatus, TINTUYENDUNG>(EnumStaff.ModerationStatus.NotFound, null);
+            }
+            if(recruitment.Staff != null && recruitment.Staff.StaffId != staffId)
+            {
+                return new Tuple<EnumStaff.ModerationStatus, TINTUYENDUNG>(EnumStaff.ModerationStatus.IsHandledByOther, null);
+            }
+            if(recruitment.Staff == null)
+            {
+                using var transaction = await dBContext.Database.BeginTransactionAsync();
+                try
+                {
+                    recruitment.Staff = await dBContext.Staffs.FindAsync(staffId);
+                    dBContext.Recruitments.Update(recruitment);
+                    await dBContext.SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    return new Tuple<EnumStaff.ModerationStatus, TINTUYENDUNG>(EnumStaff.ModerationStatus.ServerError, recruitment);
+                }
+            }
+            return new Tuple<EnumStaff.ModerationStatus, TINTUYENDUNG>(EnumStaff.ModerationStatus.OK, recruitment);
         }
 
         // Get all LYDOTUCHOI

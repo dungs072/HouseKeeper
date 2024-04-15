@@ -74,7 +74,8 @@
                                     
                                     <li class="list-group-item" id="status-@rejection_index">
                                         <input asp-for="@Model.RejectionId[rejection_index]" value="@Model.RejectionId[rejection_index]" hidden />
-                                        <input name="ReasonsSelected" asp-for="@Model.IsSelectedList[rejection_index]" class="form-check-input me-1" id="checkbox-status-@rejection_index" type="checkbox" value="false" aria-label="..."/>
+                                        <!--<input name="ReasonsSelected" asp-for="@Model.IsSelectedList[rejection_index]" class="form-check-input me-1" id="checkbox-status-@rejection_index" type="checkbox" value="false" aria-label="..." />-->
+                                        @Html.EditorFor(m => m.IsSelectedList[rejection_index], new { @class = "form-check-input me-1", @id = "checkbox-status-" + rejection_index, @type = "checkbox", @value = "false", @aria_label = "..." })
 
                                         <span> @Model.Rejections[rejection_index].RejectionName</span>
                                         <textarea asp-for="@Model.NoteList[rejection_index]" value="@Model.NoteList[rejection_index]." class="form-control" aria-label="With textarea" id="input-status-@rejection_index" placeholder="Type notes here" style="display: none;"></textarea>
@@ -198,15 +199,12 @@
                 $('#btn-reject').submit();
             });
 
-            $('.form-check-input').on('click', function (event) {
+            $('.check-box').on('click', function (event) {
                 var modal = $(this);
                 modal.parent().find('textarea').toggle(this.checked)
             });
 
-            $('.form-check-input').change(function (event) {
-                cb = $(this);
-                cb.val(cb.prop('checked'));
-            });
+
         })
     </script>
 
