@@ -88,18 +88,39 @@
             background-color: #f9f9f9;
         }
     </style>
+    <style>
+        #recruitmentId {
+            display: none;
+        }
+    </style>
+    <script>
+        function formatCurrency(input) {
+            // Remove non-numeric characters and leading zeros
+            let value = input.value.replace(/[^\d]/g, '').replace(/^0+/, '');
+
+            // Check if the input is not empty
+            if (value !== '') {
+                // Format the number with periods for thousands separator
+                value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+                // Update the input value
+                input.value = value;
+            }
+        }
+    </script>
     <partial name="HeaderInclude" />
 </head>
 <body>
     <partial name="BodyInclude" />
 
     <div class="container">
-        <h1>Set Your Bid Price</h1>
+        <h1>Current Bid Price: @string.Format("{0:0,0} VND", Model.CurrentBidPrice)</h1>
 
         <form class="bid-form" asp-action="AddBidPrice" method="post" enctype="multipart/form-data">
             <div class="form-group">
-                <label for="bidAmount">Bid Amount :</label>
-                <input type="number" id="bidAmount" name="bidAmount" placeholder="Enter your bid amount" required>
+                <label for="bidAmount">Add Bid Amount (VND):</label>
+                <input type="text" min="0" class="form-control" id="bidAmount" name="bidAmount" placeholder="Enter amount in VND" oninput="formatCurrency(this)" required>
+                <input asp-for="RecruitmentId" type="number" id="recruitmentId" placeholder="Enter your bid amount" required>
             </div>
             <input type="submit" value="Next">
         </form>

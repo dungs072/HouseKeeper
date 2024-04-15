@@ -1,5 +1,5 @@
 ﻿@using HouseKeeper.Models.Views.Employer;
-@model BidPriceSettingViewModel;
+@model PricePacketSettingViewModel;
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,7 +28,7 @@
 
     </style>
     <style>
-        #additiveBidPrice {
+        #pricePacketId {
             display: none;
         }
 
@@ -39,21 +39,18 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
-            $("#checkoutt").click(function () {
-                alert(1);
-                var additiveBidPrice = parseFloat(document.getElementById('additiveBidPrice').innerText);
+            $("#checkout").click(function () {
+                var pricePacketId = parseFloat(document.getElementById('pricePacketId').innerText);
                 var recruitmentId = parseInt(document.getElementById('recruitmentId').innerText);
-                alert(recruitmentId);
-                window.location.href = '/Employer/AddBidPriceCheckOut?recruitmentId=' + recruitmentId + '&bidPrice=' + additiveBidPrice';
+                window.location.href = '/Employer/AddPricePacketCheckOut?recruitmentId=' + recruitmentId + '&pricePacketId=' + pricePacketId;
             });
         });
     </script>
-
     <partial name="HeaderInclude" />
 </head>
 <body>
     <partial name="BodyInclude" />
-    <div id='additiveBidPrice'>@Model.Price</div>
+    <div id='pricePacketId'>@Model.PricePacketId</div>
     <div id='recruitmentId'>@Model.RecruitmentId</div>
     <div class='container'>
         <div class='window'>
@@ -69,20 +66,24 @@
                                          class='full-width'></img>
                                 </td>
                                 <td>
-                                    <br> <span class='thin'>Bid price </span>
+
+                                    <br> PricePacket Type: <span class='thin'>@Model.PricePacket.PricePacketName</span>
+                                    <br> Number days: @Model.PricePacket.NumberDays<br>
                                 </td>
+
                             </tr>
                             <tr>
                                 <td>
-                                    <div class='price'>@string.Format("{0:0,0} VND", @Model.Price)</div>
+                                    <div class='price'>@string.Format("{0:0,0} VND", @Model.PricePacket.Price)</div>
                                 </td>
                             </tr>
                         </tbody>
+
                     </table>
                     <div class='line'></div>
                     <div class='total'>
                         <span style='float:right; text-align:right;'>
-                            <div class='price'>TOTAL: @string.Format("{0:0,0} VND", @Model.Price)</div>
+                            <div class='price'>TOTAL: @string.Format("{0:0,0} VND", @Model.PricePacket.Price)</div>
                         </span>
                     </div>
                 </div>
@@ -123,7 +124,7 @@
                             </td>
                         </tr>
                     </table>
-                    <a class='pay-btn' href="@Url.Action("AddBidPriceCheckOut", "Employer",new { recruitmentId = Model.RecruitmentId,bidPrice = Model.Price })" id="checkoutt">Check out</a>
+                    <button class='pay-btn' id="checkout">Check out</button>
                 </div>
             </div>
         </div>

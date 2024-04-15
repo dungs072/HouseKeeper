@@ -101,7 +101,7 @@ namespace HouseKeeper.Respositories
                 await dBContext.PricePacketDetails.AddAsync(packetDetail);
                 LICHSUDAUGIA bidHistory = new LICHSUDAUGIA();
                 bidHistory.BuyDate = DateTime.Now;
-                bidHistory.IncreasePrice = recruitment.BidPrice*1000;
+                bidHistory.IncreasePrice = recruitment.BidPrice;
                 //bidHistory.IsPaid = true;
                 bidHistory.Recruitment = recruitment;
                 await dBContext.BidHistories.AddAsync(bidHistory);
@@ -294,17 +294,51 @@ namespace HouseKeeper.Respositories
         }
         public async Task<bool> AddBidPrice(int recruitmentId, decimal price)
         {
+            using var transaction = await dBContext.Database.BeginTransactionAsync();
             try
             {
                 var recruitment = await dBContext.Recruitments.FindAsync(recruitmentId);
                 recruitment.BidPrice += price;
+                var bidHistory = new LICHSUDAUGIA();
+                bidHistory.IsPaid = true;
+                bidHistory.IncreasePrice = price;
+                bidHistory.BuyDate = DateTime.Now;
+                bidHistory.Recruitment = recruitment;
                 dBContext.Recruitments.Update(recruitment);
+                dBContext.BidHistories.Add(bidHistory);
                 await dBContext.SaveChangesAsync();
+                transaction.Commit();
                 return true;
 
             }
             catch(Exception ex)
             {
+                transaction.Rollback();
+                return false;
+            }
+        }
+        public async Task<bool> ExtendDeadLine(int recruitmentId, int pricePacketId)
+        {
+            using var transaction = await dBContext.Database.BeginTransactionAsync();
+            try
+            {
+                var recruitment = await dBContext.Recruitments.FindAsync(recruitmentId);
+                var pricePacket = await dBContext.PricePackets.FindAsync(pricePacketId);
+                var pricePacketDetail = new CHITIETGIAGOITIN();
+                pricePacketDetail.PricePacket = pricePacket;
+                pricePacketDetail.Recruitment = recruitment;
+                pricePacketDetail.HasPaid = true;
+                pricePacketDetail.BuyDate = DateTime.Now;
+                recruitment.RecruitDeadlineDate = recruitment.RecruitDeadlineDate.AddDays(pricePacket.NumberDays);
+                dBContext.Recruitments.Update(recruitment);
+                dBContext.PricePacketDetails.Add(pricePacketDetail);
+                await dBContext.SaveChangesAsync();
+                transaction.Commit();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                transaction.Rollback();
                 return false;
             }
         }

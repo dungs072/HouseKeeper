@@ -33,7 +33,7 @@ namespace HouseKeeper.Controllers
             model.Cities = cities;
             model.jobs = jobs;
             model.Districts = districts;
-            model.MaxSalary = 25;
+            model.MaxSalary = 25000;
             model.NumberVacancies = 1;
             return View(model);
         }
@@ -50,9 +50,11 @@ namespace HouseKeeper.Controllers
             var value5 = Request.Form["ExperienceId"];
             var value6 = Request.Form["DistrictId"];
             var value7 = Request.Form["Gender"];
+            var value8 = Request.Form["min-salary"].ToString();
+            var value9 = Request.Form["max-salary"].ToString();
             TINTUYENDUNG recruitment = new TINTUYENDUNG();
-            recruitment.MinSalary = model.MinSalary*1000;
-            recruitment.MaxSalary = model.MaxSalary*1000;
+            recruitment.MinSalary = int.Parse(value8.Replace(".",""));
+            recruitment.MaxSalary = int.Parse(value9.Replace(".", ""));
             recruitment.Age = value2+"-"+value3;
             recruitment.Note = model.TakeNotes;
             recruitment.FullTime = isFullTime;
@@ -159,8 +161,8 @@ namespace HouseKeeper.Controllers
                     TempData["Error"] = "Server error!";
                     return RedirectToAction("Index", "Home");
                 }
-                var value2 = Request.Form["bidAmount"];
-                model.Recruitment.BidPrice = int.Parse(value2);
+                var value2 = Request.Form["bidAmount"].ToString();
+                model.Recruitment.BidPrice = int.Parse(value2.Replace(".",""));
                 var pricePacket = await employerRespository.GetPricePacket(model.PricePacketId);
                 model.PricePacketName = pricePacket.PricePacketName;
                 model.Price = pricePacket.Price;
@@ -367,6 +369,8 @@ namespace HouseKeeper.Controllers
             var onlineRecruitments = await employerRespository.GetOnlineRecruitments();
             model.OnlineRecruitments = new List<RecruitmentBidViewModel>();
             model.RecruitmentId = recruitmentId;
+            var r = await employerRespository.GetRecruitment(recruitmentId);
+            model.CurrentBidPrice = r.BidPrice;
             foreach (var recruitment in onlineRecruitments)
             {
                 var bid = new RecruitmentBidViewModel();
@@ -384,6 +388,9 @@ namespace HouseKeeper.Controllers
         public async Task<ActionResult> AddBidPrice(BidPriceSettingViewModel model)
         {
             TempData["Success"] = "Please check out!";
+            var value1 = Request.Form["bidAmount"].ToString();
+            model.Price = decimal.Parse(value1.Replace(".",""));
+         
             return View("AddCheckOut",model);
         }
         public async Task<ActionResult> AddBidPriceCheckOut(int recruitmentId,decimal bidPrice)
@@ -392,6 +399,39 @@ namespace HouseKeeper.Controllers
             if (result)
             {
                 TempData["Success"] = "Add bid price to recruitment successfully!";
+
+            }
+            else
+            {
+                TempData["Error"] = "Server error!";
+            }
+            return RedirectToAction("ListRecruitment");
+        }
+
+        public async Task<ActionResult> ShowPricePacket(int recruitmentId)
+        {
+            var model = new PricePacketSettingViewModel();
+            var priceTags = await employerRespository.GetPriceTags();
+            model.RecruitmentId = recruitmentId;
+            model.PriceTags = priceTags;
+            return View("AddPricePacket", model);
+        }
+        public async Task<ActionResult> AddPricePacket(int recruitmentId, int pricePacketId)
+        {
+            TempData["Success"] = "Please check out!";
+            var model = new PricePacketSettingViewModel();
+            model.PricePacket = await employerRespository.GetPricePacket(pricePacketId);
+            model.PricePacketId = pricePacketId;
+            model.RecruitmentId = recruitmentId;
+
+            return View("AddPricePacketCheckOut", model);
+        }
+        public async Task<ActionResult> AddPricePacketCheckOut(int recruitmentId, int pricePacketId)
+        {
+            var result = await employerRespository.ExtendDeadLine(recruitmentId,pricePacketId);
+            if (result)
+            {
+                TempData["Success"] = "Extend deadline to recruitment successfully!";
 
             }
             else
