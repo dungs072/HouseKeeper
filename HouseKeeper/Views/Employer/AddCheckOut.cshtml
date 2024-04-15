@@ -1,5 +1,5 @@
 ﻿@using HouseKeeper.Models.Views.Employer;
-@model PriceTagViewModel;
+@model BidPriceSettingViewModel;
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -53,11 +53,8 @@
                                          class='full-width'></img>
                                 </td>
                                 <td>
-                                    
-                                    <br> PricePacket Type: <span class='thin'>@Model.PricePacketName</span>
-                                    <br> Number days: @Model.NumberDays<br>
+                                    <br> <span class='thin'>Bid price </span>
                                 </td>
-
                             </tr>
                             <tr>
                                 <td>
@@ -65,31 +62,11 @@
                                 </td>
                             </tr>
                         </tbody>
-
-                    </table>
-                    <div class='line'></div>
-                    <table class='order-table'>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <img src='https://dl.dropboxusercontent.com/s/qbj9tsbvthqq72c/Vintage-20L-Backpack-by-Fj%C3%A4llr%C3%A4ven.jpg'
-                                         class='full-width'></img>
-                                </td>
-                                <td>
-                                    <br> <span class='thin'>Bid price </span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class='price'>@string.Format("{0:0,0} VND", @Model.Recruitment.BidPrice)</div>
-                                </td>
-                            </tr>
-                        </tbody>
                     </table>
                     <div class='line'></div>
                     <div class='total'>
                         <span style='float:right; text-align:right;'>
-                            <div class='price'>TOTAL: @string.Format("{0:0,0} VND", @Model.Recruitment.BidPrice+@Model.Price)</div>
+                            <div class='price'>TOTAL: @string.Format("{0:0,0} VND", @Model.Price)</div>
                         </span>
                     </div>
                 </div>
@@ -137,3 +114,4 @@
     </div>
 </body>
 </html>
+

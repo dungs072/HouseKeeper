@@ -1,7 +1,7 @@
 ﻿using HouseKeeper.Models.Views.Employee;
 using HouseKeeper.Respositories;
 using Microsoft.AspNetCore.Mvc;
-using HouseKeeper.Models.Views.Recruitments;
+using HouseKeeper.Models.Views.Employer;
 
 
 namespace HouseKeeper.Controllers

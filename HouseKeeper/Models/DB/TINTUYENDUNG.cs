@@ -70,5 +70,7 @@ namespace HouseKeeper.Models.DB
                 return name;
             }
         }
+        [NotMapped]
+        public int Ranked { get; set; } = -1;
     }
 }

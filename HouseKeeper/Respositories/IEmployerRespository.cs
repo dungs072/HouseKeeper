@@ -1,5 +1,5 @@
 ﻿using HouseKeeper.Models.DB;
-using HouseKeeper.Models.Views.Recruitments;
+using HouseKeeper.Models.Views.Employer;
 using Microsoft.EntityFrameworkCore;
 
 namespace HouseKeeper.Respositories
@@ -12,6 +12,7 @@ namespace HouseKeeper.Respositories
         Task<List<LOAICONGVIEC>> GetJobs();
         Task<List<GIAGOITIN>> GetPriceTags();
         Task<List<HUYEN>> GetDistricts();
+        Task<List<TINTUYENDUNG>> GetOnlineRecruitments();
         Task<HINHTHUCTRALUONG> GetPaidType(int id);
         Task<KINHNGHIEM> GetExperience(int id);
         Task<TINHTHANHPHO> GetCity(int id);
@@ -19,10 +20,14 @@ namespace HouseKeeper.Respositories
         Task<NGUOITHUE> GetEmployer(int id);
         Task<TINTUYENDUNG> GetRecruitment(int id);
         Task<TRANGTHAITIN> GetRecruitmentStatus(int id);
+        Task<GIAGOITIN> GetPricePacket(int id);
         Task<HUYEN> GetDistrict(int id);
         Task<bool> CreateRecruitment(TINTUYENDUNG recruitment, string[] jobIds, int pricePacketId);
         Task<ListRecruitmentViewModel> GetEmployerRecruitments(int employerId);
         Task<bool> DeleteSpecificRecruitment(int recruitmentId);
         Task<bool> EditRecruitment(EditRecruitmentViewModel model);
+        Task<bool> HideRecruitment(int recruitmentId);
+        Task<bool> UnHideRecruitment(int recruitmentId);
+        Task<bool> AddBidPrice(int recruitmentId, decimal price);
     }
 }

@@ -1,7 +1,7 @@
 ﻿using HouseKeeper.DBContext;
 using HouseKeeper.Models.DB;
 using HouseKeeper.Models.Views.OutPage;
-using HouseKeeper.Models.Views.Recruitments;
+using HouseKeeper.Models.Views.Employer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,6 +40,11 @@ namespace HouseKeeper.Respositories
         public async Task<List<HUYEN>> GetDistricts()
         {
             return await dBContext.Districts.ToListAsync();
+        }
+        public async Task<List<TINTUYENDUNG>> GetOnlineRecruitments()
+        {
+            return await dBContext.Recruitments.Where(a => a.Status.StatusName == status[2]).
+                        OrderByDescending(a=>a.BidPrice).Take(10).ToListAsync();
         }
         public async Task<HINHTHUCTRALUONG> GetPaidType(int id)
         {
@@ -123,6 +128,8 @@ namespace HouseKeeper.Respositories
         public async Task<ListRecruitmentViewModel> GetEmployerRecruitments(int employerId)
         {
             ListRecruitmentViewModel model = new ListRecruitmentViewModel();
+            var originalRecruitments = await dBContext.Recruitments.Where(a => a.Status.StatusName == status[2])
+                                        .OrderByDescending(a=>a.BidPrice).ToListAsync();
             var recruitments = await dBContext.Recruitments.Where(a => a.Employer.EmployerId == employerId).
                                     OrderByDescending(a => a.PostTime).ToListAsync();
             model.OnlineRecruitments = new List<TINTUYENDUNG>();
@@ -153,6 +160,25 @@ namespace HouseKeeper.Respositories
                     model.OutDatedRecruitments.Add(recruitment);
                 }
             }
+            int count = 1;
+            // fix here
+            if(model.OnlineRecruitments.Count>0)
+            {
+                foreach (var recruitment in originalRecruitments)
+                {
+                    foreach(var onlineRecruitment in model.OnlineRecruitments)
+                    {
+                        if(recruitment==onlineRecruitment)
+                        {
+                            onlineRecruitment.Ranked = count;
+                            break;
+                        }
+                        
+                    }
+                    count++;
+                }
+            }
+           
 
             return model;
         }
@@ -215,6 +241,70 @@ namespace HouseKeeper.Respositories
             catch(Exception ex)
             {
                 transaction.Rollback();
+                return false;
+            }
+        }
+        // remember to date out for recruitment
+        public async Task<bool> HideRecruitment(int recruitmentId)
+        {
+            try
+            {
+                TINTUYENDUNG recruitment = await dBContext.Recruitments.FindAsync(recruitmentId);
+                var statuses = await dBContext.RecruitmentStatus.ToListAsync();
+                foreach (var statuss in statuses)
+                {
+                    if (statuss.StatusName == status[3])
+                    {
+                        recruitment.Status = statuss;
+                        break;
+                    }
+                }
+                dBContext.Recruitments.Update(recruitment);
+                await dBContext.SaveChangesAsync();
+                return true;
+            }catch(Exception ex)
+            {
+                return false;
+            }
+           
+        }
+        public async Task<bool> UnHideRecruitment(int recruitmentId)
+        {
+            try
+            {
+                TINTUYENDUNG recruitment = await dBContext.Recruitments.FindAsync(recruitmentId);
+                var statuses = await dBContext.RecruitmentStatus.ToListAsync();
+                foreach (var statuss in statuses)
+                {
+                    if (statuss.StatusName == status[2])
+                    {
+                        recruitment.Status = statuss;
+                        break;
+                    }
+                }
+                dBContext.Recruitments.Update(recruitment);
+                await dBContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
+        public async Task<bool> AddBidPrice(int recruitmentId, decimal price)
+        {
+            try
+            {
+                var recruitment = await dBContext.Recruitments.FindAsync(recruitmentId);
+                recruitment.BidPrice += price;
+                dBContext.Recruitments.Update(recruitment);
+                await dBContext.SaveChangesAsync();
+                return true;
+
+            }
+            catch(Exception ex)
+            {
                 return false;
             }
         }
