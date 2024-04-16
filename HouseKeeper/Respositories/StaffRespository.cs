@@ -29,7 +29,7 @@ namespace HouseKeeper.Respositories
         }
 
         // Accept recruitment by id and change status to Displayed
-        public async Task<bool> AcceptRecruitment(int recruitmentId)
+        public async Task<EnumStaff.ModerationStatus> AcceptRecruitment(int recruitmentId)
         {
             using var transaction = await dBContext.Database.BeginTransactionAsync();
 
@@ -39,11 +39,11 @@ namespace HouseKeeper.Respositories
                     .Include(r => r.Status)  // Ensure that the Status property is loaded
                     .FirstOrDefaultAsync(r => r.RecruitmentId == recruitmentId);
 
-                if (recruitment == null || recruitment.Status == null)
+                if (recruitment == null)
                 {
                     // Recruitment not found, or Status not loaded
                     transaction.Rollback();
-                    return false;
+                    return EnumStaff.ModerationStatus.NotFound;
                 }
 
                 // Associate the new Status object with the Recruitment object
@@ -52,19 +52,19 @@ namespace HouseKeeper.Respositories
                 dBContext.Recruitments.Update(recruitment);
                 await dBContext.SaveChangesAsync();
                 transaction.Commit();
-                return true;
+                return EnumStaff.ModerationStatus.OK;
             }
             catch (Exception ex)
             {
                 transaction.Rollback();
-                return false;
+                return EnumStaff.ModerationStatus.ServerError;
             }
         }
 
 
         // reject recruitment by id and change status to Rejected and add list reason
         [HttpPost]
-        public async Task<bool> RejectRecruitment(RecruitmentModerationViewModel model)
+        public async Task<EnumStaff.ModerationStatus> RejectRecruitment(RecruitmentModerationViewModel model)
         {
             using var transaction = await dBContext.Database.BeginTransactionAsync();
             try
@@ -72,7 +72,13 @@ namespace HouseKeeper.Respositories
                 var recruitment = await dBContext.Recruitments
                     .Include(r => r.Status)  // Ensure that the Status property is loaded
                     .FirstOrDefaultAsync(r => r.RecruitmentId == model.RecruitmentId);
-                recruitment.Staff = await dBContext.Staffs.FindAsync(model.StaffId);
+
+                if (recruitment == null)
+                {
+                    transaction.Rollback();
+                    return EnumStaff.ModerationStatus.NotFound;
+                }
+
                 recruitment.Status = await dBContext.RecruitmentStatus.FindAsync(RecruitmentsStatus.GetStatusId(RecruitmentsStatus.RejectApproval));
                 var currentTime = DateTime.Now;
                 for (int i = 0; i < model.RejectionId.Count; i++)
@@ -91,16 +97,14 @@ namespace HouseKeeper.Respositories
                 dBContext.Recruitments.Update(recruitment);
                 await dBContext.SaveChangesAsync();
                 transaction.Commit();
-                return true;
+                return EnumStaff.ModerationStatus.OK;
             }
             catch (Exception ex)
             {
                 transaction.Rollback();
-                return false;
+                return EnumStaff.ModerationStatus.ServerError;
             }
         }
-
-
 
         // Get recruitment by id
         public async Task<Tuple<EnumStaff.ModerationStatus, TINTUYENDUNG>> GetRecruitment(int recruitmentId, int staffId)
@@ -149,6 +153,12 @@ namespace HouseKeeper.Respositories
         public async Task<LYDOTUCHOI> GetRejection(int rejectionId)
         {
             return await dBContext.Rejections.FindAsync(rejectionId);
+        }
+        
+        // get CHITIETTUCHOI by recruitmentId
+        public async Task<List<CHITIETTUCHOI>?> GetRejectionsDetail(int recruitmentId)
+        {
+            return await dBContext.RejectionDetails.Where(a => a.Recruitment.RecruitmentId == recruitmentId).ToListAsync();
         }
     }
 }

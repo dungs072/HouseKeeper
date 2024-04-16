@@ -52,21 +52,37 @@ namespace HouseKeeper.Controllers
             if (status == EnumStaff.ModerationStatus.NotFound)
             {
                 TempData["Error"] = "Recruitment not found or is deleted!";
-                return RedirectToAction("ShowRecruitmentNotHandled");
+                return RedirectToAction("ShowRecruitmentAreHandled", model.StaffId);
             }
 
             if (status == EnumStaff.ModerationStatus.ServerError)
             {
                 TempData["Error"] = "Server Error, Try again!";
-                return RedirectToAction("ShowRecruitmentNotHandled");
+                return RedirectToAction("ShowRecruitmentAreHandled", model.StaffId);
             }
 
             if (status == EnumStaff.ModerationStatus.IsHandledByOther)
             {
                 TempData["Error"] = "Recruitment is handled by other staff";
-                return RedirectToAction("ShowRecruitmentNotHandled");
+                return RedirectToAction("ShowRecruitmentAreHandled", model.StaffId);
             }
             model.Recruitment = result.Item2;
+            var rejectionsDetails = await staffRespository.GetRejectionsDetail(recruitmentId);
+
+            model.RejectionsDetails = new Dictionary<DateTime, List<CHITIETTUCHOI>>();
+            foreach (var rejectionDetail in rejectionsDetails)
+            {
+                if (model.RejectionsDetails.ContainsKey(rejectionDetail.Time))
+                {
+                    model.RejectionsDetails[rejectionDetail.Time].Add(rejectionDetail);
+                }
+                else
+                {
+                    model.RejectionsDetails.Add(rejectionDetail.Time, new List<CHITIETTUCHOI> { rejectionDetail });
+                }
+            }
+            
+            
             model.Rejections = await staffRespository.GetRejections();
             model.RejectionId = new List<int>();
             for(int i = 0; i < model.Rejections.Count; i++)
@@ -83,37 +99,37 @@ namespace HouseKeeper.Controllers
         public async Task<IActionResult> RejectRecruitment(RecruitmentModerationViewModel model)
         {
             var result = await staffRespository.RejectRecruitment(model);
-            if (result)
+            if (result == EnumStaff.ModerationStatus.NotFound)
             {
+                TempData["Error"] = "Recruitment not found or is deleted!";
+                return RedirectToAction("ShowRecruitmentAreHandled", model.StaffId);
+            }
+            if (result == EnumStaff.ModerationStatus.ServerError)
+            {
+                TempData["Error"] = "Server Error, Try again!";
+                return RedirectToAction("ShowRecruitmentDetail", model.RecruitmentId);
+            }
                 TempData["Success"] = "Reject recruitment successfully!";
-            }
-            else
-            {
-                TempData["Error"] = "Server error!";
-            }
-            return RedirectToAction("ShowRecruitmentDetail", model.RecruitmentId);
+            return RedirectToAction("ShowRecruitmentAreHandled", model.StaffId);
         }
 
-        // GET: StaffController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // Từ chối tin chưa sửa ID Staff
         // accpect recruitment and change status to Displayed
         public async Task<IActionResult> AcceptRecruitment(int recruitmentId)
         {
             var result = await staffRespository.AcceptRecruitment(recruitmentId);
-            if (result)
+            int staffId = int.Parse(HttpContext.Session.GetString("UserId"));
+            if(result == EnumStaff.ModerationStatus.NotFound)
             {
-                TempData["Success"] = "Accept recruitment successfully!";
+                TempData["Error"] = "Recruitment not found or is deleted!";
+                return RedirectToAction("ShowRecruitmentAreHandled", staffId);
             }
-            else
+            if (result == EnumStaff.ModerationStatus.ServerError)
             {
-                TempData["Error"] = "Server error!";
+                TempData["Error"] = "Server Error, Try again!";
+                return RedirectToAction("ShowRecruitmentDetail", recruitmentId);
             }
-            return RedirectToAction("ShowRecruitmentDetail", recruitmentId);
+            TempData["Success"] = "Accept recruitment successfully!";
+            return RedirectToAction("ShowRecruitmentAreHandled", staffId);
         }
     }
 }

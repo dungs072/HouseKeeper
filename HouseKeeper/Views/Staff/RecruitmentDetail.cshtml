@@ -9,6 +9,12 @@
             margin-top: 10px;
             margin-bottom: 10px; /* Adjust this value as needed */
         }
+
+        .text-danger{
+            margin: 0;
+            margin-left: 5px;
+            visibility: hidden
+        }
     </style>
 </head>
 
@@ -63,9 +69,12 @@
                         <button type="button" class="btn btn-primary w-25 btn_function" data-bs-toggle="modal" data-bs-target="#confirmModal" data-recruitment-id="@Model.Recruitment.RecruitmentId">
                             Accept
                         </button>
-                        <form asp-action="RejectRecruitment" method="post" enctype="multipart/form-data">
+                        <button class="btn btn-info w-25" type="button" data-bs-toggle="modal" data-bs-target="#historyModel" @(Model.RejectionsDetails.Count == 0? "disabled" : "")>Rejection History</button>
+                        <form id="recruitment-form" asp-action="RejectRecruitment" method="post" enctype="multipart/form-data">
                             <input asp-for="@Model.RecruitmentId" value="@Model.Recruitment.RecruitmentId" hidden />
                             <input asp-for="@Model.StaffId" value="@Model.StaffId" hidden />
+                            <hr /> 
+                            <h5>Reject Recruitment</h5>
                             <ul class="list-group list-group-light">
                                 @{
                                     int rejection_index = 0;
@@ -83,13 +92,10 @@
                                     rejection_index++;
                             }
                             </ul>
-                            <button id ="btn-reject"type="submit" class="btn btn-danger w-25 btn_function" data-bs-toggle="modal" data-bs-target="#confirmRejectModal">
+                            <button id ="btn-reject" type="submit" class="btn btn-danger w-25 btn_function" data-recruitment-id="@Model.Recruitment.RecruitmentId" disabled>
                                 Reject
                             </button>
                         </form>
-                        
-                        
-                        <button class="btn btn-info w-25" type="button">Edit History</button>
                     </div>
                 </div>
 
@@ -130,7 +136,7 @@
 
     <!-- Modal Confirmation -->
     <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog ">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="confirmModalLabel">Confirmation</h5>
@@ -147,7 +153,7 @@
         </div>
     </div>
     
-    <!-- Modal Reject Confirmation -->
+    @* <!-- Modal Reject Confirmation -->
     <div class="modal fade" id="confirmRejectModal" tabindex="-1" aria-labelledby="confirmRejectModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -164,8 +170,48 @@
                 </div>
             </div>
         </div>
-    </div> 
+    </div>  *@
 
+
+    <!-- Rejection History Modal -->
+    <div class="modal fade" id="historyModel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="historyModelLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="historyModelLabel">Rejection History</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="rejections-list">
+                        @foreach(var (date, reasonslist) in Model.RejectionsDetails)
+                        {
+                            <table class="table table-striped table-bordered caption-top">
+                                <caption>@date</caption>
+
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Reason</th>
+                                    <th scope="col">Note</th>
+                                </tr>
+                                <tbody>
+                                    @for(int i = 0; i < reasonslist.Count; i++) 
+                                    {
+                                        <tr>
+                                            <th scope="row">@(i+1)</th>
+                                            <td>@Model.getRejectionName(reasonslist[i].Rejection.RejectionId)</td>
+                                            <td>@reasonslist[i].Note</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                </div>
+                <div class="modal-footer">
+                    ...
+                </div>
+            </div>
+        </div>
+    </div>
     
 
 
@@ -199,11 +245,16 @@
                 $('#btn-reject').submit();
             });
 
+            $('#btn-reject').on('submit', '#recruitment-form', function () {
+                return confirm("Are you sure to Reject?");
+            });
+
             $('.check-box').on('click', function (event) {
                 var modal = $(this);
                 modal.parent().find('textarea').toggle(this.checked)
-            });
+                $('#btn-reject').prop('disabled', ($('.check-box:checked').length == 0));
 
+            });
 
         })
     </script>
