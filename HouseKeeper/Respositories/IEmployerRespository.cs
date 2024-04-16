@@ -29,5 +29,6 @@ namespace HouseKeeper.Respositories
         Task<bool> HideRecruitment(int recruitmentId);
         Task<bool> UnHideRecruitment(int recruitmentId);
         Task<bool> AddBidPrice(int recruitmentId, decimal price);
+        Task<bool> ExtendDeadLine(int recruitmentId, int pricePacketId);
     }
 }

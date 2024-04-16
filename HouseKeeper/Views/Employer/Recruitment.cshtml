@@ -53,7 +53,21 @@
                 border-radius: 3px;
             }
     </style>
+    <script>
+        function formatCurrency(input) {
+            // Remove non-numeric characters and leading zeros
+            let value = input.value.replace(/[^\d]/g, '').replace(/^0+/, '');
 
+            // Check if the input is not empty
+            if (value !== '') {
+                // Format the number with periods for thousands separator
+                value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+                // Update the input value
+                input.value = value;
+            }
+        }
+    </script>
 </head>
 
 <body>
@@ -85,12 +99,14 @@
                         </div>
                     </fieldset>
                     <div class="nice-form-group same-row">
-                        <label>Min Salary (x1000 Dong)</label>
-                        <input asp-for="MinSalary" id="min-salary" type="number" placeholder="1234" min="1" value=@Model.MinSalary />
+                        <label>Min Salary (VND)</label>
+                        <input type="text" min="1" class="form-control" id="min-salary" name="min-salary" value="@Model.MinSalary" placeholder="Enter amount in VND" oninput="formatCurrency(this)" required>
+@*                         <input asp-for="MinSalary" id="min-salary" type="number" placeholder="1234" min="1" value=@Model.MinSalary /> *@
                     </div>
                     <div class="nice-form-group same-row">
-                        <label>Max Salary (x1000 Dong)</label>
-                        <input asp-for="MaxSalary" id="max-salary" type="number" placeholder="4321" value=@Model.MaxSalary />
+                        <label>Max Salary (VND)</label>
+                        <input type="text" min="0" class="form-control" id="max-salary" name="max-salary" value="@Model.MaxSalary" placeholder="Enter amount in VND" oninput="formatCurrency(this)" required>
+@*                         <input asp-for="MaxSalary" id="max-salary" type="number" placeholder="4321" value=@Model.MaxSalary /> *@
                     </div>
                     <div class="nice-form-group">
                         <label>Gender</label>
@@ -220,14 +236,28 @@
         const maxSalaryInput = document.getElementById('max-salary');
 
         minSalaryInput.addEventListener('change', function () {
-            if (parseInt(minSalaryInput.value) >= parseInt(maxSalaryInput.value)) {
-                minSalaryInput.value = parseInt(maxSalaryInput.value) - 1;
+            var maxSalaryStr = maxSalaryInput.value;
+            var maxSalaryStrWithoutComma = maxSalaryStr.replace(/[^\d]/g, '').replace(/^0+/, '');
+            var maxSalary = parseInt(maxSalaryStrWithoutComma,10);
+            var minSalaryStr = minSalaryInput.value;
+            var minSalaryStrWithoutComma = minSalaryStr.replace(/[^\d]/g, '').replace(/^0+/, '');
+            var minSalary = parseInt(minSalaryStrWithoutComma,10);
+            if (minSalary >= maxSalary) {
+                minSalaryInput.value = maxSalary - 1;
+                formatCurrency(minSalaryInput);
             }
         });
 
         maxSalaryInput.addEventListener('change', function () {
-            if (parseInt(maxSalaryInput.value) <= parseInt(minSalaryInput.value)) {
-                maxSalaryInput.value = parseInt(minSalaryInput.value) + 1;
+            var maxSalaryStr = maxSalaryInput.value;
+            var maxSalaryStrWithoutComma = maxSalaryStr.replace(/[^\d]/g, '').replace(/^0+/, '');
+            var maxSalary = parseInt(maxSalaryStrWithoutComma,10);
+            var minSalaryStr = minSalaryInput.value;
+            var minSalaryStrWithoutComma = minSalaryStr.replace(/[^\d]/g, '').replace(/^0+/, '');
+            var minSalary = parseInt(minSalaryStrWithoutComma,10);
+            if (maxSalary <= minSalary) {
+                maxSalaryInput.value = minSalary + 1;
+                formatCurrency(maxSalaryInput);
             }
         });
     </script>

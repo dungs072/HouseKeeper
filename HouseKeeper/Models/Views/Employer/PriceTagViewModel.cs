@@ -20,8 +20,16 @@ namespace HouseKeeper.Models.Views.Employer
     }
     public class BidPriceSettingViewModel
     {
+        public decimal CurrentBidPrice { get; set; }
         public decimal Price { get; set; }
         public int RecruitmentId { get; set; }
         public List<RecruitmentBidViewModel> OnlineRecruitments { get; set; }
+    }
+    public class PricePacketSettingViewModel
+    {
+        public int RecruitmentId { get; set; }
+        public int PricePacketId { get; set; }
+        public GIAGOITIN PricePacket { get; set; }
+        public List<GIAGOITIN> PriceTags { get; set; }
     }
 }
