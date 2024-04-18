@@ -70,6 +70,30 @@
             });
         });
     </script>
+     <script>
+        $(document).ready(function () {
+            // Handle OK button click
+            $('#confirmCancel').on('click', function () {
+                dataToPass = $('#confirmCancel').val();
+                var stringArray = dataToPass.split(':');
+                if (stringArray[0] == 'CancelApply') {
+
+                    var recruitmentId = parseInt(stringArray[1], 10);
+                    var applyDetailId = parseInt(stringArray[2], 10);
+                    var state = stringArray[3];
+                    if (state == 'listpage') {
+                        var url = '/Employee/CancelApplyJob?recruitmentId=' + recruitmentId + '&applyDetailId=' + applyDetailId + '&isList='+true;
+                    }
+                    else {
+                        var url = '/Employee/CancelApplyJob?recruitmentId=' + recruitmentId + '&applyDetailId=' + applyDetailId+'&isList=' + false;
+                    }
+                   
+                    window.location.href = url;
+                }
+
+            });
+        });
+    </script>
     <script>
         $(document).ready(function () {
             var dataToPass = "";
@@ -86,6 +110,16 @@
             $('.hideButton').on('click', function () {
                 dataToPass = $(this).val()
                 var yesDeleteButton = $(document).find('#confirmHide')
+                yesDeleteButton.val(dataToPass)
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            var dataToPass = "";
+            $('.cancelButton').on('click', function () {
+                dataToPass = $(this).val()
+                var yesDeleteButton = $(document).find('#confirmCancel')
                 yesDeleteButton.val(dataToPass)
             });
         });
@@ -135,6 +169,30 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-success" id="confirmHide">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Cancel Modal -->
+<div class="modal fade" id="cancelWarningModal" tabindex="-1" role="dialog" aria-labelledby="warningModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="warningModalLabel">Warning</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="text-center mb-4">
+                    <i class="fas fa-exclamation-triangle text-danger fa-3x"></i>
+                </p>
+                <h5 class="text-center mb-3">Are you sure you want to cancel it?</h5>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" id="confirmCancel">OK</button>
             </div>
         </div>
     </div>

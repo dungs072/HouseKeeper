@@ -18,6 +18,6 @@ namespace HouseKeeper.Models.DB
         [ForeignKey("ID_TK")]
         public virtual TAIKHOAN Account { get; set; }
         [ForeignKey("ID_CCCD")]
-        public virtual DANHTINH Identity { get; set; }
+        public virtual DANHTINH? Identity { get; set; }
     }
 }

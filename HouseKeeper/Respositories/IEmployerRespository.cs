@@ -22,6 +22,7 @@ namespace HouseKeeper.Respositories
         Task<TRANGTHAITIN> GetRecruitmentStatus(int id);
         Task<GIAGOITIN> GetPricePacket(int id);
         Task<HUYEN> GetDistrict(int id);
+        Task<Dictionary<DateTime, List<CHITIETTUCHOI>>> GetRejectionDetails(int recruitmentId);
         Task<bool> CreateRecruitment(TINTUYENDUNG recruitment, string[] jobIds, int pricePacketId);
         Task<ListRecruitmentViewModel> GetEmployerRecruitments(int employerId);
         Task<bool> DeleteSpecificRecruitment(int recruitmentId);

@@ -8,5 +8,9 @@ namespace HouseKeeper.Respositories
         Task<TINTUYENDUNG> GetRecruitment(int id);
         Task<List<TINHTHANHPHO>> GetCities();
         Task<List<HUYEN>> GetDistricts();
+        Task<CHITIETAPPLY> GetApplyDetail(int recruitmentId, int employeeId);
+        Task<bool> ApplyJob(int recruitmentId, int employeeId);
+        Task<bool> CancelApplyJob(int applyDetailId);
+        Task<List<CHITIETAPPLY>> GetApplyRecruitmentList(int employeeId);
     }
 }

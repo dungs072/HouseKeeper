@@ -13,7 +13,7 @@ namespace HouseKeeper.Models.DB
         [Column("THOIGIAN")]
         public DateTime Time { get; set; }
         [Column("TRANGTHAI")]
-        public string State { get; set; }
+        public string? State { get; set; }
         [ForeignKey("ID_GIUPVIEC")]
         public virtual NGUOIGIUPVIEC Employee { get; set; }
         [ForeignKey("ID_TINTUYENDUNG")]
