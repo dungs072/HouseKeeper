@@ -73,7 +73,7 @@
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Personal</a>
                         <div class="dropdown-menu rounded-0 m-0">
-                            <a href="job-list.html" class="dropdown-item">Your infor</a>
+                            <a href="@Url.Action("Profile","Employee")" class="dropdown-item">Your infor</a>
                             <a href="/Home/LogOut" class="dropdown-item">Log out</a>
                         </div>
                     </div>
@@ -127,7 +127,9 @@
                             <h4 class="mb-4">Apply For The Job</h4>
                             @if(Model.ApplyDetail!=null)
                             {
+                                <small class="text-truncate">Please wait until recruiter contacts you</small>
                                 <button class="btn btn-danger cancelButton btn_function" data-toggle="modal" data-target="#cancelWarningModal" value="CancelApply:@Model.Recruitment.RecruitmentId:@Model.ApplyDetail.ApplyDetailId:none">Cancel apply</button>
+                                
                             }
                             else
                             {

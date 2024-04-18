@@ -483,5 +483,13 @@ namespace HouseKeeper.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> Profile()
+        {
+            EmployerProfileViewModel model = new EmployerProfileViewModel();
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
+            model.Employer = await employerRespository.GetEmployer(employerId);
+            return View(model);
+        }
+
     }
 }

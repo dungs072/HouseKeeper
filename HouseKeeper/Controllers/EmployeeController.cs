@@ -97,5 +97,12 @@ namespace HouseKeeper.Controllers
             model.ApplyDetails = await employeeRespository.GetApplyRecruitmentList(employeeId);
             return View("ListAppliedRecruitment", model);
         }
+        public async Task<IActionResult> Profile()
+        {
+            EmployeeProfileViewModel model = new EmployeeProfileViewModel();
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employeeId);
+            model.Employee = await employeeRespository.GetEmployee(employeeId);
+            return View(model);
+        }
     }
 }

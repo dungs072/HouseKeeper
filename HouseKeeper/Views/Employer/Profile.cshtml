@@ -1,14 +1,17 @@
-﻿<!DOCTYPE html>
+﻿@using HouseKeeper.Models.Views.Employer;
+@model EmployerProfileViewModel;
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <title>JobEntry - Job Portal Website Template</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
-
+    <partial name="HeaderInclude" />
     <!-- Favicon -->
-    <link href="/img/favicon.ico" rel="icon">
+    <link href="img/favicon.ico" rel="icon">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,9 +31,76 @@
 
     <!-- Template Stylesheet -->
     <link href="/css/style.css" rel="stylesheet">
+    <style>
+        /* Style for the table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        /* Style for table header */
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+            font-weight: bold;
+        }
+
+        /* Style for table rows */
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        /* Style for table data cells */
+        td {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+    </style>
+    <style>
+        body {
+            background: #67B26F; /* fallback for old browsers */
+            background: -webkit-linear-gradient(to right, #4ca2cd, #67B26F); /* Chrome 10-25, Safari 5.1-6 */
+            background: linear-gradient(to right, #4ca2cd, #67B26F); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+            padding: 0;
+            margin: 0;
+            
+            color: #000;
+        }
+
+        .student-profile .card {
+            border-radius: 10px;
+        }
+
+            .student-profile .card .card-header .profile_img {
+                width: 150px;
+                height: 150px;
+                object-fit: cover;
+                margin: 10px auto;
+                border: 10px solid #ccc;
+                border-radius: 50%;
+            }
+
+            .student-profile .card h3 {
+                font-size: 20px;
+                font-weight: 700;
+            }
+
+            .student-profile .card p {
+                font-size: 16px;
+                color: #000;
+            }
+
+        .student-profile .table th,
+        .student-profile .table td {
+            font-size: 14px;
+            padding: 5px 10px;
+            color: #000;
+        }
+    </style>
 </head>
 
 <body>
+    <partial name="BodyInclude" />
     <div class="container-xxl bg-white p-0">
         <!-- Spinner Start -->
         <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
@@ -63,95 +133,72 @@
             </div>
         </nav>
         <!-- Navbar End -->
-        <!-- Carousel Start -->
-        <div class="container-fluid p-0">
-            <div class="owl-carousel header-carousel position-relative">
-                <div class="owl-carousel-item position-relative">
-                    <img class="img-fluid" src="/img/carousel-1.jpg" alt="">
-                    <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center" style="background: rgba(43, 57, 64, .5);">
-                        <div class="container">
-                            <div class="row justify-content-start">
-                                <div class="col-10 col-lg-8">
-                                    <h1 class="display-3 text-white animated slideInDown mb-4">Want to find housekeepers</h1>
-                                    <p class="fs-5 fw-medium text-white mb-4 pb-2">Looking for reliable housekeepers to maintain your home's cleanliness and organization?</p>
-                                    <a href="@Url.Action("Recruitment", "Employer")" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Post a job</a>
-                                    <a href="@Url.Action("ListRecruitment", "Employer")" class="btn btn-secondary py-md-3 px-md-5 animated slideInRight">See your recruitments</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="owl-carousel-item position-relative">
-                    <img class="img-fluid" src="/img/carousel-2.jpg" alt="">
-                    <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center" style="background: rgba(43, 57, 64, .5);">
-                        <div class="container">
-                            <div class="row justify-content-start">
-                                <div class="col-10 col-lg-8">
-                                    <h1 class="display-3 text-white animated slideInDown mb-4">Want to find housekeepers</h1>
-                                    <p class="fs-5 fw-medium text-white mb-4 pb-2">Whether you need assistance with daily chores, occasional deep cleaning, or special projects, finding the right housekeeper can make a significant difference in your quality of life.</p>
-                                    <a href="@Url.Action("Recruitment", "Employer")" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Post a job</a>
-                                    <a href="@Url.Action("ListRecruitment", "Employer")" class="btn btn-secondary py-md-3 px-md-5 animated slideInRight">See your recruitments</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Carousel End -->
-        <!-- Testimonial Start -->
-        <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+        <!-- Job Detail Start -->
+        <div class="student-profile py-4">
             <div class="container">
-                <h1 class="text-center mb-5">Our Clients Say!!!</h1>
-                <div class="owl-carousel testimonial-carousel">
-                    <div class="testimonial-item bg-light rounded p-4">
-                        <i class="fa fa-quote-left fa-2x text-primary mb-3"></i>
-                        <p>Dolor et eos labore, stet justo sed est sed. Diam sed sed dolor stet amet eirmod eos labore diam</p>
-                        <div class="d-flex align-items-center">
-                            <img class="img-fluid flex-shrink-0 rounded" src="/img/testimonial-1.jpg" style="width: 50px; height: 50px;">
-                            <div class="ps-3">
-                                <h5 class="mb-1">Client Name</h5>
-                                <small>Profession</small>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-transparent text-center">
+                                <img class="profile_img" src="https://source.unsplash.com/600x300/?student" alt="student dp">
+                                <h3>@Model.Employer.LastName @Model.Employer.FirstName</h3>
+                            </div>
+                            <div class="card-body">
+                                <p class="mb-0"><strong class="pr-1">City: </strong>@Model.Employer.District.City.CityName</p>
+                                <p class="mb-0"><strong class="pr-1">District: </strong>@Model.Employer.District.DistrictName</p>
+                                <p class="mb-0"><strong class="pr-1">Address: </strong>@Model.Employer.Address</p>
                             </div>
                         </div>
                     </div>
-                    <div class="testimonial-item bg-light rounded p-4">
-                        <i class="fa fa-quote-left fa-2x text-primary mb-3"></i>
-                        <p>Dolor et eos labore, stet justo sed est sed. Diam sed sed dolor stet amet eirmod eos labore diam</p>
-                        <div class="d-flex align-items-center">
-                            <img class="img-fluid flex-shrink-0 rounded" src="/img/testimonial-2.jpg" style="width: 50px; height: 50px;">
-                            <div class="ps-3">
-                                <h5 class="mb-1">Client Name</h5>
-                                <small>Profession</small>
+                    <div class="col-lg-8">
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-transparent border-0">
+                                <h3 class="mb-0"><i class="far fa-clone pr-1"></i>General Information</h3>
+                            </div>
+                            <div class="card-body pt-0">
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th width="30%">First name</th>
+                                        <td width="2%">:</td>
+                                        <td>@Model.Employer.FirstName</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="30%">Last name</th>
+                                        <td width="2%">:</td>
+                                        <td>@Model.Employer.LastName</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="30%">Gmail</th>
+                                        <td width="2%">:</td>
+                                        <td>@Model.Employer.Account.Gmail</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="30%">Phone number</th>
+                                        <td width="2%">:</td>
+                                        <td>@Model.Employer.Account.PhoneNumber</td>
+                                    </tr>
+                                  @*   <tr>
+                                        <th width="30%">blood</th>
+                                        <td width="2%">:</td>
+                                        <td>B+</td>
+                                    </tr> *@
+                                </table>
                             </div>
                         </div>
-                    </div>
-                    <div class="testimonial-item bg-light rounded p-4">
-                        <i class="fa fa-quote-left fa-2x text-primary mb-3"></i>
-                        <p>Dolor et eos labore, stet justo sed est sed. Diam sed sed dolor stet amet eirmod eos labore diam</p>
-                        <div class="d-flex align-items-center">
-                            <img class="img-fluid flex-shrink-0 rounded" src="/img/testimonial-3.jpg" style="width: 50px; height: 50px;">
-                            <div class="ps-3">
-                                <h5 class="mb-1">Client Name</h5>
-                                <small>Profession</small>
+                        <div style="height: 26px"></div>
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-transparent border-0">
+                                <h3 class="mb-0"><i class="far fa-clone pr-1"></i>Other Information</h3>
                             </div>
-                        </div>
-                    </div>
-                    <div class="testimonial-item bg-light rounded p-4">
-                        <i class="fa fa-quote-left fa-2x text-primary mb-3"></i>
-                        <p>Dolor et eos labore, stet justo sed est sed. Diam sed sed dolor stet amet eirmod eos labore diam</p>
-                        <div class="d-flex align-items-center">
-                            <img class="img-fluid flex-shrink-0 rounded" src="/img/testimonial-4.jpg" style="width: 50px; height: 50px;">
-                            <div class="ps-3">
-                                <h5 class="mb-1">Client Name</h5>
-                                <small>Profession</small>
+                            <div class="card-body pt-0">
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Testimonial End -->
+        <!-- Job Detail End -->
         <!-- Footer Start -->
         <div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
             <div class="container py-5">
@@ -233,3 +280,4 @@
 </body>
 
 </html>
+

@@ -12,5 +12,6 @@ namespace HouseKeeper.Respositories
         Task<bool> ApplyJob(int recruitmentId, int employeeId);
         Task<bool> CancelApplyJob(int applyDetailId);
         Task<List<CHITIETAPPLY>> GetApplyRecruitmentList(int employeeId);
+        Task<NGUOIGIUPVIEC> GetEmployee(int employeeId);
     }
 }

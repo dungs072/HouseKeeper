@@ -22,7 +22,7 @@ namespace HouseKeeper.Respositories
                 page = 1;
             }
 
-            var recruitments = await dBContext.Recruitments.Where(a => a.Status.StatusName == status[2]).ToListAsync();
+            var recruitments = await dBContext.Recruitments.Where(a => a.Status.StatusName == status[2]).OrderByDescending(a=>a.BidPrice).ToListAsync();
 
             if(!string.IsNullOrEmpty(searchKey))
             {
@@ -117,6 +117,10 @@ namespace HouseKeeper.Respositories
         {
             return await dBContext.ApplyDetails.Where(a => a.Employee.EmployeeId == employeeId).
                                                     OrderByDescending(a => a.Time).ToListAsync();
+        }
+        public async Task<NGUOIGIUPVIEC> GetEmployee(int employeeId)
+        {
+            return await dBContext.Employees.FindAsync(employeeId);
         }
 
     }

@@ -16,6 +16,8 @@ namespace HouseKeeper.Models.DB
         public string? Gmail { get; set; }
         [Column("MATKHAU")]
         public string Password { get; set; }
+        [Column("HINHDAIDIEN")]
+        public string? AvatarUrl { get; set; }
         [ForeignKey("ID_LOAI")]
         public virtual LOAITK AccountType { get; set; }
 
