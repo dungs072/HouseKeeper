@@ -237,6 +237,7 @@ namespace HouseKeeper.Controllers
             List<TINHTHANHPHO> cities = await employerRespository.GetCities();
             List<LOAICONGVIEC> jobs = await employerRespository.GetJobs();
             List<HUYEN> districts = await employerRespository.GetDistricts();
+           
             model.PaidTypes = paidTypes;
             model.Experiences = experiences;
             model.Cities = cities;
@@ -301,6 +302,8 @@ namespace HouseKeeper.Controllers
             var value5 = Request.Form["ExperienceId"];
             var value6 = Request.Form["DistrictId"];
             var value7 = Request.Form["Gender"];
+            var value8 = Request.Form["min-salary"].ToString().Replace(".", "");
+            var value9 = Request.Form["max-salary"].ToString().Replace(".", "");
             if (value7 == "Null")
             {
                 model.Gender = null;
@@ -316,6 +319,8 @@ namespace HouseKeeper.Controllers
             model.ExperienceId = int.Parse(value5);
             model.DistrictId = int.Parse(value6);
             model.IsFulltime = isFullTime;
+            model.MinSalary = int.Parse(value8);
+            model.MaxSalary = int.Parse(value9);
             bool result = await employerRespository.EditRecruitment(model);
             if (result)
             {
