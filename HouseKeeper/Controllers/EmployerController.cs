@@ -302,6 +302,7 @@ namespace HouseKeeper.Controllers
             var value5 = Request.Form["ExperienceId"];
             var value6 = Request.Form["DistrictId"];
             var value7 = Request.Form["Gender"];
+            
             var value8 = Request.Form["min-salary"].ToString().Replace(".", "");
             var value9 = Request.Form["max-salary"].ToString().Replace(".", "");
             if (value7 == "Null")
