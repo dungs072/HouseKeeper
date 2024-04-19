@@ -22,7 +22,7 @@ namespace HouseKeeper.Respositories
                 page = 1;
             }
 
-            var recruitments = await dBContext.Recruitments.Where(a => a.Status.StatusName == status[2]).ToListAsync();
+            var recruitments = await dBContext.Recruitments.Where(a => a.Status.StatusName == status[2]).OrderByDescending(a=>a.BidPrice).ToListAsync();
 
             if(!string.IsNullOrEmpty(searchKey))
             {
@@ -64,6 +64,63 @@ namespace HouseKeeper.Respositories
         public async Task<List<HUYEN>> GetDistricts()
         {
             return await dBContext.Districts.ToListAsync();
+        }
+        public async Task<CHITIETAPPLY> GetApplyDetail(int recruitmentId, int employeeId)
+        {
+            var t =  await dBContext.ApplyDetails.Where(a => a.Recruitment.RecruitmentId == recruitmentId && a.Employee.EmployeeId == employeeId).ToListAsync();
+            if(t.Count > 0)
+            {
+                return t[0];
+            }
+            else
+            {
+                return null;
+            }
+        }
+        public async Task<bool> ApplyJob(int recruitmentId, int employeeId)
+        {
+            using var transaction = await dBContext.Database.BeginTransactionAsync();
+            try
+            {
+                CHITIETAPPLY applyDetail = new CHITIETAPPLY();
+                var recruitment = await dBContext.Recruitments.FindAsync(recruitmentId);
+                var employee = await dBContext.Employees.FindAsync(employeeId);
+                applyDetail.Recruitment = recruitment;
+                applyDetail.Employee = employee;
+                applyDetail.Time = DateTime.Now;
+                await dBContext.AddAsync(applyDetail);
+                await dBContext.SaveChangesAsync();
+                transaction.Commit();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                transaction.Rollback();
+                return false;
+            }
+        }
+        public async Task<bool> CancelApplyJob(int applyDetailId)
+        {
+            try
+            {
+                var applyDetail = await dBContext.ApplyDetails.FindAsync(applyDetailId);
+                dBContext.ApplyDetails.Remove(applyDetail);
+                await dBContext.SaveChangesAsync();
+                return true;
+            }
+            catch(Exception e)
+            {
+                return false;
+            }
+        }
+        public async Task<List<CHITIETAPPLY>> GetApplyRecruitmentList(int employeeId)
+        {
+            return await dBContext.ApplyDetails.Where(a => a.Employee.EmployeeId == employeeId).
+                                                    OrderByDescending(a => a.Time).ToListAsync();
+        }
+        public async Task<NGUOIGIUPVIEC> GetEmployee(int employeeId)
+        {
+            return await dBContext.Employees.FindAsync(employeeId);
         }
 
     }

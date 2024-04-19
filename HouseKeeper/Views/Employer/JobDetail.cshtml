@@ -31,6 +31,31 @@
 
     <!-- Template Stylesheet -->
     <link href="/css/style.css" rel="stylesheet">
+    <style>
+        /* Style for the table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        /* Style for table header */
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+            font-weight: bold;
+        }
+
+        /* Style for table rows */
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        /* Style for table data cells */
+        td {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+    </style>
 </head>
 
 <body>
@@ -58,7 +83,7 @@
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Personal</a>
                         <div class="dropdown-menu rounded-0 m-0">
-                            <a href="job-list.html" class="dropdown-item">Your infor</a>
+                            <a href="@Url.Action("Profile", "Employer")" class="dropdown-item">Your infor</a>
                             <a href="/Home/LogOut" class="dropdown-item">Log out</a>
                         </div>
                     </div>
@@ -107,6 +132,38 @@
                         <div class="mb-5">
                             <h4 class="mb-3">Job description</h4>
                             <p>@Model.Recruitment.Note</p>
+
+
+                        </div>
+                        <div class="mb-5">
+                            <h2>Applicants</h2>
+                            @if(Model.Recruitment.ApplyDetails.Count==0)
+                            {
+                                <p>There is no applicants</p>
+                            }
+                            else
+                            {
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Gmail</th>
+                                            <th>Phone number</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.Recruitment.ApplyDetails)
+                                        {
+                                            <tr>
+                                                <td>@item.Employee.LastName @item.Employee.FirstName</td>
+                                                <td>@item.Employee.Account.Gmail</td>
+                                                <td>@item.Employee.Account.PhoneNumber</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                        
                         </div>
 
                        @*  <div class="">

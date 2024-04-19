@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NuGet.Packaging.Signing;
+using System.Collections.Generic;
 
 namespace HouseKeeper.Controllers
 {
@@ -236,6 +237,7 @@ namespace HouseKeeper.Controllers
             List<TINHTHANHPHO> cities = await employerRespository.GetCities();
             List<LOAICONGVIEC> jobs = await employerRespository.GetJobs();
             List<HUYEN> districts = await employerRespository.GetDistricts();
+           
             model.PaidTypes = paidTypes;
             model.Experiences = experiences;
             model.Cities = cities;
@@ -300,6 +302,8 @@ namespace HouseKeeper.Controllers
             var value5 = Request.Form["ExperienceId"];
             var value6 = Request.Form["DistrictId"];
             var value7 = Request.Form["Gender"];
+            var value8 = Request.Form["min-salary"].ToString().Replace(".", "");
+            var value9 = Request.Form["max-salary"].ToString().Replace(".", "");
             if (value7 == "Null")
             {
                 model.Gender = null;
@@ -315,6 +319,8 @@ namespace HouseKeeper.Controllers
             model.ExperienceId = int.Parse(value5);
             model.DistrictId = int.Parse(value6);
             model.IsFulltime = isFullTime;
+            model.MinSalary = int.Parse(value8);
+            model.MaxSalary = int.Parse(value9);
             bool result = await employerRespository.EditRecruitment(model);
             if (result)
             {
@@ -439,6 +445,55 @@ namespace HouseKeeper.Controllers
                 TempData["Error"] = "Server error!";
             }
             return RedirectToAction("ListRecruitment");
+        }
+
+        public async Task<IActionResult> EditReasonRecruitment(int recruitmentId)
+        {
+            EditReasonRecruitmentViewModel model = new EditReasonRecruitmentViewModel();
+            TINTUYENDUNG recruitment = await employerRespository.GetRecruitment(recruitmentId);
+            List<HINHTHUCTRALUONG> paidTypes = await employerRespository.GetPaidTypes();
+            List<KINHNGHIEM> experiences = await employerRespository.GetExperiences();
+            List<TINHTHANHPHO> cities = await employerRespository.GetCities();
+            List<LOAICONGVIEC> jobs = await employerRespository.GetJobs();
+            List<HUYEN> districts = await employerRespository.GetDistricts();
+            Dictionary<DateTime,List<CHITIETTUCHOI>> rejectionDetails = await employerRespository.GetRejectionDetails(recruitmentId);
+            var sortedDictionary = rejectionDetails.OrderByDescending(kv => kv.Key).ToDictionary(kv => kv.Key, kv => kv.Value);
+            model.PaidTypes = paidTypes;
+            model.Experiences = experiences;
+            model.Cities = cities;
+            model.Districts = districts;
+            model.jobs = jobs;
+            model.MaxSalary = recruitment.MaxSalary;
+            model.MinSalary = recruitment.MinSalary;
+            model.AgeRange = recruitment.Age;
+            model.Gender = recruitment.Gender;
+            model.IsFulltime = recruitment.FullTime;
+            model.PostTime = recruitment.PostTime;
+            model.TakeNotes = recruitment.Note;
+            model.NumberVacancies = recruitment.MaxApplications;
+            model.ExperienceId = recruitment.Experience.ExperienceId;
+            model.PaidTypeId = recruitment.SalaryForm.SalaryFormId;
+            model.DistrictId = recruitment.District.DistrictId;
+            model.CityId = recruitment.District.City.CityId;
+            model.RecruitmentId = recruitmentId;
+            model.Address = recruitment.Address;
+            model.RejectionDetails = sortedDictionary;
+            List<LOAICONGVIEC> selectedJobs = new List<LOAICONGVIEC>();
+            foreach (var c in recruitment.HouseworkDetails.ToList())
+            {
+                selectedJobs.Add(c.Job);
+            }
+            model.SelectedJobs = selectedJobs;
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> Profile()
+        {
+            EmployerProfileViewModel model = new EmployerProfileViewModel();
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
+            model.Employer = await employerRespository.GetEmployer(employerId);
+            return View(model);
         }
 
     }

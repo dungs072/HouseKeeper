@@ -242,10 +242,11 @@
             var minSalaryStr = minSalaryInput.value;
             var minSalaryStrWithoutComma = minSalaryStr.replace(/[^\d]/g, '').replace(/^0+/, '');
             var minSalary = parseInt(minSalaryStrWithoutComma,10);
-            if (minSalary >= maxSalary) {
-                minSalaryInput.value = maxSalary - 1;
+            if (minSalary > maxSalary) {
+                minSalaryInput.value = maxSalary;
                 formatCurrency(minSalaryInput);
             }
+            
         });
 
         maxSalaryInput.addEventListener('change', function () {
@@ -255,7 +256,7 @@
             var minSalaryStr = minSalaryInput.value;
             var minSalaryStrWithoutComma = minSalaryStr.replace(/[^\d]/g, '').replace(/^0+/, '');
             var minSalary = parseInt(minSalaryStrWithoutComma,10);
-            if (maxSalary <= minSalary) {
+            if (maxSalary < minSalary) {
                 maxSalaryInput.value = minSalary + 1;
                 formatCurrency(maxSalaryInput);
             }
@@ -288,5 +289,6 @@
         // Trigger change event initially to set the initial state
         citySelect.dispatchEvent(new Event('change'));
     </script>
+
 </body>
 </html>

@@ -82,6 +82,21 @@ namespace HouseKeeper.Respositories
         {
             return await dBContext.Districts.FindAsync(id);
         }
+        public async Task<Dictionary<DateTime,List<CHITIETTUCHOI>>> GetRejectionDetails(int recruitmentId)
+        {
+            var list =  await dBContext.RejectionDetails.Where(a=>a.Recruitment.RecruitmentId==recruitmentId).ToListAsync();
+            Dictionary<DateTime, List<CHITIETTUCHOI>> dict = new Dictionary<DateTime, List<CHITIETTUCHOI>>();
+            foreach(var t in list)
+            {
+                if(!dict.ContainsKey(t.Time))
+                {
+                    dict[t.Time] = new List<CHITIETTUCHOI>();
+                   
+                }
+                dict[t.Time].Add(t);
+            }
+            return dict;
+        }
         public async Task<bool> CreateRecruitment(TINTUYENDUNG recruitment, string[] jobIds, int pricePacketId)
         {
             using var transaction = await dBContext.Database.BeginTransactionAsync();
@@ -329,7 +344,16 @@ namespace HouseKeeper.Respositories
                 pricePacketDetail.Recruitment = recruitment;
                 pricePacketDetail.HasPaid = true;
                 pricePacketDetail.BuyDate = DateTime.Now;
-                recruitment.RecruitDeadlineDate = recruitment.RecruitDeadlineDate.AddDays(pricePacket.NumberDays);
+                if (recruitment.Status.StatusName == status[4])
+                {
+                    recruitment.RecruitDeadlineDate = DateTime.Now.AddDays(pricePacket.NumberDays);
+                    recruitment.Status = await dBContext.RecruitmentStatus.FindAsync(3);
+                }
+                else
+                {
+                    recruitment.RecruitDeadlineDate = recruitment.RecruitDeadlineDate.AddDays(pricePacket.NumberDays);
+                }
+                
                 dBContext.Recruitments.Update(recruitment);
                 dBContext.PricePacketDetails.Add(pricePacketDetail);
                 await dBContext.SaveChangesAsync();

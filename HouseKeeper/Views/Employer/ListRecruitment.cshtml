@@ -66,7 +66,7 @@
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Personal</a>
                         <div class="dropdown-menu rounded-0 m-0">
-                            <a href="job-list.html" class="dropdown-item">Your infor</a>
+                            <a href="@Url.Action("Profile", "Employer")" class="dropdown-item">Your infor</a>
                             <a href="/Home/LogOut" class="dropdown-item">Log out</a>
                         </div>
                     </div>
@@ -142,6 +142,11 @@
                                                 <button class="btn btn-danger hideButton btn_function" data-toggle="modal" data-target="#hideWarningModal" value="HideOnlineRecruitment:@item.RecruitmentId"><i class="fas fa-eye-slash"></i></button>
                                             </div>
                                             <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Deadline: @item.RecruitDeadlineDate.ToString("dd/MM/yyyy") </small>
+                                            @if(item.ApplyDetails.Count>0)
+                                            {
+                                                <small class="text-truncate"><i class="fa fa-users"></i>@item.ApplyDetails.Count applicants</small>
+                                            }
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -208,8 +213,7 @@
                                         </div>
                                         <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
                                             <div class="d-flex mb-3">
-                                                <a class="btn btn-light btn-square me-3" href=""><i class="far fa-heart text-primary"></i></a>
-                                                <a class="btn btn-primary" href="">Apply Now</a>
+                                                <a class="btn btn-primary btn_function" href="EditReasonRecruitment?recruitmentId=@item.RecruitmentId">Fix</a>
                                             </div>
                                             <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: @item.PostTime.ToString("dd/MM/yyyy")</small>
                                         </div>
@@ -244,7 +248,7 @@
                                             <div class="d-flex mb-3">
                                                 <a class="btn btn-primary" href="UnHideRecruitment?recruitmentId=@item.RecruitmentId"><i class="fas fa-eye"></i></a>
                                             </div>
-                                            <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: @item.PostTime.ToString("dd/MM/yyyy")</small>
+                                            <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Deadline: @item.RecruitDeadlineDate.ToString("dd/MM/yyyy")</small>
                                         </div>
                                     </div>
                                 </div>
@@ -259,6 +263,7 @@
                                         <div class="col-sm-12 col-md-8 d-flex align-items-center">
                                             <img class="flex-shrink-0 img-fluid border rounded" src="/img/com-logo-1.jpg" alt="" style="width: 80px; height: 80px;">
                                             <div class="text-start ps-4">
+                                                <h5 class="mb-3">Bid price: @string.Format("{0:0,0} VND", @item.BidPrice)</h5>
                                                 <h5 class="mb-3">@item.HouseWorkName</h5>
                                                 <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@item.District.DistrictName / @item.District.City.CityName</span>
                                                 @if (item.FullTime)
@@ -275,10 +280,10 @@
                                         </div>
                                         <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
                                             <div class="d-flex mb-3">
-                                                <a class="btn btn-light btn-square me-3" href=""><i class="far fa-heart text-primary"></i></a>
-                                                <a class="btn btn-primary" href="">Apply Now</a>
+                                                <a class="btn btn-primary btn_function" href="ShowPricePacket?recruitmentId=@item.RecruitmentId">Extend</a>
                                             </div>
                                             <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: @item.PostTime.ToString("dd/MM/yyyy")</small>
+                                            <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Dead line: @item.RecruitDeadlineDate.ToString("dd/MM/yyyy")</small>
                                         </div>
                                     </div>
                                 </div>

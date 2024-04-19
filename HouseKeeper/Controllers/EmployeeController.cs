@@ -38,9 +38,49 @@ namespace HouseKeeper.Controllers
         }
         public async Task<ActionResult> JobDetail(int recruitmentId)
         {
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employeeId);
             JobDetailViewModel model = new JobDetailViewModel();
             model.Recruitment = await employeeRespository.GetRecruitment(recruitmentId);
+            var applyDetail = await employeeRespository.GetApplyDetail(recruitmentId, employeeId);
+            model.ApplyDetail = applyDetail;
             return View(model);
+        }
+        public async Task<ActionResult> ApplyJob(int recruitmentId)
+        {
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employeeId);
+            var result = await employeeRespository.ApplyJob(recruitmentId,employeeId);
+            if (result)
+            {
+                TempData["Success"] = "Apply to this recruitment successfully";
+                return RedirectToAction("JobDetail", new { recruitmentId = recruitmentId });
+            }
+            else
+            {
+                TempData["Error"] = "Fail to apply to this recruitment";
+                return RedirectToAction("JobDetail", new { recruitmentId = recruitmentId });
+            }
+        }
+        public async Task<ActionResult> CancelApplyJob(int recruitmentId,int applyDetailId,bool isList = false)
+        {
+            var result = await employeeRespository.CancelApplyJob(applyDetailId);
+            if (result)
+            {
+                TempData["Success"] = "Apply to this recruitment successfully";
+                if(isList)
+                {
+                    return RedirectToAction("GetAppliedRecruitment");
+                }
+                return RedirectToAction("JobDetail", new { recruitmentId = recruitmentId });
+            }
+            else
+            {
+                TempData["Error"] = "Fail to apply to this recruitment";
+                if (isList)
+                {
+                    return RedirectToAction("GetAppliedRecruitment");
+                }
+                return RedirectToAction("JobDetail", new { recruitmentId = recruitmentId });
+            }
         }
         public async Task<ActionResult> SearchJob(string keyword, int? cityId, int? districtId)
         {
@@ -49,6 +89,20 @@ namespace HouseKeeper.Controllers
             listRecruitmentViewModel.Cities = await employeeRespository.GetCities();
             listRecruitmentViewModel.Districts = await employeeRespository.GetDistricts();
             return View("IndexEmployee", listRecruitmentViewModel);
+        }
+        public async Task<ActionResult> GetAppliedRecruitment()
+        {
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employeeId);
+            ListAppliedRecruitmentViewModel model = new ListAppliedRecruitmentViewModel();
+            model.ApplyDetails = await employeeRespository.GetApplyRecruitmentList(employeeId);
+            return View("ListAppliedRecruitment", model);
+        }
+        public async Task<IActionResult> Profile()
+        {
+            EmployeeProfileViewModel model = new EmployeeProfileViewModel();
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employeeId);
+            model.Employee = await employeeRespository.GetEmployee(employeeId);
+            return View(model);
         }
     }
 }

@@ -34,6 +34,7 @@ namespace HouseKeeper.DBContext
         public DbSet<LICHSUDAUGIA> BidHistories { get; set; }
         public DbSet<LYDOTUCHOI> Rejections { get; set; }
         public DbSet<CHITIETTUCHOI> RejectionDetails { get; set; }
+        public DbSet<TRANGTHAIDANHTINH> IdentityStates { get; set; }
 
     }
 }
