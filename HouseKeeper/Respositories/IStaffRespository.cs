@@ -9,7 +9,7 @@ namespace HouseKeeper.Respositories
         Task<List<Models.DB.TINTUYENDUNG>> GetRecruitmentNotHandled();
         Task<EnumStaff.ModerationStatus> AcceptRecruitment(int recruitmentId);
 
-        Task<Tuple<EnumStaff.ModerationStatus,TINTUYENDUNG>> GetRecruitment(int recruitmentId, int staffId);
+        Task<Tuple<EnumStaff.ModerationStatus, TINTUYENDUNG>> GetRecruitment(int recruitmentId, int staffId);
 
         Task<List<LYDOTUCHOI>> GetRejections();
 

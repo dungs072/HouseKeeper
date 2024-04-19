@@ -48,8 +48,13 @@ namespace HouseKeeper.Respositories
 
                 // Associate the new Status object with the Recruitment object
                 recruitment.Status = await dBContext.RecruitmentStatus.FindAsync(RecruitmentsStatus.GetStatusId(RecruitmentsStatus.Displayed));
-
-                dBContext.Recruitments.Update(recruitment);
+                var PricePacketList = await dBContext.PricePacketDetails.Where(x => x.BuyDate >= recruitment.PostTime && x.Recruitment.RecruitmentId == recruitmentId && x.HasPaid == true).ToListAsync();
+                var currentTime = DateTime.Now;
+                recruitment.RecruitDeadlineDate = currentTime;
+                foreach (var pricePacket in PricePacketList)
+                {
+                    recruitment.RecruitDeadlineDate = recruitment.RecruitDeadlineDate.AddDays(pricePacket.PricePacket.NumberDays);
+                }
                 await dBContext.SaveChangesAsync();
                 transaction.Commit();
                 return EnumStaff.ModerationStatus.OK;
@@ -114,11 +119,11 @@ namespace HouseKeeper.Respositories
             {
                 return new Tuple<EnumStaff.ModerationStatus, TINTUYENDUNG>(EnumStaff.ModerationStatus.NotFound, null);
             }
-            if(recruitment.Staff != null && recruitment.Staff.StaffId != staffId)
+            if (recruitment.Staff != null && recruitment.Staff.StaffId != staffId)
             {
                 return new Tuple<EnumStaff.ModerationStatus, TINTUYENDUNG>(EnumStaff.ModerationStatus.IsHandledByOther, null);
             }
-            if(recruitment.Staff == null)
+            if (recruitment.Staff == null)
             {
                 using var transaction = await dBContext.Database.BeginTransactionAsync();
                 try
@@ -154,7 +159,7 @@ namespace HouseKeeper.Respositories
         {
             return await dBContext.Rejections.FindAsync(rejectionId);
         }
-        
+
         // get CHITIETTUCHOI by recruitmentId
         public async Task<List<CHITIETTUCHOI>?> GetRejectionsDetail(int recruitmentId)
         {

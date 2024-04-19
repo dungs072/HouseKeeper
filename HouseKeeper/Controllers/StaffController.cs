@@ -48,7 +48,7 @@ namespace HouseKeeper.Controllers
             model.StaffId = int.Parse(HttpContext.Session.GetString("UserId"));
             var result = await staffRespository.GetRecruitment(recruitmentId, model.StaffId);
             var status = result.Item1;
-            
+
             if (status == EnumStaff.ModerationStatus.NotFound)
             {
                 TempData["Error"] = "Recruitment not found or is deleted!";
@@ -81,11 +81,11 @@ namespace HouseKeeper.Controllers
                     model.RejectionsDetails.Add(rejectionDetail.Time, new List<CHITIETTUCHOI> { rejectionDetail });
                 }
             }
-            
-            
+
+
             model.Rejections = await staffRespository.GetRejections();
             model.RejectionId = new List<int>();
-            for(int i = 0; i < model.Rejections.Count; i++)
+            for (int i = 0; i < model.Rejections.Count; i++)
             {
                 model.RejectionId.Add(model.Rejections[i].RejectionId);
             }
@@ -109,7 +109,7 @@ namespace HouseKeeper.Controllers
                 TempData["Error"] = "Server Error, Try again!";
                 return RedirectToAction("ShowRecruitmentDetail", model.RecruitmentId);
             }
-                TempData["Success"] = "Reject recruitment successfully!";
+            TempData["Success"] = "Reject recruitment successfully!";
             return RedirectToAction("ShowRecruitmentAreHandled", model.StaffId);
         }
 
@@ -118,7 +118,7 @@ namespace HouseKeeper.Controllers
         {
             var result = await staffRespository.AcceptRecruitment(recruitmentId);
             int staffId = int.Parse(HttpContext.Session.GetString("UserId"));
-            if(result == EnumStaff.ModerationStatus.NotFound)
+            if (result == EnumStaff.ModerationStatus.NotFound)
             {
                 TempData["Error"] = "Recruitment not found or is deleted!";
                 return RedirectToAction("ShowRecruitmentAreHandled", staffId);
