@@ -28,5 +28,6 @@ namespace HouseKeeper.Models.DB
         public virtual DANHTINH Identity { get; set; }
 
         public virtual ICollection<CHITIETCONGVIEC> JobDetails { get; set; }
+        public virtual ICollection<CHITIETNOICOTHELAMVIEC> WorkPlacesDetails { get; set; }
     }
 }

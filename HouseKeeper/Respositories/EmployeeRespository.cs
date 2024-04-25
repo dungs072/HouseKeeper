@@ -122,6 +122,90 @@ namespace HouseKeeper.Respositories
         {
             return await dBContext.Employees.FindAsync(employeeId);
         }
+        public async Task<List<LOAICONGVIEC>> GetJobsForEmployee(int employeeId)
+        {
+            var jobs = await dBContext.Jobs.ToListAsync();
+            var jobDetails = await dBContext.JobDetails.Where(a => a.Employee.EmployeeId == employeeId).ToListAsync();
+            foreach (var jobDetail in jobDetails)
+            {
+                jobs.Remove(jobDetail.Job);
+            }
+            return jobs;
+        }
+        public async Task<List<HUYEN>> GetWorkplacesForEmployee(int employeeId)
+        {
+            var workPlaces = await dBContext.Districts.ToListAsync();
+            var workPlacesDetails = await dBContext.WorkplacesDetails.Where(a => a.Employee.EmployeeId == employeeId).ToListAsync();
+            foreach(var workPlaceDetail in workPlacesDetails)
+            {
+                workPlaces.Remove(workPlaceDetail.District);
+            }
+            return workPlaces;
+        }
+
+        public async Task<bool> AddJob(int jobId, int employeeId)
+        {
+            try
+            {
+                var jobDetail = new CHITIETCONGVIEC();
+                jobDetail.Job = await dBContext.Jobs.FindAsync(jobId);
+                jobDetail.Employee = await dBContext.Employees.FindAsync(employeeId);
+                await dBContext.AddAsync(jobDetail);
+                await dBContext.SaveChangesAsync();
+                return true;
+            }catch(Exception e)
+            {
+                return false;
+            }
+        }
+        public async Task<bool> DeleteJob(int jobId, int employeeId)
+        {
+            try
+            {
+                var jobDetail = await dBContext.JobDetails.Where(a => a.Job.JobId == jobId && a.Employee.EmployeeId == employeeId).
+                                ToListAsync();
+                if (jobDetail.Count == 0) { return false; }
+                dBContext.JobDetails.Remove(jobDetail[0]);
+                await dBContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+        public async Task<bool> AddDistrict(int districtId, int employeeId)
+        {
+            try
+            {
+                var workplaceDetail = new CHITIETNOICOTHELAMVIEC();
+                workplaceDetail.District = await dBContext.Districts.FindAsync(districtId);
+                workplaceDetail.Employee = await dBContext.Employees.FindAsync(employeeId);
+                await dBContext.AddAsync(workplaceDetail);
+                await dBContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+        public async Task<bool> DeleteDistrict(int districtId, int employeeId)
+        {
+            try
+            {
+                var districtDetail = await dBContext.WorkplacesDetails.Where(a => a.District.DistrictId == districtId && a.Employee.EmployeeId == employeeId).
+                                ToListAsync();
+                if (districtDetail.Count == 0) { return false; }
+                dBContext.WorkplacesDetails.Remove(districtDetail[0]);
+                await dBContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
 
     }
 }
