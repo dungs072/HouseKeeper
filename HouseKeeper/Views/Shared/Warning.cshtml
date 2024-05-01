@@ -49,6 +49,18 @@
                     var url = '/Admin/DeletePricePacket?pricePacketId=' + pricePacketId;
                     window.location.href = url;
                 }
+                if (stringArray[0] == 'DeleteJobDetail') {
+                    var jobId = parseInt(stringArray[1], 10);
+
+                    var url = '/Employee/DeleteJob?jobId=' + jobId;
+                    window.location.href = url;
+                }
+                if (stringArray[0] == 'DeleteDistrictDetail') {
+                    var districtId = parseInt(stringArray[1], 10);
+
+                    var url = '/Employee/DeleteDistrict?districtId=' + districtId;
+                    window.location.href = url;
+                }
 
             });
         });

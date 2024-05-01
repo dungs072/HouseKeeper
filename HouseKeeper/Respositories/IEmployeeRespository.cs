@@ -13,5 +13,12 @@ namespace HouseKeeper.Respositories
         Task<bool> CancelApplyJob(int applyDetailId);
         Task<List<CHITIETAPPLY>> GetApplyRecruitmentList(int employeeId);
         Task<NGUOIGIUPVIEC> GetEmployee(int employeeId);
+        Task<List<LOAICONGVIEC>> GetJobsForEmployee(int employeeId);
+        Task<List<HUYEN>> GetWorkplacesForEmployee(int employeeId);
+        Task<bool> AddJob(int jobId, int employeeId);
+        Task<bool> DeleteJob(int jobId, int employeeId);
+        Task<bool> AddDistrict(int districtId, int employeeId);
+        Task<bool> DeleteDistrict(int districtId, int employeeId);
+
     }
 }

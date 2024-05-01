@@ -102,7 +102,70 @@ namespace HouseKeeper.Controllers
             EmployeeProfileViewModel model = new EmployeeProfileViewModel();
             int.TryParse(HttpContext.Session.GetString("UserId"), out int employeeId);
             model.Employee = await employeeRespository.GetEmployee(employeeId);
+            model.Districts = await employeeRespository.GetWorkplacesForEmployee(employeeId);
+            model.Jobs = await employeeRespository.GetJobsForEmployee(employeeId);
             return View(model);
+        }
+
+        public async Task<IActionResult> AddJob(int jobId)
+        {
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employeeId);
+            var result = await employeeRespository.AddJob(jobId, employeeId);
+            if(result)
+            {
+                TempData["Success"] = "Add job successfully";
+                return RedirectToAction("Profile");
+            }
+            else
+            {
+                TempData["Error"] = "Server error!!!. Add job failed";
+                return RedirectToAction("Profile");
+            }
+        }
+        public async Task<IActionResult> DeleteJob(int jobId)
+        {
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employeeId);
+            var result = await employeeRespository.DeleteJob(jobId, employeeId);
+            if (result)
+            {
+                TempData["Success"] = "Delete job successfully";
+                return RedirectToAction("Profile");
+            }
+            else
+            {
+                TempData["Error"] = "Server error!!!. Delete job failed";
+                return RedirectToAction("Profile");
+            }
+        }
+        public async Task<IActionResult> AddDistrict(int districtId)
+        {
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employeeId);
+            var result = await employeeRespository.AddDistrict(districtId, employeeId);
+            if (result)
+            {
+                TempData["Success"] = "Add workplace successfully";
+                return RedirectToAction("Profile");
+            }
+            else
+            {
+                TempData["Error"] = "Server error!!!. Add workplace failed";
+                return RedirectToAction("Profile");
+            }
+        }
+        public async Task<IActionResult> DeleteDistrict(int districtId)
+        {
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employeeId);
+            var result = await employeeRespository.DeleteDistrict(districtId, employeeId);
+            if (result)
+            {
+                TempData["Success"] = "Delete district successfully";
+                return RedirectToAction("Profile");
+            }
+            else
+            {
+                TempData["Error"] = "Server error!!!. Delete district failed";
+                return RedirectToAction("Profile");
+            }
         }
     }
 }

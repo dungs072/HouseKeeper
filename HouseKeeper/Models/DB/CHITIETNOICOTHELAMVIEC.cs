@@ -12,7 +12,7 @@ namespace HouseKeeper.Models.DB
         public int WorkPlaceId { get; set; }
         [ForeignKey("ID_HUYEN")]
         public virtual HUYEN District { get; set; }
-        [ForeignKey("ID_TINTUYENDUNG")]
-        public virtual TINTUYENDUNG Recruitment { get; set; }
+        [ForeignKey("ID_GIUPVIEC")]
+        public virtual NGUOIGIUPVIEC Employee { get; set; }
     }
 }

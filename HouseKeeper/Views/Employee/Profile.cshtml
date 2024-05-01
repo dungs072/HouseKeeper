@@ -55,6 +55,10 @@
             padding: 8px;
             border-bottom: 1px solid #ddd;
         }
+
+        .centered-button {
+            text-align: center;
+        }
     </style>
     <style>
         body {
@@ -96,6 +100,47 @@
             color: #000;
         }
     </style>
+    <style>
+        /* Style for the combo box */
+        .combo-box {
+            width: 400px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            $('#confirmAddJob').click(function () {
+                const comboBox = document.querySelector('.job_cmb');
+                const selectedValue = comboBox.value;
+                let val = parseInt(selectedValue);
+                window.location.href = '/Employee/AddJob?jobId=' + val;
+            });
+        });
+    </script>
+     <script>
+        $(document).ready(function () {
+            $('#confirmAddDistrict').click(function () {
+                const comboBox = document.querySelector('.district_cmb');
+                const selectedValue = comboBox.value;
+                let val = parseInt(selectedValue);
+                window.location.href = '/Employee/AddDistrict?districtId=' + val;
+            });
+        });
+    </script>
+
+@*     <script>
+        $(document).ready(function () {
+            var dataToPass = "";
+            $('.hideButton').on('click', function () {
+                dataToPass = $(this).val()
+                var yesDeleteButton = $(document).find('#confirmHide')
+                yesDeleteButton.val(dataToPass)
+            });
+        });
+    </script> *@
 </head>
 
 <body>
@@ -111,7 +156,7 @@
         <!-- Navbar Start -->
         <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
             <a href="index.html" class="navbar-brand d-flex align-items-center text-center py-0 px-4 px-lg-5">
-                <h1 class="m-0 text-primary">JobEntry</h1>
+                <h1 class="m-0 text-primary">HouseKeeper</h1>
             </a>
             <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                 <span class="navbar-toggler-icon"></span>
@@ -190,15 +235,80 @@
                                     <td>B+</td>
                                     </tr> *@
                                 </table>
+                                <button class="btn btn-primary">Edit</button>
                             </div>
                         </div>
                         <div style="height: 26px"></div>
                         <div class="card shadow-sm">
                             <div class="card-header bg-transparent border-0">
-                                <h3 class="mb-0"><i class="far fa-clone pr-1"></i>Other Information</h3>
+                                <h3 class="mb-0"><i class="far fa-clone pr-1"></i>Your jobs</h3>
                             </div>
                             <div class="card-body pt-0">
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                                <div class="table-container">
+                                    <table class="styled-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Job name</th>
+                                                <th>Function</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.Employee.JobDetails)
+                                            {
+                                                <tr>
+                                                    <td>@item.Job.JobName</td>
+                                                    <td>
+                                                        <button class="btn btn-danger deleteButton btn_function" data-toggle="modal" data-target="#deleteWarningModal" value="DeleteJobDetail:@item.Job.JobId">Delete</button>
+                                                    </td>
+                                                </tr>
+                                            }
+                                            <tr>
+                                                <td colspan="2">
+                                                    <button class="btn btn-primary addJobButton" data-toggle="modal" data-target="#addJobModal">Add job you can do</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                               
+                            </div>
+                        </div>
+
+                        <div style="height: 26px"></div>
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-transparent border-0">
+                                <h3 class="mb-0"><i class="far fa-clone pr-1"></i>Your workable places</h3>
+                            </div>
+                            <div class="card-body pt-0">
+                                <div class="table-container">
+                                    <table class="styled-table">
+                                        <thead>
+                                            <tr>
+                                                <th>WorkPlace</th>
+                                                <th>Function</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.Employee.WorkPlacesDetails)
+                                            {
+                                                <tr>
+                                                    <td>@item.District.City.CityName \ @item.District.DistrictName</td>
+                                                    <td>
+                                                        <button class="btn btn-danger deleteButton btn_function" data-toggle="modal" data-target="#deleteWarningModal" value="DeleteDistrictDetail:@item.District.DistrictId">Delete</button>
+                                                    </td>
+                                                </tr>
+                                            }
+                                            <tr>
+                                                <td colspan="2">
+                                                    <button class="btn btn-primary addDistrictButton" data-toggle="modal" data-target="#addDistrictModal">Add places you can do </button>
+                                                </td>
+                                                
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                
                             </div>
                         </div>
                     </div>
@@ -206,73 +316,11 @@
             </div>
         </div>
         <!-- Job Detail End -->
-        <!-- Footer Start -->
-        <div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
-            <div class="container py-5">
-                <div class="row g-5">
-                    <div class="col-lg-3 col-md-6">
-                        <h5 class="text-white mb-4">Company</h5>
-                        <a class="btn btn-link text-white-50" href="">About Us</a>
-                        <a class="btn btn-link text-white-50" href="">Contact Us</a>
-                        <a class="btn btn-link text-white-50" href="">Our Services</a>
-                        <a class="btn btn-link text-white-50" href="">Privacy Policy</a>
-                        <a class="btn btn-link text-white-50" href="">Terms & Condition</a>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <h5 class="text-white mb-4">Quick Links</h5>
-                        <a class="btn btn-link text-white-50" href="">About Us</a>
-                        <a class="btn btn-link text-white-50" href="">Contact Us</a>
-                        <a class="btn btn-link text-white-50" href="">Our Services</a>
-                        <a class="btn btn-link text-white-50" href="">Privacy Policy</a>
-                        <a class="btn btn-link text-white-50" href="">Terms & Condition</a>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <h5 class="text-white mb-4">Contact</h5>
-                        <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 Street, New York, USA</p>
-                        <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+012 345 67890</p>
-                        <p class="mb-2"><i class="fa fa-envelope me-3"></i>info@example.com</p>
-                        <div class="d-flex pt-2">
-                            <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-youtube"></i></a>
-                            <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-linkedin-in"></i></a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <h5 class="text-white mb-4">Newsletter</h5>
-                        <p>Dolor amet sit justo amet elitr clita ipsum elitr est.</p>
-                        <div class="position-relative mx-auto" style="max-width: 400px;">
-                            <input class="form-control bg-transparent w-100 py-3 ps-4 pe-5" type="text" placeholder="Your email">
-                            <button type="button" class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">SignUp</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="container">
-                <div class="copyright">
-                    <div class="row">
-                        <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                            &copy; <a class="border-bottom" href="#">Your Site Name</a>, All Right Reserved.
-
-                            <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-                            Designed By <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a>
-                        </div>
-                        <div class="col-md-6 text-center text-md-end">
-                            <div class="footer-menu">
-                                <a href="">Home</a>
-                                <a href="">Cookies</a>
-                                <a href="">Help</a>
-                                <a href="">FQAs</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Footer End -->
+        <partial name="FooterPage" />
         <!-- Back to Top -->
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
+    <partial name="Warning" />
 
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -281,6 +329,65 @@
     <script src="/lib/easing/easing.min.js"></script>
     <script src="/lib/waypoints/waypoints.min.js"></script>
     <script src="/lib/owlcarousel/owl.carousel.min.js"></script>
+    <!-- Add Job modal -->
+    <div class="modal fade" id="addJobModal" tabindex="-1" role="dialog" aria-labelledby="addJobModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addJobTypeModalLabel">Choose job you can do</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="newJobTypeName">Jobs:</label>
+                        <select class="combo-box job_cmb">
+                            @foreach (var job in Model.Jobs)
+                            {
+                                <option value="@job.JobId">@job.JobName</option>
+                            }
+                        </select>
+                        
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" id="confirmAddJob">Choose that</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add District modal -->
+    <div class="modal fade" id="addDistrictModal" tabindex="-1" role="dialog" aria-labelledby="addDistrictModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addJobTypeModalLabel">Choose work place you can do</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="newJobTypeName">Cities/Districts:</label>
+                        <select class="combo-box district_cmb">
+                            @foreach (var district in Model.Districts)
+                            {
+                                <option value="@district.DistrictId">@district.City.CityName / @district.DistrictName</option>
+                            }
+                        </select>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" id="confirmAddDistrict">Choose that</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Template Javascript -->
     <script src="/js/main.js"></script>

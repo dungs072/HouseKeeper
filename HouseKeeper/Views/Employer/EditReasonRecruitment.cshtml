@@ -150,12 +150,12 @@
                     </div>
                     <div class="nice-form-group same-row">
                         <label>Min Salary (VND)</label>
-                        <input type="text" min="1" class="form-control" id="min-salary" name="min-salary" value= @string.Format("{0:0,0}", Model.MinSalary)" placeholder="Enter amount in VND" oninput="formatCurrency(this)" required>
+                        <input type="text" min="1" class="form-control" id="min-salary" name="min-salary" value="@string.Format("{0:0,0}", Model.MinSalary).Replace(",", ".")" placeholder="Enter amount in VND" oninput="formatCurrency(this)" required>
                         @*<input asp-for="MinSalary" id="min-salary" type="number" placeholder="1234" min="1" value=@Model.MinSalary /> *@
                     </div>
                     <div class="nice-form-group same-row">
                         <label>Max Salary (VND)</label>
-                        <input type="text" min="0" class="form-control" id="max-salary" name="max-salary" value="@Model.MaxSalary.ToString("#.##0")" placeholder="Enter amount in VNDdfdfdf" oninput="formatCurrency(this)" required>
+                        <input type="text" min="0" class="form-control" id="max-salary" name="max-salary" value="@string.Format("{0:0,0}", Model.MaxSalary).Replace(",", ".")" placeholder="Enter amount in VNDdfdfdf" oninput="formatCurrency(this)" required>
                         @* <input asp-for="MaxSalary" id="max-salary" type="number" placeholder="4321" value=@Model.MaxSalary /> *@
                     </div>
                     <div class="nice-form-group">

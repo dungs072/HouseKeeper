@@ -18,6 +18,7 @@ namespace HouseKeeper.DBContext
         public DbSet<CHITIETAPPLY> ApplyDetails { get; set; }
         public DbSet<CHITIETCONGVIEC> JobDetails { get; set; }
         public DbSet<CHITIETLOAIGIUPVIEC> HouseWorkDetails { get; set; }
+        public DbSet<CHITIETNOICOTHELAMVIEC> WorkplacesDetails { get; set; }
         public DbSet<HINHTHUCTRALUONG> SalaryForms { get; set; }
         public DbSet<KINHNGHIEM> Experiences { get; set; }
         public DbSet<LOAICONGVIEC> Jobs { get; set; }
