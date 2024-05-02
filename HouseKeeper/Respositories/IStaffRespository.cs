@@ -14,7 +14,8 @@ namespace HouseKeeper.Respositories
         Task<List<LYDOTUCHOI>> GetRejections();
 
         Task<EnumStaff.ModerationStatus> RejectRecruitment(RecruitmentModerationViewModel model);
-        Task<List<TINTUYENDUNG>> ListRecruitmentAreHandledByStaff(int staffId);
+        Task<List<TINTUYENDUNG>> ListRecruitmentAreHandledByStaff(int staffId, string recruitmentStatus);
         Task<List<CHITIETTUCHOI>?> GetRejectionsDetail(int recruitmentId);
+        Task<EnumStaff.ModerationStatus> EditNotesOfRejection(RecruitmentModerationViewModel model);
     }
 }

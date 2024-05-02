@@ -1,18 +1,18 @@
 ﻿using HouseKeeper.DBContext;
 
-namespace HouseKeeper.Contanst
+namespace HouseKeeper.Constant
 {
     public static class RecruitmentsStatus
     {
         // get status string for recruitment
-        public static string Displayed = "Displayed";
-        public static string PendingApproval = "Pending approval";
-        public static string RejectApproval = "Reject approval";
-        public static string Hidden = "Hidden";
-        public static string Expired = "Expired";
+        public readonly static string Displayed = "Displayed";
+        public readonly static string PendingApproval = "Pending approval";
+        public readonly static string RejectApproval = "Reject approval";
+        public readonly static string Hidden = "Hidden";
+        public readonly static string Expired = "Expired";
 
 
-        public static string[] status = new string[] { PendingApproval, RejectApproval,
+        public readonly static string[] status = new string[] { PendingApproval, RejectApproval,
                                                     Displayed, Hidden, Expired };
         
 

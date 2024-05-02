@@ -1,11 +1,14 @@
-﻿using HouseKeeper.Enum.Staff;
+﻿using HouseKeeper.Constant;
+using HouseKeeper.Enum.Staff;
 using HouseKeeper.Models.DB;
+using HouseKeeper.Models.Views.Admin;
 using HouseKeeper.Models.Views.Staff;
 using HouseKeeper.Respositories;
 using Humanizer.Localisation.TimeToClockNotation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Newtonsoft.Json;
 
 namespace HouseKeeper.Controllers
 {
@@ -16,13 +19,14 @@ namespace HouseKeeper.Controllers
         {
             this.staffRespository = staffRespository;
         }
-        // GET: StaffController
+
+        // Controller get index page for staff
         public ActionResult Index()
         {
             return View("IndexStaff");
         }
 
-        // Controller get list recruitment is pending approval and is waiting for moderation
+        // Controller get list recruitment not handled by staff
         public async Task<IActionResult> ShowRecruitmentNotHandled()
         {
             ListRecruitmentsNotHandled model = new ListRecruitmentsNotHandled();
@@ -35,14 +39,17 @@ namespace HouseKeeper.Controllers
         {
             ListRecruitmentsAreHandled model = new ListRecruitmentsAreHandled();
             int staffId = int.Parse(HttpContext.Session.GetString("UserId"));
-            model.RecruimentsAreHandled = await staffRespository.ListRecruitmentAreHandledByStaff(staffId);
+            model.PendingApprovalRecruitments = await staffRespository.ListRecruitmentAreHandledByStaff(staffId, RecruitmentsStatus.PendingApproval);
+            model.DisapprovalRecruitments = await staffRespository.ListRecruitmentAreHandledByStaff(staffId, RecruitmentsStatus.RejectApproval);
             return View("ListRecruitmentsAreHandled", model);
         }
 
 
 
-        // show recruitment detail by recruitmentId
-        public async Task<IActionResult> ShowRecruitmentDetail(int recruitmentId)
+        // Controller get recruitment detail by recruitmentId
+        // isPending = 1: show recruitment detail in PendingApprovalRecruitments
+        // isPending = 0: show recruitment detail in DisapprovalRecruitments
+        public async Task<IActionResult> ShowRecruitmentDetail(int recruitmentId, int isPending)
         {
             RecruitmentModerationViewModel model = new RecruitmentModerationViewModel();
             model.StaffId = int.Parse(HttpContext.Session.GetString("UserId"));
@@ -51,26 +58,26 @@ namespace HouseKeeper.Controllers
 
             if (status == EnumStaff.ModerationStatus.NotFound)
             {
-                TempData["Error"] = "Recruitment not found or is deleted!";
+                TempData["Error"] = Constant.NotificationDuringModeration.NotFoundNotification();
                 return RedirectToAction("ShowRecruitmentAreHandled", model.StaffId);
             }
 
             if (status == EnumStaff.ModerationStatus.ServerError)
             {
-                TempData["Error"] = "Server Error, Try again!";
+                TempData["Error"] = Constant.NotificationDuringModeration.ServerErrorNotification();
                 return RedirectToAction("ShowRecruitmentAreHandled", model.StaffId);
             }
 
             if (status == EnumStaff.ModerationStatus.IsHandledByOther)
             {
-                TempData["Error"] = "Recruitment is handled by other staff";
+                TempData["Error"] = Constant.NotificationDuringModeration.HandledByOtherNotification();
                 return RedirectToAction("ShowRecruitmentAreHandled", model.StaffId);
             }
             model.Recruitment = result.Item2;
-            var rejectionsDetails = await staffRespository.GetRejectionsDetail(recruitmentId);
-
+            var rejectionsDetailsList = await staffRespository.GetRejectionsDetail(recruitmentId);
+            
             model.RejectionsDetails = new Dictionary<DateTime, List<CHITIETTUCHOI>>();
-            foreach (var rejectionDetail in rejectionsDetails)
+            foreach (var rejectionDetail in rejectionsDetailsList)
             {
                 if (model.RejectionsDetails.ContainsKey(rejectionDetail.Time))
                 {
@@ -80,8 +87,34 @@ namespace HouseKeeper.Controllers
                 {
                     model.RejectionsDetails.Add(rejectionDetail.Time, new List<CHITIETTUCHOI> { rejectionDetail });
                 }
+                if (model.LastTimeCanEditNotes == default(DateTime))
+                {
+                    model.LastTimeCanEditNotes = rejectionDetail.Time;
+                }
+                else if (rejectionDetail.Time > model.LastTimeCanEditNotes)
+                {
+                    model.LastTimeCanEditNotes = rejectionDetail.Time;
+                }
+            }
+            model.NoteIndexCanEdit = 1;
+            if (DateTime.Now > model.LastTimeCanEditNotes.AddHours(StaffTimer.HoursAllowForEditRejectionNotes) )
+            {
+                model.NoteIndexCanEdit = 0;
             }
 
+            // get list note can edit
+            if (model.NoteIndexCanEdit > 0) {
+                model.NoteCanEditList = new List<string?>();
+                model.NoteIdCanEditList = new List<int>();
+                foreach (var note in model.RejectionsDetails[model.LastTimeCanEditNotes])
+                {
+                    model.NoteIdCanEditList.Add(note.RejectionDetailId);
+                    model.NoteCanEditList.Add(note.Note);
+                }
+            }
+
+            // set last time can edit notes
+            model.LastTimeCanEditNotes = model.LastTimeCanEditNotes.AddHours(StaffTimer.HoursAllowForEditRejectionNotes);
 
             model.Rejections = await staffRespository.GetRejections();
             model.RejectionId = new List<int>();
@@ -91,7 +124,33 @@ namespace HouseKeeper.Controllers
             }
             model.IsSelectedList = Enumerable.Repeat(false, model.Rejections.Count).ToList();
             model.NoteList = Enumerable.Repeat("", model.Rejections.Count).ToList();
-            return View("RecruitmentDetail", model);
+            if (isPending == 1)
+            {
+                return View("PendingRecruitmentDetail", model);
+            }
+            return View("RejectionRecruitmentDetail", model);
+        }
+
+        // edit note of rejection
+        [HttpPost]
+        // reject recruitment and change status to Rejected and add reason
+        public async Task<IActionResult> EditNotesOfRejection(RecruitmentModerationViewModel model)
+        {
+            var result = await staffRespository.EditNotesOfRejection(model);
+            int staffId = int.Parse(HttpContext.Session.GetString("UserId"));
+            if (result == EnumStaff.ModerationStatus.NotFound)
+            {
+                TempData["Error"] = Constant.NotificationDuringModeration.NotFoundNotification();
+                return RedirectToAction("ShowRecruitmentAreHandled", staffId);
+            }
+            if (result == EnumStaff.ModerationStatus.ServerError)
+            {
+                TempData["Error"] = Constant.NotificationDuringModeration.ServerErrorNotification();
+                return RedirectToAction("ShowRecruitmentDetail", model.RecruitmentId);
+            }
+
+            TempData["Success"] = Constant.NotificationDuringModeration.EditSuccessNotification(model.RecruitmentId);
+            return RedirectToAction("ShowRecruitmentAreHandled", staffId);
         }
 
         [HttpPost]
@@ -101,15 +160,15 @@ namespace HouseKeeper.Controllers
             var result = await staffRespository.RejectRecruitment(model);
             if (result == EnumStaff.ModerationStatus.NotFound)
             {
-                TempData["Error"] = "Recruitment not found or is deleted!";
+                TempData["Error"] = Constant.NotificationDuringModeration.NotFoundNotification();
                 return RedirectToAction("ShowRecruitmentAreHandled", model.StaffId);
             }
             if (result == EnumStaff.ModerationStatus.ServerError)
             {
-                TempData["Error"] = "Server Error, Try again!";
+                TempData["Error"] = Constant.NotificationDuringModeration.ServerErrorNotification();
                 return RedirectToAction("ShowRecruitmentDetail", model.RecruitmentId);
             }
-            TempData["Success"] = "Reject recruitment successfully!";
+            TempData["Success"] = Constant.NotificationDuringModeration.RejectSuccessNotification(model.RecruitmentId);
             return RedirectToAction("ShowRecruitmentAreHandled", model.StaffId);
         }
 
@@ -120,16 +179,18 @@ namespace HouseKeeper.Controllers
             int staffId = int.Parse(HttpContext.Session.GetString("UserId"));
             if (result == EnumStaff.ModerationStatus.NotFound)
             {
-                TempData["Error"] = "Recruitment not found or is deleted!";
+                TempData["Error"] = Constant.NotificationDuringModeration.NotFoundNotification();
                 return RedirectToAction("ShowRecruitmentAreHandled", staffId);
             }
             if (result == EnumStaff.ModerationStatus.ServerError)
             {
-                TempData["Error"] = "Server Error, Try again!";
+                TempData["Error"] = Constant.NotificationDuringModeration.ServerErrorNotification();
                 return RedirectToAction("ShowRecruitmentDetail", recruitmentId);
             }
-            TempData["Success"] = "Accept recruitment successfully!";
+            TempData["Success"] = Constant.NotificationDuringModeration.AcceptSuccessNotification(recruitmentId);
             return RedirectToAction("ShowRecruitmentAreHandled", staffId);
         }
+
+        
     }
 }

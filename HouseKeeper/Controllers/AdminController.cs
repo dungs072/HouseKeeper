@@ -1,6 +1,7 @@
 ﻿using HouseKeeper.Models.Views.Admin;
 using HouseKeeper.Respositories;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace HouseKeeper.Controllers
 {
@@ -253,6 +254,22 @@ namespace HouseKeeper.Controllers
             }
             return RedirectToAction("ShowPricePackets");
         }
-        #endregion
-    }
+		#endregion
+
+        // Draw chart using CanvasJS
+		// https://canvasjs.com/asp-net-mvc-charts/
+		// https://canvasjs.com/asp-net-mvc-charts/chart-with-logarithmic-axis/
+		public ActionResult DrawChart()
+		{
+			List<DataPoint> dataPoints = new List<DataPoint>();
+            for (int i = 1; i<= 12; i++)
+            {
+                dataPoints.Add(new DataPoint("Month " + i, i * i * i));
+            }
+
+			ViewBag.DataPoints = JsonConvert.SerializeObject(dataPoints);
+
+			return View("Chart");
+		}
+	}
 }

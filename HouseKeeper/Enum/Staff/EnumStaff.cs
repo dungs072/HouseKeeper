@@ -1,4 +1,6 @@
-﻿namespace HouseKeeper.Enum.Staff
+﻿using HouseKeeper.Constant;
+
+namespace HouseKeeper.Enum.Staff
 {
     public class EnumStaff
     {
@@ -7,7 +9,6 @@
             NotFound,
             IsHandledByOther,
             ServerError,
-
         }
     }
 }

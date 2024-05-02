@@ -1,4 +1,4 @@
-﻿using HouseKeeper.Contanst;
+﻿using HouseKeeper.Constant;
 using HouseKeeper.Enum.Staff;
 using HouseKeeper.Models.DB;
 using HouseKeeper.Models.Views.Staff;
@@ -23,9 +23,9 @@ namespace HouseKeeper.Respositories
         }
 
         // Get all recruitment are handled by staff
-        public async Task<List<Models.DB.TINTUYENDUNG>> ListRecruitmentAreHandledByStaff(int staffId)
+        public async Task<List<Models.DB.TINTUYENDUNG>> ListRecruitmentAreHandledByStaff(int staffId, string recruimentStatus)
         {
-            return await dBContext.Recruitments.Where(a => a.Status.StatusName == RecruitmentsStatus.PendingApproval && a.Staff != null && a.Staff.StaffId == staffId).ToListAsync();
+            return await dBContext.Recruitments.Where(a => a.Status.StatusName == recruimentStatus && a.Staff != null && a.Staff.StaffId == staffId).ToListAsync();
         }
 
         // Accept recruitment by id and change status to Displayed
@@ -164,6 +164,36 @@ namespace HouseKeeper.Respositories
         public async Task<List<CHITIETTUCHOI>?> GetRejectionsDetail(int recruitmentId)
         {
             return await dBContext.RejectionDetails.Where(a => a.Recruitment.RecruitmentId == recruitmentId).ToListAsync();
+        }
+
+        // Edit note of rejection
+        public async Task<EnumStaff.ModerationStatus> EditNotesOfRejection(RecruitmentModerationViewModel model)
+        {
+            using var transaction = await dBContext.Database.BeginTransactionAsync();
+            try
+            {
+                var recruitment = await dBContext.Recruitments
+                    .Include(r => r.Status)  // Ensure that the Status property is loaded
+                    .FirstOrDefaultAsync(r => r.RecruitmentId == model.RecruitmentId);
+                if (recruitment == null)
+                {
+                    return EnumStaff.ModerationStatus.NotFound;
+
+                }
+                for (int i = 0; i < model.NoteIdCanEditList.Count; i++)
+                {
+                    var rejectionDetail = await dBContext.RejectionDetails.FindAsync(model.NoteIdCanEditList[i]);
+                    rejectionDetail.Note = model.NoteCanEditList[i];
+                }
+                await dBContext.SaveChangesAsync();
+                transaction.Commit();
+                return EnumStaff.ModerationStatus.OK;
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                return EnumStaff.ModerationStatus.ServerError;
+            }
         }
     }
 }

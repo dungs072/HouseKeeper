@@ -4,6 +4,7 @@ namespace HouseKeeper.Models.Views.Staff
 {
     public class ListRecruitmentsAreHandled
     {
-        public List<TINTUYENDUNG> RecruimentsAreHandled { get; set; }
+        public List<TINTUYENDUNG> PendingApprovalRecruitments { get; set; }
+        public List<TINTUYENDUNG> DisapprovalRecruitments { get; set; }
     }
 }
