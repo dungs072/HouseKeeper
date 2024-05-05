@@ -27,6 +27,9 @@ namespace HouseKeeper.Models.DB
         [ForeignKey("ID_CCCD")]
         public virtual DANHTINH Identity { get; set; }
 
+        [ForeignKey("ID_TRANGTHAIDANHTINH")]
+        public virtual TRANGTHAIDANHTINH? IdentityState { get; set; }
+
         public virtual ICollection<CHITIETCONGVIEC> JobDetails { get; set; }
         public virtual ICollection<CHITIETNOICOTHELAMVIEC> WorkPlacesDetails { get; set; }
     }

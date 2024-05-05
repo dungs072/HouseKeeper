@@ -3,12 +3,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HouseKeeper.Models.DB
 {
-    [Table("GIAGOITIN", Schema = "dbo")]
-    public class GIAGOITIN
+    [Table("GOITIN", Schema = "dbo")]
+    public class GOITIN
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("ID_GIAGOITIN")]
+        [Column("ID_GOITIN")]
         public int PricePacketId { get; set; }
         [Column("TENGOI")]
         public string PricePacketName { get; set; }
@@ -16,6 +16,6 @@ namespace HouseKeeper.Models.DB
         public decimal Price { get; set; }
         [Column("SOLUONGNGAY")]
         public int NumberDays { get; set; }
-        public virtual ICollection<CHITIETGIAGOITIN> PricePacketDetails { get; set; }
+        public virtual ICollection<HOADON> PricePacketDetails { get; set; }
     }
 }

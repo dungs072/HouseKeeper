@@ -23,5 +23,7 @@ namespace HouseKeeper.Models.DB
         public virtual DANHTINH Identity { get; set; }
         [ForeignKey("ID_HUYEN")]
         public virtual HUYEN District { get; set; }
+        [ForeignKey("ID_TRANGTHAIDANHTINH")]
+        public virtual TRANGTHAIDANHTINH? IdentityState { get; set; }
     }
 }

@@ -228,7 +228,7 @@ namespace HouseKeeper.Respositories
         #endregion
 
         #region PricePacket
-        public async Task<List<GIAGOITIN>> GetPricePackets()
+        public async Task<List<GOITIN>> GetPricePackets()
         {
             return await dBContext.PricePackets.ToListAsync();
         }
@@ -236,7 +236,7 @@ namespace HouseKeeper.Respositories
         {
             try
             {
-                GIAGOITIN pricePacket = new GIAGOITIN();
+                GOITIN pricePacket = new GOITIN();
                 pricePacket.PricePacketName = pricePacketName;
                 pricePacket.Price = price;
                 pricePacket.NumberDays = numberDays;

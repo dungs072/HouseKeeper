@@ -33,7 +33,7 @@ namespace HouseKeeper.Respositories
         {
             return await dBContext.Jobs.ToListAsync();
         }
-        public async Task<List<GIAGOITIN>> GetPriceTags()
+        public async Task<List<GOITIN>> GetPriceTags()
         {
             return await dBContext.PricePackets.ToListAsync();
         }
@@ -66,7 +66,7 @@ namespace HouseKeeper.Respositories
         {
             return await dBContext.Employers.FindAsync(id);
         }
-        public async Task<GIAGOITIN> GetPricePacket(int id)
+        public async Task<GOITIN> GetPricePacket(int id)
         {
             return await dBContext.PricePackets.FindAsync(id);
         }
@@ -104,7 +104,7 @@ namespace HouseKeeper.Respositories
             {
                
                 List<CHITIETLOAIGIUPVIEC> housekeepingTypes = new List<CHITIETLOAIGIUPVIEC>();
-                CHITIETGIAGOITIN packetDetail = new CHITIETGIAGOITIN();
+                HOADON packetDetail = new HOADON();
                 packetDetail.Recruitment = recruitment;
                 packetDetail.PricePacket = await GetPricePacket(pricePacketId);
                 packetDetail.BuyDate = DateTime.Now;
@@ -339,7 +339,7 @@ namespace HouseKeeper.Respositories
             {
                 var recruitment = await dBContext.Recruitments.FindAsync(recruitmentId);
                 var pricePacket = await dBContext.PricePackets.FindAsync(pricePacketId);
-                var pricePacketDetail = new CHITIETGIAGOITIN();
+                var pricePacketDetail = new HOADON();
                 pricePacketDetail.PricePacket = pricePacket;
                 pricePacketDetail.Recruitment = recruitment;
                 pricePacketDetail.HasPaid = true;

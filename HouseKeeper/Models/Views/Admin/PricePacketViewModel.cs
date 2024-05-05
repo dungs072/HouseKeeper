@@ -4,6 +4,6 @@ namespace HouseKeeper.Models.Views.Admin
 {
     public class PricePacketViewModel
     {
-        public List<GIAGOITIN> PricePackets { get; set; }
+        public List<GOITIN> PricePackets { get; set; }
     }
 }

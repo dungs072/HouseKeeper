@@ -6,7 +6,7 @@ namespace HouseKeeper.Models.Views.Employer
     public class PriceTagViewModel
     {
         public TINTUYENDUNG Recruitment { get; set; }
-        public List<GIAGOITIN> PriceTags { get; set; }
+        public List<GOITIN> PriceTags { get; set; }
         public List<RecruitmentBidViewModel> OnlineRecruitments { get; set; }
         public int PricePacketId { get; set; }
         public int SalaryId { get;set; }
@@ -29,7 +29,7 @@ namespace HouseKeeper.Models.Views.Employer
     {
         public int RecruitmentId { get; set; }
         public int PricePacketId { get; set; }
-        public GIAGOITIN PricePacket { get; set; }
-        public List<GIAGOITIN> PriceTags { get; set; }
+        public GOITIN PricePacket { get; set; }
+        public List<GOITIN> PriceTags { get; set; }
     }
 }

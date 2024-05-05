@@ -26,8 +26,8 @@ namespace HouseKeeper.DBContext
         public DbSet<NGUOITHUE> Employers { get; set; }
         public DbSet<TINHTHANHPHO> Cities { get; set; }
         public DbSet<TINTUYENDUNG> Recruitments { get; set; }
-        public DbSet<GIAGOITIN> PricePackets { get; set; }
-        public DbSet<CHITIETGIAGOITIN> PricePacketDetails { get; set; }
+        public DbSet<GOITIN> PricePackets { get; set; }
+        public DbSet<HOADON> PricePacketDetails { get; set; }
         public DbSet<NHANVIEN> Staffs { get; set; }
         public DbSet<DANHTINH> Identities { get; set; }
         public DbSet<HUYEN> Districts { get; set; } 

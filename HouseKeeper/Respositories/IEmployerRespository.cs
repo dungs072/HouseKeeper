@@ -10,7 +10,7 @@ namespace HouseKeeper.Respositories
         Task<List<KINHNGHIEM>> GetExperiences();
         Task<List<TINHTHANHPHO>> GetCities();
         Task<List<LOAICONGVIEC>> GetJobs();
-        Task<List<GIAGOITIN>> GetPriceTags();
+        Task<List<GOITIN>> GetPriceTags();
         Task<List<HUYEN>> GetDistricts();
         Task<List<TINTUYENDUNG>> GetOnlineRecruitments();
         Task<HINHTHUCTRALUONG> GetPaidType(int id);
@@ -20,7 +20,7 @@ namespace HouseKeeper.Respositories
         Task<NGUOITHUE> GetEmployer(int id);
         Task<TINTUYENDUNG> GetRecruitment(int id);
         Task<TRANGTHAITIN> GetRecruitmentStatus(int id);
-        Task<GIAGOITIN> GetPricePacket(int id);
+        Task<GOITIN> GetPricePacket(int id);
         Task<HUYEN> GetDistrict(int id);
         Task<Dictionary<DateTime, List<CHITIETTUCHOI>>> GetRejectionDetails(int recruitmentId);
         Task<bool> CreateRecruitment(TINTUYENDUNG recruitment, string[] jobIds, int pricePacketId);
