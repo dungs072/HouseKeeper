@@ -49,7 +49,7 @@ namespace HouseKeeper.Models.DB
 
 
         public virtual ICollection<CHITIETAPPLY> ApplyDetails { get; set; }
-        public virtual ICollection<CHITIETGIAGOITIN> PricePacketDetail { get; set; }
+        public virtual ICollection<HOADON> PricePacketDetail { get; set; }
         public virtual ICollection<CHITIETLOAIGIUPVIEC> HouseworkDetails { get; set; }
         public virtual ICollection<LICHSUDAUGIA> BidHistories { get; set; }
         public virtual ICollection<CHITIETTUCHOI> RejectionDetails { get; set; }

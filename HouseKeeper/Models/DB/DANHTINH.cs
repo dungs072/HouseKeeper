@@ -16,7 +16,5 @@ namespace HouseKeeper.Models.DB
         public int FrontImage { get; set; }
         [Column("MATSAU")]
         public int BackImage { get; set; }
-        [ForeignKey("ID_TRANGTHAIDANHTINH")]
-        public virtual TRANGTHAIDANHTINH IdentityState { get; set; }
     }
 }

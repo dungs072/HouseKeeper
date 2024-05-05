@@ -25,7 +25,7 @@ namespace HouseKeeper.Respositories
         Task<bool> EditRejection(int rejectionId, string rejectionName);
         Task<bool> DeleteRejection(int rejectionId);
         //Price packet
-        Task<List<GIAGOITIN>> GetPricePackets();
+        Task<List<GOITIN>> GetPricePackets();
         Task<bool> AddPricePacket(string pricePacketName, dynamic price, int numberDays);
         Task<bool> EditPricePacket(int pricePacketId, string pricePacketName, dynamic price, int numberDays);
         Task<bool> DeletePricePacket(int pricePacketId);
