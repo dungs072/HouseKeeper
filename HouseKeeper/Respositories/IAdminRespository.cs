@@ -1,4 +1,5 @@
 ﻿using HouseKeeper.Models.DB;
+using HouseKeeper.Models.Views.Admin;
 
 namespace HouseKeeper.Respositories
 {
@@ -29,5 +30,6 @@ namespace HouseKeeper.Respositories
         Task<bool> AddPricePacket(string pricePacketName, dynamic price, int numberDays);
         Task<bool> EditPricePacket(int pricePacketId, string pricePacketName, dynamic price, int numberDays);
         Task<bool> DeletePricePacket(int pricePacketId);
+        Task<List<DataPoint>> GetPricePacketRevenue(int year);
     }
 }

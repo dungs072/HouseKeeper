@@ -1,5 +1,7 @@
-﻿using HouseKeeper.DBContext;
+﻿using HouseKeeper.Constant;
+using HouseKeeper.DBContext;
 using HouseKeeper.Models.DB;
+using HouseKeeper.Models.Views.Admin;
 using Microsoft.EntityFrameworkCore;
 
 namespace HouseKeeper.Respositories
@@ -280,6 +282,25 @@ namespace HouseKeeper.Respositories
             {
                 return false;
             }
+        }
+        #endregion
+
+        #region PricePacketRevenue
+        public async Task<List<DataPoint>> GetPricePacketRevenue(int year)
+        {
+            var pricePacketRevenueInYear = await dBContext.PricePacketDetails.Where(x => x.HasPaid).ToListAsync();
+            List<decimal> revenue = new List<decimal>(12);
+            foreach (var pricePacketRevenue in pricePacketRevenueInYear)
+            {
+                revenue[pricePacketRevenue.BuyDate.Month - 1] += pricePacketRevenue.PricePacket.Price;
+            }
+            List<DataPoint> dataPoints = new List<DataPoint>();
+            for (int i = 0; i < 12; i++)
+            {
+                dataPoints.Add(new DataPoint(ChartConstant.monthsArray[i], revenue[i]));
+            }
+
+            return dataPoints;
         }
         #endregion
     }
