@@ -1,4 +1,6 @@
-﻿using HouseKeeper.Models.Views.Admin;
+﻿using HouseKeeper.Constant;
+using HouseKeeper.Enum;
+using HouseKeeper.Models.Views.Admin;
 using HouseKeeper.Respositories;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -256,20 +258,21 @@ namespace HouseKeeper.Controllers
         }
 		#endregion
 
-        // Draw chart using CanvasJS
-		// https://canvasjs.com/asp-net-mvc-charts/
-		// https://canvasjs.com/asp-net-mvc-charts/chart-with-logarithmic-axis/
-		public ActionResult DrawChart()
+        
+		public ActionResult DrawChart(int selectedYear = 0)
 		{
-			List<DataPoint> dataPoints = new List<DataPoint>();
-            for (int i = 1; i<= 12; i++)
-            {
-                dataPoints.Add(new DataPoint("Month " + i, i * i * i));
-            }
+            if (selectedYear == 0) selectedYear = DateTime.Now.Year;
 
-			ViewBag.DataPoints = JsonConvert.SerializeObject(dataPoints);
-
-			return View("Chart");
+            // Get data points for price packet revenue, bid revenue, total revenue
+            var revenueDataPoints = adminRespository.GetRevenueDataPoints(selectedYear).Result;
+            
+            ViewBag.pricePacketRevenueDataPoints = JsonConvert.SerializeObject(revenueDataPoints[EnumAdmin.RevenueType.PricePacket]);
+            ViewBag.bidRevenueDataPoints = JsonConvert.SerializeObject(revenueDataPoints[EnumAdmin.RevenueType.Bid]);
+            ViewBag.totalRevenueDataPoints = JsonConvert.SerializeObject(revenueDataPoints[EnumAdmin.RevenueType.Total]);
+            ViewBag.SelectedYear = selectedYear;
+            ViewBag.StartYear = AppTimer.startYearStatistic;
+            ViewBag.EndYear = AppTimer.endYearStatistic;
+            return View("RevenueStatistic");
 		}
 	}
 }

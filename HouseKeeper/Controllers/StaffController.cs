@@ -1,5 +1,5 @@
 ﻿using HouseKeeper.Constant;
-using HouseKeeper.Enum.Staff;
+using HouseKeeper.Enum;
 using HouseKeeper.Models.DB;
 using HouseKeeper.Models.Views.Admin;
 using HouseKeeper.Models.Views.Staff;
@@ -97,7 +97,7 @@ namespace HouseKeeper.Controllers
                 }
             }
             model.NoteIndexCanEdit = 1;
-            if (DateTime.Now > model.LastTimeCanEditNotes.AddHours(StaffTimer.HoursAllowForEditRejectionNotes) )
+            if (DateTime.Now > model.LastTimeCanEditNotes.AddHours(Constant.AppTimer.HoursAllowForEditRejectionNotes) )
             {
                 model.NoteIndexCanEdit = 0;
             }
@@ -114,7 +114,7 @@ namespace HouseKeeper.Controllers
             }
 
             // set last time can edit notes
-            model.LastTimeCanEditNotes = model.LastTimeCanEditNotes.AddHours(StaffTimer.HoursAllowForEditRejectionNotes);
+            model.LastTimeCanEditNotes = model.LastTimeCanEditNotes.AddHours(Constant.AppTimer.HoursAllowForEditRejectionNotes);
 
             model.Rejections = await staffRespository.GetRejections();
             model.RejectionId = new List<int>();

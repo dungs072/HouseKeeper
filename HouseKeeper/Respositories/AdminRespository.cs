@@ -1,12 +1,13 @@
 ﻿using HouseKeeper.Constant;
 using HouseKeeper.DBContext;
+using HouseKeeper.Enum;
 using HouseKeeper.Models.DB;
 using HouseKeeper.Models.Views.Admin;
 using Microsoft.EntityFrameworkCore;
 
 namespace HouseKeeper.Respositories
 {
-    public class AdminRespository:IAdminRespository
+    public class AdminRespository : IAdminRespository
     {
         private readonly HouseKeeperDBContext dBContext;
         public AdminRespository(HouseKeeperDBContext dBContext)
@@ -30,12 +31,13 @@ namespace HouseKeeper.Respositories
                 return true;
 
 
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return false;
             }
         }
-        public async Task<bool> EditJobType(int jobId,string jobName)
+        public async Task<bool> EditJobType(int jobId, string jobName)
         {
             try
             {
@@ -44,11 +46,12 @@ namespace HouseKeeper.Respositories
                 dBContext.Jobs.Update(jobType);
                 dBContext.SaveChanges();
                 return true;
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return false;
             }
-         
+
         }
         public async Task<bool> DeleteJobType(int jobId)
         {
@@ -58,7 +61,8 @@ namespace HouseKeeper.Respositories
                 dBContext.Jobs.Remove(jobType);
                 dBContext.SaveChanges();
                 return true;
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return false;
             }
@@ -285,19 +289,35 @@ namespace HouseKeeper.Respositories
         }
         #endregion
 
-        #region PricePacketRevenue
-        public async Task<List<DataPoint>> GetPricePacketRevenue(int year)
+        #region RevenueChart
+        public async Task<Dictionary<EnumAdmin.RevenueType, List<DataPoint>>> GetRevenueDataPoints(int year)
         {
-            var pricePacketRevenueInYear = await dBContext.PricePacketDetails.Where(x => x.HasPaid).ToListAsync();
-            List<decimal> revenue = new List<decimal>(12);
+            var pricePacketRevenueInYear = await dBContext.PricePacketDetails.Where(x => x.BuyDate.Year == year && x.HasPaid).ToListAsync();
+            var bidRevenueInYear = await dBContext.BidHistories.Where(x => x.BuyDate.Year == year && x.IsPaid).ToListAsync();
+
+            List<decimal> pricePacketRevenueMonthly = new List<decimal>(new decimal[12]);
+            List<decimal> bidRevenueMonthly = new List<decimal>(new decimal[12]);
+
             foreach (var pricePacketRevenue in pricePacketRevenueInYear)
             {
-                revenue[pricePacketRevenue.BuyDate.Month - 1] += pricePacketRevenue.PricePacket.Price;
+                pricePacketRevenueMonthly[pricePacketRevenue.BuyDate.Month - 1] += pricePacketRevenue.PricePacket.Price;
             }
-            List<DataPoint> dataPoints = new List<DataPoint>();
+
+            foreach (var bidRevenue in bidRevenueInYear)
+            {
+                bidRevenueMonthly[bidRevenue.BuyDate.Month - 1] += bidRevenue.IncreasePrice;
+            }
+
+            Dictionary<EnumAdmin.RevenueType, List<DataPoint>> dataPoints = new();
+            dataPoints.Add(EnumAdmin.RevenueType.PricePacket, new List<DataPoint>());
+            dataPoints.Add(EnumAdmin.RevenueType.Bid, new List<DataPoint>());
+            dataPoints.Add(EnumAdmin.RevenueType.Total, new List<DataPoint>());
+
             for (int i = 0; i < 12; i++)
             {
-                dataPoints.Add(new DataPoint(ChartConstant.monthsArray[i], revenue[i]));
+                dataPoints[EnumAdmin.RevenueType.PricePacket].Add(new DataPoint(ChartConstant.monthsArray[i], pricePacketRevenueMonthly[i]));
+                dataPoints[EnumAdmin.RevenueType.Bid].Add(new DataPoint(ChartConstant.monthsArray[i], bidRevenueMonthly[i]));
+                dataPoints[EnumAdmin.RevenueType.Total].Add(new DataPoint(ChartConstant.monthsArray[i], pricePacketRevenueMonthly[i] + bidRevenueMonthly[i]));
             }
 
             return dataPoints;

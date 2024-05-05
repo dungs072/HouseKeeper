@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HouseKeeper.Enum;
+using System;
 using System.Runtime.Serialization;
 
 namespace HouseKeeper.Models.Views.Admin
@@ -7,18 +8,18 @@ namespace HouseKeeper.Models.Views.Admin
     [DataContract]
     public class DataPoint
     {
-        public DataPoint(string label, double y)
+        public DataPoint(EnumAdmin.ChartMonth x, decimal y)
         {
-            this.Label = label;
+            this.X = x;
             this.Y = y;
         }
 
         //Explicitly setting the name to be used while serializing to JSON.
-        [DataMember(Name = "label")]
-        public string Label = "";
+        [DataMember(Name = "x")]
+        public Nullable<EnumAdmin.ChartMonth> X = null;
 
         //Explicitly setting the name to be used while serializing to JSON.
         [DataMember(Name = "y")]
-        public Nullable<double> Y = null;
+        public Nullable<decimal> Y = null;
     }
 }

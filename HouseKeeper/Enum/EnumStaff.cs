@@ -1,10 +1,11 @@
 ﻿using HouseKeeper.Constant;
 
-namespace HouseKeeper.Enum.Staff
+namespace HouseKeeper.Enum
 {
     public class EnumStaff
     {
-        public enum ModerationStatus{
+        public enum ModerationStatus
+        {
             OK,
             NotFound,
             IsHandledByOther,

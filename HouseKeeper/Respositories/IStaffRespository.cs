@@ -1,4 +1,4 @@
-﻿using HouseKeeper.Enum.Staff;
+﻿using HouseKeeper.Enum;
 using HouseKeeper.Models.DB;
 using HouseKeeper.Models.Views.Staff;
 
