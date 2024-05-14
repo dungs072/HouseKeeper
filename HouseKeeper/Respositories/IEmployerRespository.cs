@@ -1,4 +1,5 @@
-﻿using HouseKeeper.Models.DB;
+﻿using HouseKeeper.Enum;
+using HouseKeeper.Models.DB;
 using HouseKeeper.Models.Views.Employer;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +13,7 @@ namespace HouseKeeper.Respositories
         Task<List<LOAICONGVIEC>> GetJobs();
         Task<List<GOITIN>> GetPriceTags();
         Task<List<HUYEN>> GetDistricts();
+        Task<List<HUYEN>> GetDistricts(int cityId);
         Task<List<TINTUYENDUNG>> GetOnlineRecruitments();
         Task<HINHTHUCTRALUONG> GetPaidType(int id);
         Task<KINHNGHIEM> GetExperience(int id);
@@ -31,5 +33,7 @@ namespace HouseKeeper.Respositories
         Task<bool> UnHideRecruitment(int recruitmentId);
         Task<bool> AddBidPrice(int recruitmentId, decimal price);
         Task<bool> ExtendDeadLine(int recruitmentId, int pricePacketId);
+        Task<bool> EditEmployerProfile(EditEmployerProfileViewModel model, int employerId, IFormFile avatarImage, IFormFile frontImage, IFormFile backImage, AccountEnum.AccountType accountType);
+
     }
 }

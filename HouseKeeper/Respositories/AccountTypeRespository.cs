@@ -1,4 +1,5 @@
 ﻿using HouseKeeper.DBContext;
+using HouseKeeper.Enum;
 using HouseKeeper.Models.DB;
 using HouseKeeper.Models.Views.OutPage;
 using Microsoft.Data.SqlClient;
@@ -33,43 +34,41 @@ namespace HouseKeeper.Respositories
                 }
                 else
                 {
-                    return -3;
+                    return (int)AccountEnum.LoginResult.WrongPassword;
                 }
             }
             else
             {
-                return -2;
+                return (int)AccountEnum.LoginResult.PhoneAndGmailNotRegistered;
             }
         }
-        //0: is admin
-        //1: is employer
-        //2: is employee
-        //4: is staff
+
         public async Task<LoginInfor> GetEmployerOrEmployee(int accountId)
         {
             var employers = await dBContext.Employers.Where(a => a.Account.AccountID == accountId).ToListAsync();
             var loginInfor = new LoginInfor();
+            loginInfor.ViewIndex = (int)AccountEnum.AccountType.Unknown;
             if(employers.Count>0)
             {
                 loginInfor.Id = employers[0].EmployerId;
-                loginInfor.ViewIndex = 1;
+                loginInfor.ViewIndex = (int)AccountEnum.AccountType.Employer;
             }
             var employee = await dBContext.Employees.Where(a=>a.Account.AccountID == accountId).ToListAsync();
             if(employee.Count>0)
             {
                 loginInfor.Id = employee[0].EmployeeId;
-                loginInfor.ViewIndex = 2;
+                loginInfor.ViewIndex = (int)AccountEnum.AccountType.Employee;
             }
             var staff = await dBContext.Staffs.Where(a => a.Account.AccountID == accountId).ToListAsync();
             if(staff.Count>0)
             {
                 loginInfor.Id = staff[0].StaffId;
-                loginInfor.ViewIndex = 3;
+                loginInfor.ViewIndex = (int)AccountEnum.AccountType.Staff;
             }
 
             if(employee.Count==0&&employers.Count==0&&staff.Count==0)
             {
-                loginInfor.ViewIndex = 0;
+                loginInfor.ViewIndex = (int)AccountEnum.AccountType.Admin;
                 loginInfor.Id = accountId;
             }
             return loginInfor;
@@ -78,16 +77,17 @@ namespace HouseKeeper.Respositories
         //2: Phone number is duplicated
         //3: Gmail is duplicated
         //4: Server error;
-        public async Task<int> CreateEmployerAccount(TAIKHOAN account, NGUOITHUE employer)
+        public async Task<int> CreateEmployerAccount(TAIKHOAN account, NGUOITHUE employer, DANHTINH identity)
         {
             using var transaction = await dBContext.Database.BeginTransactionAsync();
             try
             {
                 await dBContext.Accounts.AddAsync(account);
                 await dBContext.Employers.AddAsync(employer);
+                await dBContext.Identity.AddAsync(identity);
                 await dBContext.SaveChangesAsync();
                 transaction.Commit();
-                return 1;
+                return (int)AccountEnum.CreateAccountResult.Success;
             }
             catch (Exception ex)
             {
@@ -96,26 +96,27 @@ namespace HouseKeeper.Respositories
                 {
                     if (ex.InnerException.Message.Contains("UK_SDT"))
                     {
-                        return 2;
+                        return (int)AccountEnum.CreateAccountResult.PhoneDuplicated;
                     }
                     else if (ex.InnerException.Message.Contains("UK_GMAIL"))
                     {
-                        return 3;
+                        return (int)AccountEnum.CreateAccountResult.GmailDuplicated;
                     }
                 }
-                return 4;
+                return (int)AccountEnum.CreateAccountResult.ServerError;
             }
         }
-        public async Task<int> CreateEmployeeAccount(TAIKHOAN account, NGUOIGIUPVIEC employee)
+        public async Task<int> CreateEmployeeAccount(TAIKHOAN account, NGUOIGIUPVIEC employee, DANHTINH identity)
         {
             using var transaction = await dBContext.Database.BeginTransactionAsync();
             try
             {
                 await dBContext.Accounts.AddAsync(account);
                 await dBContext.Employees.AddAsync(employee);
+                await dBContext.Identity.AddAsync(identity);
                 await dBContext.SaveChangesAsync();
                 transaction.Commit();
-                return 1;
+                return (int)AccountEnum.CreateAccountResult.Success;
             }
             catch (Exception ex)
             {
@@ -124,14 +125,14 @@ namespace HouseKeeper.Respositories
                 {
                     if (ex.InnerException.Message.Contains("UK_SDT"))
                     {
-                        return 2;
+                        return (int)AccountEnum.CreateAccountResult.PhoneDuplicated;
                     }
                     else if (ex.InnerException.Message.Contains("UK_GMAIL"))
                     {
-                        return 3;
+                        return (int)AccountEnum.CreateAccountResult.GmailDuplicated;
                     }
                 }
-                return 4;
+                return (int)AccountEnum.CreateAccountResult.ServerError;
             }
         }
 
@@ -146,6 +147,21 @@ namespace HouseKeeper.Respositories
         public async Task<List<TINHTHANHPHO>> GetCities()
         {
             return await dBContext.Cities.ToListAsync();
+        }
+
+        public async Task<List<HUYEN>> GetDistricts()
+        {
+            return await dBContext.Districts.ToListAsync();
+        }
+
+        public async Task<HUYEN> GetDistrict(int id)
+        {
+            return await dBContext.Districts.FindAsync(id);
+        }
+
+        public async Task<TRANGTHAIDANHTINH> GetIdentityState(int id)
+        {
+            return await dBContext.IdentityStates.FindAsync(id);
         }
     }
 }

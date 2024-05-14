@@ -1,4 +1,6 @@
-﻿using HouseKeeper.Models.DB;
+﻿using HouseKeeper.Enum;
+using HouseKeeper.Models.DB;
+using HouseKeeper.Models.Views.Employee;
 
 namespace HouseKeeper.Respositories
 {
@@ -19,6 +21,7 @@ namespace HouseKeeper.Respositories
         Task<bool> DeleteJob(int jobId, int employeeId);
         Task<bool> AddDistrict(int districtId, int employeeId);
         Task<bool> DeleteDistrict(int districtId, int employeeId);
+        Task<bool> EditEmployeeProfile(EditEmployeeProfileViewModel model, int employeeId, IFormFile avatarImage, IFormFile frontImage, IFormFile backImage, AccountEnum.AccountType accountType);
 
     }
 }

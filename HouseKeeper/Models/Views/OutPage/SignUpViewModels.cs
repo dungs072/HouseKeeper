@@ -12,9 +12,15 @@ namespace HouseKeeper.Models.Views.OutPage
         public string ConfirmedPassword { get; set; }
         public bool IsEmployer { get; set; }
         public bool IsEmployee { get; set; }
+        public int DistrictId { get; set; }
         public string Address { get; set; }
+        public string Gender { get; set; }
         public DateTime BirthDate { get; set; }
+        public string CitizenNumber { get; set; }
+
         public List<TINHTHANHPHO> Cities { get; set; }
+
+        public List<HUYEN> Districts { get; set; }
     }
 
 }

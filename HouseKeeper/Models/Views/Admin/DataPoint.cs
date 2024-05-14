@@ -8,7 +8,7 @@ namespace HouseKeeper.Models.Views.Admin
     [DataContract]
     public class DataPoint
     {
-        public DataPoint(EnumAdmin.ChartMonth x, decimal y)
+        public DataPoint(AdminEnum.ChartMonth x, decimal y)
         {
             this.X = x;
             this.Y = y;
@@ -16,7 +16,7 @@ namespace HouseKeeper.Models.Views.Admin
 
         //Explicitly setting the name to be used while serializing to JSON.
         [DataMember(Name = "x")]
-        public Nullable<EnumAdmin.ChartMonth> X = null;
+        public Nullable<AdminEnum.ChartMonth> X = null;
 
         //Explicitly setting the name to be used while serializing to JSON.
         [DataMember(Name = "y")]

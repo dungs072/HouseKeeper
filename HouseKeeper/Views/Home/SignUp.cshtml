@@ -20,33 +20,45 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const employeeCheckbox = document.getElementById('isEmployee');
-            const employerCheckbox = document.getElementById('isEmployer');
-            const employeeFields = document.getElementById('employeeFields');
-            const employerFields = document.getElementById('employerFields');
-            employeeCheckbox.addEventListener('change', function () {
-                if (this.checked) {
-                    employerCheckbox.checked = false;
-                    employeeFields.style.display = 'block';
-                    employerFields.style.display = 'none';
-                } else {
-                    employeeFields.style.display = 'none';
-                }
+            const employerCheckbox = $('#IsEmployer[value|="True"]');
+            const employeeCheckbox = $('#IsEmployer[value|="False"]');
+            const employeeFields = $('#employeeFields');
+            const employerFields = $('#employerFields');
+
+
+            function setField(isEmployer) {
+                console.log(isEmployer)
+                employerFieldsInput = employerFields.find('input')
+                employeeFieldsInput = employeeFields.find('input')
+                employerFields.css('display', (isEmployer == "True") ? "block" : "none");
+                employerFieldsInput.each(function () {
+                    console.log(this)
+                    $(this).prop('required', (isEmployer == "True") ? true : false);
+                })
+                
+                employeeFields.css('display', (isEmployer == "True") ? "none" : "block");
+                employeeFieldsInput.each(function () {
+                    $(this).prop('required', (isEmployer == "True") ? false : true);
+                })
+
+            }
+            employerCheckbox.prop('checked', true)
+            setField(employerCheckbox.val());
+
+
+            employerCheckbox.on('change', function () {
+                setField(employerCheckbox.val())
             });
 
-            employerCheckbox.addEventListener('change', function () {
-                if (this.checked) {
-                    employeeCheckbox.checked = false;
-                    employerFields.style.display = 'block';
-                    employeeFields.style.display = 'none';
-                } else {
-                    employerFields.style.display = 'none';
-                }
+            employeeCheckbox.on('change', function () {
+                setField(employeeCheckbox.val())
             });
            
         });
     </script>
-    <script>
+
+
+  @*   <script>
         window.addEventListener("load", function () {
             var isEmployer = '@Model.IsEmployer'.toString();
             if (isEmployer=="True") {
@@ -64,13 +76,26 @@
                 employerFields.style.display = 'none';
             }
         });
-    </script>
+    </script> *@
     <script>
         $(document).ready(function () {
-            $('#cityOrProvince').select2();
+            $('#cityOrProvince').select();
+            $('#Gender[value |= "male"]').prop('checked', true)
         });
     </script>
-   
+    <style>
+        input#Gender {
+            margin: 3px;
+        }
+        
+        input#IsEmployer {
+            margin: 3px;
+        }
+
+        .gender-group {
+            display: inline-flex;
+        }
+    </style>
 </head>
 <body>
     <partial name="BodyInclude" />
@@ -103,6 +128,53 @@
                     </div>
 
                     <div class="form-floating">
+                        <select class="form-select" id="cityOrProvince" name="cityOrProvince" required>
+                            @foreach (var city in Model.Cities)
+                            {
+                                <option value="@city.CityId">@city.CityName</option>
+                            }
+
+                            <!-- Add more options for other cities or provinces -->
+                        </select>
+                        <label for="cityOrProvince">City or Province</label>
+                    </div>
+
+                    <div class="form-floating">
+                        <input id="districtInput" type="hidden" asp-for="@Model.DistrictId"/>
+                        <select class="form-select" id="district" name="district" required>
+                            @foreach (var district in Model.Districts)
+                            {
+                                <option value="@district.DistrictId" data-cityid="@district.City.CityId">@district.DistrictName</option>
+                            }
+
+                        </select>
+                        <label for="district">District</label>
+                    </div>
+
+                    <div class="form-floating">
+                        <input asp-for="Address" type="text" class="form-control" id="address" placeholder="Address" value=@Model.Address required>
+                        <label for="address">Address</label>
+                    </div>
+
+
+                    <div class="form-floating">
+                        <input asp-for="CitizenNumber" type="text" class="form-control" id="citizenNumber" placeholder="Citizen Number" value=@Model.CitizenNumber required>
+                        <label for="citizenNumber">Citizen Number</label>
+                    </div>
+
+                    <div class="nice-form-group">
+                        <label>Front Identity Image</label>
+                        <img id="frontImage" width="70%" height="360" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5LH1yJdKZbMAApxgSY_aLKcidcPpNG5ZZWmzbwPzaEg&s" alt="Front Id Card" />
+                        <input id="frontImageButton" name="frontImage" class="form-control" type="file" accept="image/*" required/>
+                    </div>
+
+                    <div class="nice-form-group">
+                        <label>Back Identity Image</label>
+                        <img id="backImage" width="70%" height="360" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5LH1yJdKZbMAApxgSY_aLKcidcPpNG5ZZWmzbwPzaEg&s" alt="Front Id Card" />
+                        <input id="backImageButton" name="backImage" class="form-control" type="file" accept="image/*" required />
+                    </div>
+
+                    <div class="form-floating">
                         <span class="password-show-toggle js-password-show-toggle"><span class="uil"></span></span>
                         <input asp-for="Password" type="password" class="form-control" id="password" placeholder="Password" value="@Model.Password" required>
                         <label for="password">Password</label>
@@ -113,31 +185,49 @@
                         <label for="confirm_password">Confirm Password</label>
                     </div>
 
+                    <div class="form-floating is-employer-group">
+                        <span for="isEmployer">Your Job: </span>
+                        <div>
+                            @Html.RadioButtonFor(model => model.IsEmployer, true)@Html.Label("Employer")
+                            @Html.RadioButtonFor(model => model.IsEmployer, false)@Html.Label("Employee")
+                        </div>
+
+                    </div>
                    
-                    <div class="form-check">
+                    @* <div class="form-check">
                         <input type="checkbox" class="form-check-input" id="isEmployer" , name="isEmployer" @(Model.IsEmployer ? "checked" : "")>
                         <label for="employer" class="form-check-label">I'm an Employer</label>
                     </div>
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input" id="isEmployee" , name="isEmployee" @(Model.IsEmployee ? "checked" : "")>
                         <label for="employee" class="form-check-label">I'm an Employee</label>
-                    </div>
+                    </div> *@
 
-                    <div id="employerFields" style="display: none;">
+                    @* <div id="employerFields" style="display: none;">
                         <!-- Employer specific fields go here -->
                         <div class="form-floating">
-                            <input type="text" class="form-control" id="address" placeholder=" "><!-- Note: Placeholder should be empty or a space for floating label -->
+                            <input type="text" class="form-control" id="address" placeholder="Address" required><!-- Note: Placeholder should be empty or a space for floating label -->
                             <label for="address">Address</label>
                         </div>
-                    </div>
+                    </div> *@
 
                     <div id="employeeFields" style="display: none;">
                         <!-- Employee specific fields go here -->
                         <div class="form-floating">
-                            <input asp-for="BirthDate" type="date" class="form-control" id="birthdate" placeholder=" " value="@Model.BirthDate">
+                            <input asp-for="BirthDate" type="date" class="form-control" id="birthdate" placeholder=" " value="@Model.BirthDate" required>
                             <label for="birthdate">Birthdate</label>
                         </div>
-                        <div class="form-floating">
+
+                        
+                        <div class="form-floating gender-group">
+                            <span for="gender">Gender: </span>
+                            <div>
+                                @Html.RadioButtonFor(model => model.Gender, "male")@Html.Label("Male")
+                                @Html.RadioButtonFor(model => model.Gender, "female")@Html.Label("Female")
+                            </div>
+                        </div>
+                    
+                        @* <div class="form-floating">
                             <select class="form-select" id="cityOrProvince" name="cityOrProvince">
                                 @foreach(var city in Model.Cities)
                                 {
@@ -147,7 +237,7 @@
                                 <!-- Add more options for other cities or provinces -->
                             </select>
                             <label for="cityOrProvince">City or Province</label>
-                        </div>
+                        </div> *@
                     </div>
                   
 
@@ -185,5 +275,62 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+
+    <script>
+        // Get references to both select elements
+        var citySelect = document.getElementById('cityOrProvince');
+        var districtSelect = document.getElementById('district');
+
+        // Store all district options in an array
+        var districtOptions = Array.from(districtSelect.options);
+
+        // Add event listener to city select element
+        citySelect.addEventListener('change', function () {
+            var selectedCityId = this.value;
+
+            // Remove all options from district select
+            districtSelect.innerHTML = '';
+
+            // Filter and append district options corresponding to the selected city
+            districtOptions.forEach(function (option) {
+                if (option.getAttribute('data-cityid') === selectedCityId || option.getAttribute('data-cityid') === null) {
+                    districtSelect.appendChild(option.cloneNode(true));
+                }
+            });
+        });
+
+        // Trigger change event initially to set the initial state
+        citySelect.dispatchEvent(new Event('change'));
+    </script>
+
+    <script>
+        document.getElementById('frontImageButton').addEventListener('change', function () {
+            var file = this.files[0];
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('frontImage').src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        });
+
+        document.getElementById('backImageButton').addEventListener('change', function () {
+            var file = this.files[0];
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('backImage').src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        });
+    </script>
+
+    <script>
+        districtSelect.addEventListener('change', function () {
+            var selectedDistrictId = this.value;
+
+            // Set the hidden input value to the selected district id
+            document.getElementById('districtInput').value = selectedDistrictId;
+        });
+        districtSelect.dispatchEvent(new Event('change'));
+    </script>
 </body>
 </html>

@@ -1,5 +1,4 @@
-﻿using HouseKeeper.Constant;
-using HouseKeeper.Enum;
+﻿using HouseKeeper.Enum;
 using HouseKeeper.Models.DB;
 using HouseKeeper.Models.Views.Admin;
 using HouseKeeper.Models.Views.Staff;
@@ -39,8 +38,8 @@ namespace HouseKeeper.Controllers
         {
             ListRecruitmentsAreHandled model = new ListRecruitmentsAreHandled();
             int staffId = int.Parse(HttpContext.Session.GetString("UserId"));
-            model.PendingApprovalRecruitments = await staffRespository.ListRecruitmentAreHandledByStaff(staffId, RecruitmentsStatus.PendingApproval);
-            model.DisapprovalRecruitments = await staffRespository.ListRecruitmentAreHandledByStaff(staffId, RecruitmentsStatus.RejectApproval);
+            model.PendingApprovalRecruitments = await staffRespository.ListRecruitmentAreHandledByStaff(staffId, RecruitmentEnum.RecruitmentStatus.PendingApproval);
+            model.DisapprovalRecruitments = await staffRespository.ListRecruitmentAreHandledByStaff(staffId, RecruitmentEnum.RecruitmentStatus.RejectApproval);
             return View("ListRecruitmentsAreHandled", model);
         }
 
@@ -56,21 +55,21 @@ namespace HouseKeeper.Controllers
             var result = await staffRespository.GetRecruitment(recruitmentId, model.StaffId);
             var status = result.Item1;
 
-            if (status == EnumStaff.ModerationStatus.NotFound)
+            if (status == StaffEnum.ModerationStatus.NotFound)
             {
-                TempData["Error"] = Constant.NotificationDuringModeration.NotFoundNotification();
+                TempData["Error"] = Configs.ModerationConfig.NotFoundNotification;
                 return RedirectToAction("ShowRecruitmentAreHandled", model.StaffId);
             }
 
-            if (status == EnumStaff.ModerationStatus.ServerError)
+            if (status == StaffEnum.ModerationStatus.ServerError)
             {
-                TempData["Error"] = Constant.NotificationDuringModeration.ServerErrorNotification();
+                TempData["Error"] = Configs.ModerationConfig.ServerErrorNotification;
                 return RedirectToAction("ShowRecruitmentAreHandled", model.StaffId);
             }
 
-            if (status == EnumStaff.ModerationStatus.IsHandledByOther)
+            if (status == StaffEnum.ModerationStatus.IsHandledByOther)
             {
-                TempData["Error"] = Constant.NotificationDuringModeration.HandledByOtherNotification();
+                TempData["Error"] = Configs.ModerationConfig.HandledByOtherNotification;
                 return RedirectToAction("ShowRecruitmentAreHandled", model.StaffId);
             }
             model.Recruitment = result.Item2;
@@ -97,7 +96,7 @@ namespace HouseKeeper.Controllers
                 }
             }
             model.NoteIndexCanEdit = 1;
-            if (DateTime.Now > model.LastTimeCanEditNotes.AddHours(Constant.AppTimer.HoursAllowForEditRejectionNotes) )
+            if (DateTime.Now > model.LastTimeCanEditNotes.AddHours(Configs.ModerationConfig.HoursAllowForEditRejectionNotes) )
             {
                 model.NoteIndexCanEdit = 0;
             }
@@ -114,7 +113,7 @@ namespace HouseKeeper.Controllers
             }
 
             // set last time can edit notes
-            model.LastTimeCanEditNotes = model.LastTimeCanEditNotes.AddHours(Constant.AppTimer.HoursAllowForEditRejectionNotes);
+            model.LastTimeCanEditNotes = model.LastTimeCanEditNotes.AddHours(Configs.ModerationConfig.HoursAllowForEditRejectionNotes);
 
             model.Rejections = await staffRespository.GetRejections();
             model.RejectionId = new List<int>();
@@ -138,18 +137,18 @@ namespace HouseKeeper.Controllers
         {
             var result = await staffRespository.EditNotesOfRejection(model);
             int staffId = int.Parse(HttpContext.Session.GetString("UserId"));
-            if (result == EnumStaff.ModerationStatus.NotFound)
+            if (result == StaffEnum.ModerationStatus.NotFound)
             {
-                TempData["Error"] = Constant.NotificationDuringModeration.NotFoundNotification();
+                TempData["Error"] = Configs.ModerationConfig.NotFoundNotification;
                 return RedirectToAction("ShowRecruitmentAreHandled", staffId);
             }
-            if (result == EnumStaff.ModerationStatus.ServerError)
+            if (result == StaffEnum.ModerationStatus.ServerError)
             {
-                TempData["Error"] = Constant.NotificationDuringModeration.ServerErrorNotification();
+                TempData["Error"] = Configs.ModerationConfig.ServerErrorNotification;
                 return RedirectToAction("ShowRecruitmentDetail", model.RecruitmentId);
             }
 
-            TempData["Success"] = Constant.NotificationDuringModeration.EditSuccessNotification(model.RecruitmentId);
+            TempData["Success"] = Configs.ModerationConfig.EditSuccessNotification(model.RecruitmentId);
             return RedirectToAction("ShowRecruitmentAreHandled", staffId);
         }
 
@@ -158,17 +157,17 @@ namespace HouseKeeper.Controllers
         public async Task<IActionResult> RejectRecruitment(RecruitmentModerationViewModel model)
         {
             var result = await staffRespository.RejectRecruitment(model);
-            if (result == EnumStaff.ModerationStatus.NotFound)
+            if (result == StaffEnum.ModerationStatus.NotFound)
             {
-                TempData["Error"] = Constant.NotificationDuringModeration.NotFoundNotification();
+                TempData["Error"] = Configs.ModerationConfig.NotFoundNotification;
                 return RedirectToAction("ShowRecruitmentAreHandled", model.StaffId);
             }
-            if (result == EnumStaff.ModerationStatus.ServerError)
+            if (result == StaffEnum.ModerationStatus.ServerError)
             {
-                TempData["Error"] = Constant.NotificationDuringModeration.ServerErrorNotification();
+                TempData["Error"] = Configs.ModerationConfig.ServerErrorNotification;
                 return RedirectToAction("ShowRecruitmentDetail", model.RecruitmentId);
             }
-            TempData["Success"] = Constant.NotificationDuringModeration.RejectSuccessNotification(model.RecruitmentId);
+            TempData["Success"] = Configs.ModerationConfig.RejectSuccessNotification(model.RecruitmentId);
             return RedirectToAction("ShowRecruitmentAreHandled", model.StaffId);
         }
 
@@ -177,20 +176,34 @@ namespace HouseKeeper.Controllers
         {
             var result = await staffRespository.AcceptRecruitment(recruitmentId);
             int staffId = int.Parse(HttpContext.Session.GetString("UserId"));
-            if (result == EnumStaff.ModerationStatus.NotFound)
+            if (result == StaffEnum.ModerationStatus.NotFound)
             {
-                TempData["Error"] = Constant.NotificationDuringModeration.NotFoundNotification();
+                TempData["Error"] = Configs.ModerationConfig.NotFoundNotification;
                 return RedirectToAction("ShowRecruitmentAreHandled", staffId);
             }
-            if (result == EnumStaff.ModerationStatus.ServerError)
+            if (result == StaffEnum.ModerationStatus.ServerError)
             {
-                TempData["Error"] = Constant.NotificationDuringModeration.ServerErrorNotification();
+                TempData["Error"] = Configs.ModerationConfig.ServerErrorNotification;
                 return RedirectToAction("ShowRecruitmentDetail", recruitmentId);
             }
-            TempData["Success"] = Constant.NotificationDuringModeration.AcceptSuccessNotification(recruitmentId);
+            TempData["Success"] = Configs.ModerationConfig.AcceptSuccessNotification(recruitmentId);
             return RedirectToAction("ShowRecruitmentAreHandled", staffId);
         }
 
+        // show profile of staff
+        public async Task<IActionResult> Profile()
+        {
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int staffId);
+            var staff = await staffRespository.GetStaffProfile(staffId);
+            if (staff == null)
+            {
+                TempData["Error"] = "Server error!!!. Can not get staff profile";
+                return RedirectToAction("Index");
+            }
+            StaffProfileViewModel model = new StaffProfileViewModel();
+            model.Staff = staff;
+            return View("Profile", model);
+        }
         
     }
 }

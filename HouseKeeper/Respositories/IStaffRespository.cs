@@ -7,15 +7,13 @@ namespace HouseKeeper.Respositories
     public interface IStaffRespository
     {
         Task<List<Models.DB.TINTUYENDUNG>> GetRecruitmentNotHandled();
-        Task<EnumStaff.ModerationStatus> AcceptRecruitment(int recruitmentId);
-
-        Task<Tuple<EnumStaff.ModerationStatus, TINTUYENDUNG>> GetRecruitment(int recruitmentId, int staffId);
-
+        Task<StaffEnum.ModerationStatus> AcceptRecruitment(int recruitmentId);
+        Task<Tuple<StaffEnum.ModerationStatus, TINTUYENDUNG>> GetRecruitment(int recruitmentId, int staffId);
         Task<List<LYDOTUCHOI>> GetRejections();
-
-        Task<EnumStaff.ModerationStatus> RejectRecruitment(RecruitmentModerationViewModel model);
-        Task<List<TINTUYENDUNG>> ListRecruitmentAreHandledByStaff(int staffId, string recruitmentStatus);
+        Task<StaffEnum.ModerationStatus> RejectRecruitment(RecruitmentModerationViewModel model);
+        Task<List<TINTUYENDUNG>> ListRecruitmentAreHandledByStaff(int staffId, RecruitmentEnum.RecruitmentStatus recruitmentStatus);
         Task<List<CHITIETTUCHOI>?> GetRejectionsDetail(int recruitmentId);
-        Task<EnumStaff.ModerationStatus> EditNotesOfRejection(RecruitmentModerationViewModel model);
+        Task<StaffEnum.ModerationStatus> EditNotesOfRejection(RecruitmentModerationViewModel model);
+        Task<NHANVIEN> GetStaffProfile(int staffId);
     }
 }

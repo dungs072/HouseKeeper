@@ -1,8 +1,6 @@
-﻿using HouseKeeper.Constant;
-
-namespace HouseKeeper.Enum
+﻿namespace HouseKeeper.Enum
 {
-    public class EnumStaff
+    public class StaffEnum
     {
         public enum ModerationStatus
         {

@@ -1,6 +1,6 @@
 ﻿namespace HouseKeeper.Enum
 {
-    public class EnumAdmin
+    public class AdminEnum
     {
         public enum ChartMonth : long {
             Jan = 1483209000000,

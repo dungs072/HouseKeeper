@@ -1,5 +1,4 @@
-﻿using HouseKeeper.Constant;
-using HouseKeeper.Enum;
+﻿using HouseKeeper.Enum;
 using HouseKeeper.Models.Views.Admin;
 using HouseKeeper.Respositories;
 using Microsoft.AspNetCore.Mvc;
@@ -266,12 +265,12 @@ namespace HouseKeeper.Controllers
             // Get data points for price packet revenue, bid revenue, total revenue
             var revenueDataPoints = adminRespository.GetRevenueDataPoints(selectedYear).Result;
             
-            ViewBag.pricePacketRevenueDataPoints = JsonConvert.SerializeObject(revenueDataPoints[EnumAdmin.RevenueType.PricePacket]);
-            ViewBag.bidRevenueDataPoints = JsonConvert.SerializeObject(revenueDataPoints[EnumAdmin.RevenueType.Bid]);
-            ViewBag.totalRevenueDataPoints = JsonConvert.SerializeObject(revenueDataPoints[EnumAdmin.RevenueType.Total]);
+            ViewBag.pricePacketRevenueDataPoints = JsonConvert.SerializeObject(revenueDataPoints[AdminEnum.RevenueType.PricePacket]);
+            ViewBag.bidRevenueDataPoints = JsonConvert.SerializeObject(revenueDataPoints[AdminEnum.RevenueType.Bid]);
+            ViewBag.totalRevenueDataPoints = JsonConvert.SerializeObject(revenueDataPoints[AdminEnum.RevenueType.Total]);
             ViewBag.SelectedYear = selectedYear;
-            ViewBag.StartYear = AppTimer.startYearStatistic;
-            ViewBag.EndYear = AppTimer.endYearStatistic;
+            ViewBag.StartYear = Configs.StatisticConfig.startYearStatistic;
+            ViewBag.EndYear = Configs.StatisticConfig.endYearStatistic;
             return View("RevenueStatistic");
 		}
 	}

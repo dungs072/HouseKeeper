@@ -1,5 +1,8 @@
 ﻿using HouseKeeper.DBContext;
+using HouseKeeper.Enum;
+using HouseKeeper.IServices;
 using HouseKeeper.Models.DB;
+using HouseKeeper.Models.Views.Employee;
 using Microsoft.EntityFrameworkCore;
 
 namespace HouseKeeper.Respositories
@@ -7,12 +10,14 @@ namespace HouseKeeper.Respositories
     public class EmployeeRespository:IEmployeeRespository
     {
         private readonly HouseKeeperDBContext dBContext;
+        private readonly IFirebaseService _firebaseService;
         private string[] status = new string[] { "Pending approval", "Reject approval",
                                                     "Displayed", "Hidden", "Expired" };
-        public EmployeeRespository(HouseKeeperDBContext dBContext)
+        public EmployeeRespository(HouseKeeperDBContext dBContext, IFirebaseService firebaseService)
         {
 
             this.dBContext = dBContext;
+            _firebaseService = firebaseService;
         }
         public async Task<List<TINTUYENDUNG>> GetRecruitments(int page, string searchKey, int? cityId, int? districtId)
         {
@@ -206,6 +211,53 @@ namespace HouseKeeper.Respositories
                 return false;
             }
         }
+        public async Task<bool> EditEmployeeProfile(EditEmployeeProfileViewModel model, int employeeId, IFormFile avatarImage, IFormFile frontImage, IFormFile backImage, AccountEnum.AccountType accountType)
+        {
+            using var transaction = await dBContext.Database.BeginTransactionAsync();
+            try
+            {
+                var employee = await dBContext.Employees.FindAsync(employeeId);
 
+                if (employee == null)
+                {
+                    return false;
+                }
+
+                employee.FirstName = model.Employee.FirstName;
+                employee.LastName = model.Employee.LastName;
+                employee.BirthDate = model.Employee.BirthDate;
+                employee.Gender = model.Employee.Gender;
+                employee.District = await dBContext.Districts.FindAsync(model.Employee.District.DistrictId);
+                employee.Address = model.Employee.Address;
+
+                employee.Identity.CitizenNumber = model.Employee.Identity.CitizenNumber;
+
+                var tempfrontImage = await _firebaseService.UploadImage(frontImage, accountType, ImageEnum.ImageType.Identity);
+                var tempbackImage = await _firebaseService.UploadImage(backImage, accountType, ImageEnum.ImageType.Identity);
+                employee.Identity.FrontImage = (tempfrontImage == null) ? employee.Identity.FrontImage : tempfrontImage;
+                employee.Identity.BackImage = (tempbackImage == null) ? employee.Identity.BackImage : tempbackImage;
+
+                var tempAvatar = await _firebaseService.UploadImage(avatarImage, accountType, ImageEnum.ImageType.Avatar);
+                employee.Account.AvatarUrl = (tempAvatar == null) ? employee.Account.AvatarUrl : tempAvatar;
+                employee.Account.Gmail = model.Employee.Account.Gmail;
+                employee.Account.PhoneNumber = model.Employee.Account.PhoneNumber;
+
+                if (employee.IdentityState == null || employee.IdentityState.IdentityStateId == (int)IdentityEnum.IdentiyStatus.Disapprove)
+                {
+                    employee.IdentityState = await dBContext.IdentityStates.FindAsync((int)IdentityEnum.IdentiyStatus.Waiting);
+                }
+
+                dBContext.Employees.Update(employee);
+
+                await dBContext.SaveChangesAsync();
+                transaction.Commit();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                return false;
+            }
+        }
     }
 }

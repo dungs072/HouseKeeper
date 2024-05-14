@@ -1,26 +1,30 @@
-﻿using HouseKeeper.Models.DB;
-using HouseKeeper.Models.Views.OutPage;
+﻿using HouseKeeper.Configs;
+using HouseKeeper.Enum;
+using HouseKeeper.Models.DB;
 using HouseKeeper.Models.Views.Employer;
 using HouseKeeper.Respositories;
+using HouseKeeper.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using NuGet.Packaging.Signing;
-using System.Collections.Generic;
 
 namespace HouseKeeper.Controllers
 {
     public class EmployerController : Controller
     {
         private readonly IEmployerRespository employerRespository;
-        public EmployerController(IEmployerRespository employerRespository)
+
+        private AccountEnum.AccountType accountType = AccountEnum.AccountType.Employer;
+
+
+        public EmployerController(
+            IEmployerRespository employerRespository)
         {
             this.employerRespository = employerRespository;
+            ;
         }
-        public IActionResult Index()
-        {
-            return View();
-        }
+
+        public IActionResult Index() { return View(); }
+
         public async Task<IActionResult> Recruitment()
         {
             CreateRecruitmentsViewModel model = new CreateRecruitmentsViewModel();
@@ -38,11 +42,12 @@ namespace HouseKeeper.Controllers
             model.NumberVacancies = 1;
             return View(model);
         }
+
         [HttpPost]
         public async Task<IActionResult> HandleCreateRecruitment(CreateRecruitmentsViewModel model)
         {
             var value0 = Request.Form["SelectedJobs"];
-           // string[] selectedJobs = value0.ToString().Split(',');  
+            // string[] selectedJobs = value0.ToString().Split(',');  
             var value1 = Request.Form["isFullTime"];
             bool isFullTime = value1 == "on";
             var value2 = Request.Form["min-age"];
@@ -54,9 +59,9 @@ namespace HouseKeeper.Controllers
             var value8 = Request.Form["min-salary"].ToString();
             var value9 = Request.Form["max-salary"].ToString();
             TINTUYENDUNG recruitment = new TINTUYENDUNG();
-            recruitment.MinSalary = int.Parse(value8.Replace(".",""));
-            recruitment.MaxSalary = int.Parse(value9.Replace(".", ""));
-            recruitment.Age = value2+"-"+value3;
+            recruitment.MinSalary = int.Parse(value8.Replace(".", string.Empty));
+            recruitment.MaxSalary = int.Parse(value9.Replace(".", string.Empty));
+            recruitment.Age = value2 + "-" + value3;
             recruitment.Note = model.TakeNotes;
             recruitment.FullTime = isFullTime;
             recruitment.MaxApplications = model.NumberVacancies;
@@ -64,7 +69,7 @@ namespace HouseKeeper.Controllers
             //recruitment.SalaryForm = await employerRespository.GetPaidType(int.Parse(value4));
             //recruitment.Experience = await employerRespository.GetExperience(int.Parse(value5));
             //recruitment.City = await employerRespository.GetCity(int.Parse(value6));
-            if(value7=="Null")
+            if (value7 == "Null")
             {
                 recruitment.Gender = null;
             }
@@ -80,7 +85,7 @@ namespace HouseKeeper.Controllers
             priceModel.SalaryId = int.Parse(value4);
             priceModel.experienceId = int.Parse(value5);
             priceModel.districtId = int.Parse(value6);
-           
+
             //var result = employerRespository.CreateRecruitment(recruitment,selectedJobs);
             //if(result.Result)
             //{
@@ -91,13 +96,14 @@ namespace HouseKeeper.Controllers
             //    TempData["Error"] = "Server error. Failed to create new recruitment!";
             //}
             string priceTagViewModelJson = JsonConvert.SerializeObject(priceModel);
-            HttpContext.Session.SetString("PriceTagViewModel",priceTagViewModelJson);
+            HttpContext.Session.SetString("PriceTagViewModel", priceTagViewModelJson);
             TempData["Success"] = "Please choose your price you want!";
             return RedirectToAction("PriceTag");
         }
+
         public async Task<IActionResult> PriceTag()
         {
-            string priceTagViewModelJson = HttpContext.Session.GetString("PriceTagViewModel") as string;
+            string priceTagViewModelJson = HttpContext.Session.GetString("PriceTagViewModel");
             if (!string.IsNullOrEmpty(priceTagViewModelJson))
             {
                 PriceTagViewModel model = JsonConvert.DeserializeObject<PriceTagViewModel>(priceTagViewModelJson);
@@ -113,10 +119,10 @@ namespace HouseKeeper.Controllers
             TempData["Error"] = "Server error!";
             return RedirectToAction("Index", "Home");
         }
+
         public async Task<IActionResult> BidPrice(int pricePacketId)
         {
-
-            string priceTagViewModelJson = HttpContext.Session.GetString("PriceTagViewModel") as string;
+            string priceTagViewModelJson = HttpContext.Session.GetString("PriceTagViewModel");
             if (!string.IsNullOrEmpty(priceTagViewModelJson))
             {
                 PriceTagViewModel model = JsonConvert.DeserializeObject<PriceTagViewModel>(priceTagViewModelJson);
@@ -127,7 +133,7 @@ namespace HouseKeeper.Controllers
                 }
                 var onlineRecruitment = await employerRespository.GetOnlineRecruitments();
                 List<RecruitmentBidViewModel> bids = new List<RecruitmentBidViewModel>();
-                foreach(var recruitment in onlineRecruitment)
+                foreach (var recruitment in onlineRecruitment)
                 {
                     var bid = new RecruitmentBidViewModel();
                     bid.MaxSalary = recruitment.MaxSalary;
@@ -136,11 +142,10 @@ namespace HouseKeeper.Controllers
                     bid.MaxApplications = recruitment.MaxApplications;
                     bid.RecruitDeadlineDate = recruitment.RecruitDeadlineDate;
                     bid.PostTime = recruitment.PostTime;
-                    bid.RecruiterName = recruitment.Employer.LastName+" "+recruitment.Employer.FirstName;
+                    bid.RecruiterName = recruitment.Employer.LastName + " " + recruitment.Employer.FirstName;
                     bids.Add(bid);
-
                 }
-               
+
                 model.OnlineRecruitments = bids;
                 model.PricePacketId = pricePacketId;
                 string temp = JsonConvert.SerializeObject(model);
@@ -150,10 +155,11 @@ namespace HouseKeeper.Controllers
             TempData["Error"] = "Server error!";
             return RedirectToAction("Index", "Home");
         }
+
         [HttpPost]
         public async Task<IActionResult> HandleSendBidPrice(PriceTagViewModel tempModel)
         {
-            string priceTagViewModelJson = HttpContext.Session.GetString("PriceTagViewModel") as string;
+            string priceTagViewModelJson = HttpContext.Session.GetString("PriceTagViewModel");
             if (!string.IsNullOrEmpty(priceTagViewModelJson))
             {
                 PriceTagViewModel model = JsonConvert.DeserializeObject<PriceTagViewModel>(priceTagViewModelJson);
@@ -163,7 +169,7 @@ namespace HouseKeeper.Controllers
                     return RedirectToAction("Index", "Home");
                 }
                 var value2 = Request.Form["bidAmount"].ToString();
-                model.Recruitment.BidPrice = int.Parse(value2.Replace(".",""));
+                model.Recruitment.BidPrice = int.Parse(value2.Replace(".", string.Empty));
                 var pricePacket = await employerRespository.GetPricePacket(model.PricePacketId);
                 model.PricePacketName = pricePacket.PricePacketName;
                 model.Price = pricePacket.Price;
@@ -171,14 +177,15 @@ namespace HouseKeeper.Controllers
                 string temp = JsonConvert.SerializeObject(model);
                 HttpContext.Session.SetString("PriceTagViewModel", temp);
                 TempData["Success"] = "Please finish your payment";
-                return View("CheckOut",model);
+                return View("CheckOut", model);
             }
             TempData["Error"] = "Server error!";
             return RedirectToAction("Index", "Home");
         }
+
         public async Task<IActionResult> CheckOut()
         {
-            string priceTagViewModelJson = HttpContext.Session.GetString("PriceTagViewModel") as string;
+            string priceTagViewModelJson = HttpContext.Session.GetString("PriceTagViewModel");
             if (!string.IsNullOrEmpty(priceTagViewModelJson))
             {
                 PriceTagViewModel model = JsonConvert.DeserializeObject<PriceTagViewModel>(priceTagViewModelJson);
@@ -193,8 +200,11 @@ namespace HouseKeeper.Controllers
                 model.Recruitment.District = await employerRespository.GetDistrict(model.districtId);
                 int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
                 model.Recruitment.Employer = await employerRespository.GetEmployer(employerId);
-                var state = await employerRespository.CreateRecruitment(model.Recruitment, selectedJobs, model.PricePacketId);
-                if(state)
+                var state = await employerRespository.CreateRecruitment(
+                    model.Recruitment,
+                    selectedJobs,
+                    model.PricePacketId);
+                if (state)
                 {
                     TempData["Success"] = "Create new recruitment successfully";
                     return RedirectToAction("ListRecruitment");
@@ -208,16 +218,18 @@ namespace HouseKeeper.Controllers
             TempData["Error"] = "Server error!";
             return RedirectToAction("Index", "Home");
         }
+
         public async Task<IActionResult> ListRecruitment()
         {
             int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
             ListRecruitmentViewModel model = await employerRespository.GetEmployerRecruitments(employerId);
             return View(model);
         }
+
         public async Task<IActionResult> DeleteRecruitment(int recruitmentId)
         {
             var result = await employerRespository.DeleteSpecificRecruitment(recruitmentId);
-            if(result)
+            if (result)
             {
                 TempData["Success"] = "Your money will be back to your payment account!";
                 return RedirectToAction("ListRecruitment");
@@ -228,6 +240,7 @@ namespace HouseKeeper.Controllers
                 return RedirectToAction("ListRecruitment");
             }
         }
+
         public async Task<IActionResult> EditRecruitment(int recruitmentId)
         {
             EditRecruitmentViewModel model = new EditRecruitmentViewModel();
@@ -237,7 +250,7 @@ namespace HouseKeeper.Controllers
             List<TINHTHANHPHO> cities = await employerRespository.GetCities();
             List<LOAICONGVIEC> jobs = await employerRespository.GetJobs();
             List<HUYEN> districts = await employerRespository.GetDistricts();
-           
+
             model.PaidTypes = paidTypes;
             model.Experiences = experiences;
             model.Cities = cities;
@@ -258,7 +271,7 @@ namespace HouseKeeper.Controllers
             model.RecruitmentId = recruitmentId;
             model.Address = recruitment.Address;
             List<LOAICONGVIEC> selectedJobs = new List<LOAICONGVIEC>();
-            foreach(var c in recruitment.HouseworkDetails.ToList())
+            foreach (var c in recruitment.HouseworkDetails.ToList())
             {
                 selectedJobs.Add(c.Job);
             }
@@ -266,6 +279,7 @@ namespace HouseKeeper.Controllers
 
             return View(model);
         }
+
         public async Task<IActionResult> BackToEditRecruitment(EditRecruitmentViewModel model)
         {
             TINTUYENDUNG recruitment = await employerRespository.GetRecruitment(model.RecruitmentId);
@@ -287,8 +301,9 @@ namespace HouseKeeper.Controllers
             }
             model.SelectedJobs = selectedJobs;
 
-            return View("EditRecruitment",model);
+            return View("EditRecruitment", model);
         }
+
         [HttpPost]
         public async Task<IActionResult> EditRecruitment(EditRecruitmentViewModel model)
         {
@@ -302,9 +317,9 @@ namespace HouseKeeper.Controllers
             var value5 = Request.Form["ExperienceId"];
             var value6 = Request.Form["DistrictId"];
             var value7 = Request.Form["Gender"];
-            
-            var value8 = Request.Form["min-salary"].ToString().Replace(".", "");
-            var value9 = Request.Form["max-salary"].ToString().Replace(".", "");
+
+            var value8 = Request.Form["min-salary"].ToString().Replace(".", string.Empty);
+            var value9 = Request.Form["max-salary"].ToString().Replace(".", string.Empty);
             if (value7 == "Null")
             {
                 model.Gender = null;
@@ -331,7 +346,7 @@ namespace HouseKeeper.Controllers
             else
             {
                 TempData["Error"] = "Server error!";
-                return RedirectToAction("BackToEditRecruitment",model);
+                return RedirectToAction("BackToEditRecruitment", model);
             }
         }
 
@@ -348,7 +363,6 @@ namespace HouseKeeper.Controllers
             if (result)
             {
                 TempData["Success"] = "Hide recruitment successfully!";
-                
             }
             else
             {
@@ -356,13 +370,13 @@ namespace HouseKeeper.Controllers
             }
             return RedirectToAction("ListRecruitment");
         }
+
         public async Task<ActionResult> UnHideRecruitment(int recruitmentId)
         {
             var result = await employerRespository.UnHideRecruitment(recruitmentId);
             if (result)
             {
                 TempData["Success"] = "UnHide recruitment successfully!";
-
             }
             else
             {
@@ -370,6 +384,7 @@ namespace HouseKeeper.Controllers
             }
             return RedirectToAction("ListRecruitment");
         }
+
         public async Task<ActionResult> ShowBidPrice(int recruitmentId)
         {
             var model = new BidPriceSettingViewModel();
@@ -392,21 +407,22 @@ namespace HouseKeeper.Controllers
             }
             return View("AddBidPrice", model);
         }
+
         public async Task<ActionResult> AddBidPrice(BidPriceSettingViewModel model)
         {
             TempData["Success"] = "Please check out!";
             var value1 = Request.Form["bidAmount"].ToString();
-            model.Price = decimal.Parse(value1.Replace(".",""));
-         
-            return View("AddCheckOut",model);
+            model.Price = decimal.Parse(value1.Replace(".", string.Empty));
+
+            return View("AddCheckOut", model);
         }
-        public async Task<ActionResult> AddBidPriceCheckOut(int recruitmentId,decimal bidPrice)
+
+        public async Task<ActionResult> AddBidPriceCheckOut(int recruitmentId, decimal bidPrice)
         {
-            var result = await employerRespository.AddBidPrice(recruitmentId,bidPrice);
+            var result = await employerRespository.AddBidPrice(recruitmentId, bidPrice);
             if (result)
             {
                 TempData["Success"] = "Add bid price to recruitment successfully!";
-
             }
             else
             {
@@ -423,6 +439,7 @@ namespace HouseKeeper.Controllers
             model.PriceTags = priceTags;
             return View("AddPricePacket", model);
         }
+
         public async Task<ActionResult> AddPricePacket(int recruitmentId, int pricePacketId)
         {
             TempData["Success"] = "Please check out!";
@@ -433,13 +450,13 @@ namespace HouseKeeper.Controllers
 
             return View("AddPricePacketCheckOut", model);
         }
+
         public async Task<ActionResult> AddPricePacketCheckOut(int recruitmentId, int pricePacketId)
         {
-            var result = await employerRespository.ExtendDeadLine(recruitmentId,pricePacketId);
+            var result = await employerRespository.ExtendDeadLine(recruitmentId, pricePacketId);
             if (result)
             {
                 TempData["Success"] = "Extend deadline to recruitment successfully!";
-
             }
             else
             {
@@ -457,8 +474,10 @@ namespace HouseKeeper.Controllers
             List<TINHTHANHPHO> cities = await employerRespository.GetCities();
             List<LOAICONGVIEC> jobs = await employerRespository.GetJobs();
             List<HUYEN> districts = await employerRespository.GetDistricts();
-            Dictionary<DateTime,List<CHITIETTUCHOI>> rejectionDetails = await employerRespository.GetRejectionDetails(recruitmentId);
-            var sortedDictionary = rejectionDetails.OrderByDescending(kv => kv.Key).ToDictionary(kv => kv.Key, kv => kv.Value);
+            Dictionary<DateTime, List<CHITIETTUCHOI>> rejectionDetails = await employerRespository.GetRejectionDetails(
+                recruitmentId);
+            var sortedDictionary = rejectionDetails.OrderByDescending(kv => kv.Key)
+                .ToDictionary(kv => kv.Key, kv => kv.Value);
             model.PaidTypes = paidTypes;
             model.Experiences = experiences;
             model.Cities = cities;
@@ -489,6 +508,12 @@ namespace HouseKeeper.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> GetDistricts(int cityId)
+        {
+            List<HUYEN> districts = await employerRespository.GetDistricts(cityId);
+            return Json(districts);
+        }
+
         public async Task<IActionResult> Profile()
         {
             EmployerProfileViewModel model = new EmployerProfileViewModel();
@@ -497,5 +522,34 @@ namespace HouseKeeper.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> EditProfile()
+        {
+            EditEmployerProfileViewModel model = new EditEmployerProfileViewModel();
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
+            model.Employer = await employerRespository.GetEmployer(employerId);
+            model.Cities = await employerRespository.GetCities();
+            model.Districts = await employerRespository.GetDistricts();
+            model.isIdentityApproved = (model.Employer.IdentityState != null && model.Employer.IdentityState.IdentityStateId == (int)IdentityEnum.IdentiyStatus.Approve) ? 1 : 0;
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditProfile(EditEmployerProfileViewModel model, IFormFile avatarImage, IFormFile frontImage, IFormFile backImage)
+        {
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
+            model.Employer.EmployerId = employerId;
+            var result = await employerRespository.EditEmployerProfile(model, employerId, avatarImage, frontImage, backImage, accountType);
+            if (result)
+            {
+                TempData["Success"] = "Update profile successfully!";
+                return RedirectToAction("Profile");
+            }
+            else
+            {
+                TempData["Error"] = "Server error!";
+                return RedirectToAction("EditProfile");
+            }
+        }
     }
 }

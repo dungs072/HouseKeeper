@@ -1,5 +1,4 @@
-﻿using HouseKeeper.Constant;
-using HouseKeeper.DBContext;
+﻿using HouseKeeper.DBContext;
 using HouseKeeper.Enum;
 using HouseKeeper.Models.DB;
 using HouseKeeper.Models.Views.Admin;
@@ -290,7 +289,7 @@ namespace HouseKeeper.Respositories
         #endregion
 
         #region RevenueChart
-        public async Task<Dictionary<EnumAdmin.RevenueType, List<DataPoint>>> GetRevenueDataPoints(int year)
+        public async Task<Dictionary<AdminEnum.RevenueType, List<DataPoint>>> GetRevenueDataPoints(int year)
         {
             var pricePacketRevenueInYear = await dBContext.PricePacketDetails.Where(x => x.BuyDate.Year == year && x.HasPaid).ToListAsync();
             var bidRevenueInYear = await dBContext.BidHistories.Where(x => x.BuyDate.Year == year && x.IsPaid).ToListAsync();
@@ -308,16 +307,16 @@ namespace HouseKeeper.Respositories
                 bidRevenueMonthly[bidRevenue.BuyDate.Month - 1] += bidRevenue.IncreasePrice;
             }
 
-            Dictionary<EnumAdmin.RevenueType, List<DataPoint>> dataPoints = new();
-            dataPoints.Add(EnumAdmin.RevenueType.PricePacket, new List<DataPoint>());
-            dataPoints.Add(EnumAdmin.RevenueType.Bid, new List<DataPoint>());
-            dataPoints.Add(EnumAdmin.RevenueType.Total, new List<DataPoint>());
+            Dictionary<AdminEnum.RevenueType, List<DataPoint>> dataPoints = new();
+            dataPoints.Add(AdminEnum.RevenueType.PricePacket, new List<DataPoint>());
+            dataPoints.Add(AdminEnum.RevenueType.Bid, new List<DataPoint>());
+            dataPoints.Add(AdminEnum.RevenueType.Total, new List<DataPoint>());
 
             for (int i = 0; i < 12; i++)
             {
-                dataPoints[EnumAdmin.RevenueType.PricePacket].Add(new DataPoint(ChartConstant.monthsArray[i], pricePacketRevenueMonthly[i]));
-                dataPoints[EnumAdmin.RevenueType.Bid].Add(new DataPoint(ChartConstant.monthsArray[i], bidRevenueMonthly[i]));
-                dataPoints[EnumAdmin.RevenueType.Total].Add(new DataPoint(ChartConstant.monthsArray[i], pricePacketRevenueMonthly[i] + bidRevenueMonthly[i]));
+                dataPoints[AdminEnum.RevenueType.PricePacket].Add(new DataPoint(Configs.StatisticConfig.monthsArray[i], pricePacketRevenueMonthly[i]));
+                dataPoints[AdminEnum.RevenueType.Bid].Add(new DataPoint(Configs.StatisticConfig.monthsArray[i], bidRevenueMonthly[i]));
+                dataPoints[AdminEnum.RevenueType.Total].Add(new DataPoint(Configs.StatisticConfig.monthsArray[i], pricePacketRevenueMonthly[i] + bidRevenueMonthly[i]));
             }
 
             return dataPoints;
