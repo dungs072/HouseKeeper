@@ -200,6 +200,7 @@ namespace HouseKeeper.Controllers
                 TempData["Error"] = "Server error!!!. Edit profile failed";
                 return RedirectToAction("Profile");
             }
+        }
         public async Task<IActionResult> ShowProposalJob()
         {
             int.TryParse(HttpContext.Session.GetString("UserId"), out int employeeId);
