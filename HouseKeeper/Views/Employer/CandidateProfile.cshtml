@@ -19,7 +19,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Inter:wght@700;800&display=swap" rel="stylesheet">
 
     <!-- Icon Font Stylesheet -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
     <!-- Libraries Stylesheet -->
@@ -120,7 +120,7 @@
             });
         });
     </script>
-     <script>
+    <script>
         $(document).ready(function () {
             $('#confirmAddDistrict').click(function () {
                 const comboBox = document.querySelector('.district_cmb');
@@ -131,15 +131,15 @@
         });
     </script>
 
-@*     <script>
-        $(document).ready(function () {
-            var dataToPass = "";
-            $('.hideButton').on('click', function () {
-                dataToPass = $(this).val()
-                var yesDeleteButton = $(document).find('#confirmHide')
-                yesDeleteButton.val(dataToPass)
-            });
-        });
+    @*     <script>
+    $(document).ready(function () {
+    var dataToPass = "";
+    $('.hideButton').on('click', function () {
+    dataToPass = $(this).val()
+    var yesDeleteButton = $(document).find('#confirmHide')
+    yesDeleteButton.val(dataToPass)
+    });
+    });
     </script> *@
 </head>
 
@@ -163,26 +163,18 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="navbar-nav ms-auto p-4 p-lg-0">
-                    <a href="@Url.Action("DisplayList", "Employee",1)" class="nav-item nav-link active">Home</a>
-
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Jobs</a>
-                        <div class="dropdown-menu rounded-0 m-0">
-                            <a href="@Url.Action("DisplayList", "Employee",1)" class="dropdown-item">Job List</a>
-                            <a href="@Url.Action("GetAppliedRecruitment","Employee")" class="dropdown-item">Job you applied</a>
-                            <a href="@Url.Action("ShowProposalJob","Employee")" class="dropdown-item">Job Proposals</a>
-                        </div>
-                    </div>
-
+                    <a href="@Url.Action("IndexEmployer", "Home")" class="nav-item nav-link active">Home</a>
+                    <a href="@Url.Action("ListRecruitment", "Employer")" class="nav-item nav-link">Recruitments</a>
+                    <a href="@Url.Action("ShowSuitableCandidates", "Employer")" class="nav-item nav-link">Suitable candidates</a>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Personal</a>
                         <div class="dropdown-menu rounded-0 m-0">
-                            <a href="@Url.Action("Profile","Employee")" class="dropdown-item">Your infor</a>
+                            <a href="@Url.Action("Profile", "Employer")" class="dropdown-item">Your infor</a>
                             <a href="/Home/LogOut" class="dropdown-item">Log out</a>
                         </div>
                     </div>
                 </div>
-                <a href="" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Search A Job<i class="fa fa-arrow-right ms-3"></i></a>
+                <a href="@Url.Action("Recruitment", "Employer")" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Post A Job<i class="fa fa-arrow-right ms-3"></i></a>
             </div>
         </nav>
         <!-- Navbar End -->
@@ -193,29 +185,12 @@
                     <div class="col-lg-4">
                         <div class="card shadow-sm">
                             <div class="card-header bg-transparent text-center">
-                                <img class="profile_img" src=@Model.Employee.Account.AvatarUrl alt="student dp">
+                                <img class="profile_img" src="https://source.unsplash.com/600x300/?student" alt="student dp">
                                 <h3>@Model.Employee.LastName @Model.Employee.FirstName</h3>
-                                @if (Model.Employee.IdentityState == null)
-                                {
-                                    <span class="badge text-bg-secondary">Need to authenticate information</span>
-                                }
-                                else if (Model.Employee.IdentityState.IdentityStateId == 1)
-                                {
-                                    <span class="badge text-bg-info">Waiting</span>
-                                }
-                                else if (Model.Employee.IdentityState.IdentityStateId == 2)
-                                {
-                                    <span class="badge text-bg-success">Approve</span>
-                                }
-                                else
-                                {
-                                    <span class="badge text-bg-danger">Disapprove</span>
-                                }
                             </div>
                             <div class="card-body">
                                 <p class="mb-0"><strong class="pr-1">City: </strong>@Model.Employee.District.City.CityName</p>
                                 <p class="mb-0"><strong class="pr-1">District: </strong>@Model.Employee.District.DistrictName</p>
-                                <p class="mb-0"><strong class="pr-1">Address: </strong>@Model.Employee.Address</p>
                             </div>
                         </div>
                     </div>
@@ -239,12 +214,7 @@
                                     <tr>
                                         <th width="30%">Gender</th>
                                         <td width="2%">:</td>
-                                        <td>@(Model.Employee.Gender == "male" ? "Male" : "Female")</td>
-                                    </tr>
-                                    <tr>
-                                        <th width="30%">Birthday</th>
-                                        <td width="2%">:</td>
-                                        <td>@Model.Employee.BirthDate.Value.ToString("hh/MM/yyyy")</td>
+                                        <td>@Model.Employee.Gender</td>
                                     </tr>
                                     <tr>
                                         <th width="30%">Gmail</th>
@@ -256,14 +226,19 @@
                                         <td width="2%">:</td>
                                         <td>@Model.Employee.Account.PhoneNumber</td>
                                     </tr>
+                                    @*   <tr>
+                                    <th width="30%">blood</th>
+                                    <td width="2%">:</td>
+                                    <td>B+</td>
+                                    </tr> *@
                                 </table>
-                                <a href="EditProfile" class="btn btn-primary">Edit</a>
+@*                                 <button class="btn btn-primary">Edit</button> *@
                             </div>
                         </div>
                         <div style="height: 26px"></div>
                         <div class="card shadow-sm">
                             <div class="card-header bg-transparent border-0">
-                                <h3 class="mb-0"><i class="far fa-clone pr-1"></i>Your jobs</h3>
+                                <h3 class="mb-0"><i class="far fa-clone pr-1"></i>Jobs</h3>
                             </div>
                             <div class="card-body pt-0">
                                 <div class="table-container">
@@ -271,7 +246,6 @@
                                         <thead>
                                             <tr>
                                                 <th>Job name</th>
-                                                <th>Function</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -279,15 +253,15 @@
                                             {
                                                 <tr>
                                                     <td>@item.Job.JobName</td>
-                                                    <td>
+                                                  @*   <td>
                                                         <button class="btn btn-danger deleteButton btn_function" data-toggle="modal" data-target="#deleteWarningModal" value="DeleteJobDetail:@item.Job.JobId">Delete</button>
-                                                    </td>
+                                                    </td> *@
                                                 </tr>
                                             }
                                             <tr>
-                                                <td colspan="2">
+                                                @* <td colspan="2">
                                                     <button class="btn btn-primary addJobButton" data-toggle="modal" data-target="#addJobModal">Add job you can do</button>
-                                                </td>
+                                                </td> *@
                                             </tr>
                                         </tbody>
                                     </table>
@@ -299,7 +273,7 @@
                         <div style="height: 26px"></div>
                         <div class="card shadow-sm">
                             <div class="card-header bg-transparent border-0">
-                                <h3 class="mb-0"><i class="far fa-clone pr-1"></i>Your workable places</h3>
+                                <h3 class="mb-0"><i class="far fa-clone pr-1"></i>Workable places</h3>
                             </div>
                             <div class="card-body pt-0">
                                 <div class="table-container">
@@ -307,7 +281,6 @@
                                         <thead>
                                             <tr>
                                                 <th>WorkPlace</th>
-                                                <th>Function</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -315,22 +288,22 @@
                                             {
                                                 <tr>
                                                     <td>@item.District.City.CityName \ @item.District.DistrictName</td>
-                                                    <td>
+                                                  @*   <td>
                                                         <button class="btn btn-danger deleteButton btn_function" data-toggle="modal" data-target="#deleteWarningModal" value="DeleteDistrictDetail:@item.District.DistrictId">Delete</button>
-                                                    </td>
+                                                    </td> *@
                                                 </tr>
                                             }
                                             <tr>
-                                                <td colspan="2">
+                                               @*  <td colspan="2">
                                                     <button class="btn btn-primary addDistrictButton" data-toggle="modal" data-target="#addDistrictModal">Add places you can do </button>
-                                                </td>
-                                                
+                                                </td> *@
+
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
 
-                                
+
                             </div>
                         </div>
                     </div>
@@ -370,7 +343,7 @@
                                 <option value="@job.JobId">@job.JobName</option>
                             }
                         </select>
-                        
+
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -411,17 +384,11 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
-    <script src="/lib/wow/wow.min.js"></script>
-    <script src="/lib/easing/easing.min.js"></script>
-    <script src="/lib/waypoints/waypoints.min.js"></script>
-    <script src="/lib/owlcarousel/owl.carousel.min.js"></script>
-
     <!-- Template Javascript -->
     <script src="/js/main.js"></script>
 </body>
 
 </html>
+
 
 

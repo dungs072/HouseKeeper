@@ -1,4 +1,6 @@
+
 using HouseKeeper.Configs;
+using HouseKeeper;
 using HouseKeeper.DBContext;
 using HouseKeeper.IServices;
 using HouseKeeper.Respositories;
@@ -20,9 +22,8 @@ builder.Services.AddScoped<IEmployeeRespository, EmployeeRespository>();
 builder.Services.AddScoped<IAdminRespository, AdminRespository>();
 builder.Services.AddScoped<IStaffRespository, StaffRespository>();
 builder.Services.AddScoped<IFirebaseService, FirebaseService>();
-
 builder.Services.Configure<FirebaseConfig>(configuration.GetSection("AppConfigs").GetSection("FirebaseConfigs"));
-
+builder.Services.Configure<StripeSetting>(configuration.GetSection("StripeSettings"));
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession();
 

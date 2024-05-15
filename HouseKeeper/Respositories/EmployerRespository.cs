@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using HouseKeeper.Services;
 using HouseKeeper.Enum;
 using HouseKeeper.IServices;
+using Stripe;
 
 namespace HouseKeeper.Respositories
 {
@@ -139,6 +140,7 @@ namespace HouseKeeper.Respositories
                 }
                 await dBContext.HouseWorkDetails.AddRangeAsync(housekeepingTypes);
                 await dBContext.SaveChangesAsync();
+         
                 transaction.Commit();
                 return true;
             }
@@ -149,6 +151,7 @@ namespace HouseKeeper.Respositories
             }
 
         }
+      
         #region ListRecruitment
         public async Task<ListRecruitmentViewModel> GetEmployerRecruitments(int employerId)
         {
@@ -207,15 +210,33 @@ namespace HouseKeeper.Respositories
 
             return model;
         }
-        public async Task<bool> DeleteSpecificRecruitment(int recruitmentId)
+        public async Task<int> GetAmountMoneyForRecruitment(int recruitmentId)
+        {
+            int amount = 0;
+            var recruitment = await dBContext.Recruitments.FindAsync(recruitmentId);
+            amount += (int)recruitment.BidPrice;
+            var pricesDetails = recruitment.PricePacketDetail.ToList();
+            foreach (var detail in pricesDetails)
+            {
+                amount += (int)detail.PricePacket.Price;
+            }
+            return amount;
+        }
+        public async Task<int> DeleteSpecificRecruitment(int recruitmentId)
         {
             using var transaction = await dBContext.Database.BeginTransactionAsync();
             try
             {
+                int amount = 0;
                 var recruitment = await dBContext.Recruitments.FindAsync(recruitmentId);
+                amount += (int)recruitment.BidPrice;
                 var pricesDetails = recruitment.PricePacketDetail.ToList();
                 var jobDetails = recruitment.HouseworkDetails.ToList();
                 var bidHistories = recruitment.BidHistories.ToList();
+                foreach(var detail in pricesDetails)
+                {
+                    amount += (int)detail.PricePacket.Price;
+                }
                 recruitment.PricePacketDetail = null;
                 recruitment.HouseworkDetails = null;
                 // need to return money to user
@@ -226,12 +247,12 @@ namespace HouseKeeper.Respositories
                 dBContext.Recruitments.Remove(recruitment);
                 await dBContext.SaveChangesAsync();
                 transaction.Commit();
-                return true;
+                return amount;
             }
             catch (Exception ex)
             {
                 transaction.Rollback();
-                return false;
+                return -1;
             }
 
         }
@@ -376,8 +397,9 @@ namespace HouseKeeper.Respositories
                 return false;
             }
         }
-        #endregion
 
+
+        #endregion
         // edit employer profile
         public async Task<bool> EditEmployerProfile(EditEmployerProfileViewModel model, int employerId, IFormFile avatarImage, IFormFile frontImage, IFormFile backImage, AccountEnum.AccountType accountType)
         {
@@ -424,6 +446,33 @@ namespace HouseKeeper.Respositories
                 transaction.Rollback();
                 return false;
             }
+        public async Task<ListCandidatesViewModel> GetSuitableCandidates(int employerId)
+        {
+            var houseWorkDetails = await dBContext.HouseWorkDetails.Where(a =>a.Recruitment.Status.StatusName== status[2]
+                                                        && a.Recruitment.Employer.EmployerId == employerId).ToListAsync();
+            ListCandidatesViewModel candidates = new ListCandidatesViewModel();
+            candidates.houseKeepers = new List<NGUOIGIUPVIEC>();
+            var jobDetails = await dBContext.JobDetails.ToListAsync();
+            foreach(var houseWorkDetail in houseWorkDetails)
+            {
+                foreach(var jobDetail in jobDetails)
+                {
+                    if(jobDetail.Job==houseWorkDetail.Job)
+                    {
+                        if(!candidates.houseKeepers.Contains(jobDetail.Employee))
+                        {
+                            candidates.houseKeepers.Add(jobDetail.Employee);
+                        }
+                    }
+                }
+            }
+
+            return candidates;
+
+        }
+        public async Task<NGUOIGIUPVIEC> GetDetailCandidate(int employeeId)
+        {
+            return await dBContext.Employees.FindAsync(employeeId);
         }
     }
 

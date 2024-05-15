@@ -27,7 +27,8 @@ namespace HouseKeeper.Respositories
         Task<Dictionary<DateTime, List<CHITIETTUCHOI>>> GetRejectionDetails(int recruitmentId);
         Task<bool> CreateRecruitment(TINTUYENDUNG recruitment, string[] jobIds, int pricePacketId);
         Task<ListRecruitmentViewModel> GetEmployerRecruitments(int employerId);
-        Task<bool> DeleteSpecificRecruitment(int recruitmentId);
+        Task<int> DeleteSpecificRecruitment(int recruitmentId);
+        Task<int> GetAmountMoneyForRecruitment(int recruitmentId);
         Task<bool> EditRecruitment(EditRecruitmentViewModel model);
         Task<bool> HideRecruitment(int recruitmentId);
         Task<bool> UnHideRecruitment(int recruitmentId);
@@ -35,5 +36,8 @@ namespace HouseKeeper.Respositories
         Task<bool> ExtendDeadLine(int recruitmentId, int pricePacketId);
         Task<bool> EditEmployerProfile(EditEmployerProfileViewModel model, int employerId, IFormFile avatarImage, IFormFile frontImage, IFormFile backImage, AccountEnum.AccountType accountType);
 
+
+        Task<ListCandidatesViewModel> GetSuitableCandidates(int employerId);
+        Task<NGUOIGIUPVIEC> GetDetailCandidate(int employeeId);
     }
 }
