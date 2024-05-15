@@ -14,6 +14,8 @@ namespace HouseKeeper.Models.DB
         public string LastName { get; set; }
         [Column("TEN")]
         public string FirstName { get; set; }
+        [Column("GIOITINH")]
+        public string Gender { get; set; }
         [Column("NGAYSINH", TypeName = "date")]
         public DateTime? BirthDate { get; set; }
         [Column("SONHA_DUONG")]

@@ -167,5 +167,12 @@ namespace HouseKeeper.Controllers
                 return RedirectToAction("Profile");
             }
         }
+        public async Task<IActionResult> ShowProposalJob()
+        {
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employeeId);
+            JobProposalViewModel model = new JobProposalViewModel();
+            model = await employeeRespository.GetJobProposals(employeeId);
+            return View("JobProposal", model);
+        }
     }
 }

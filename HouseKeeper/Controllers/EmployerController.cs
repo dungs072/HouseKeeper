@@ -1,21 +1,27 @@
-﻿using HouseKeeper.Models.DB;
-using HouseKeeper.Models.Views.OutPage;
+﻿using Castle.Core.Resource;
+using HouseKeeper.Models.DB;
 using HouseKeeper.Models.Views.Employer;
 using HouseKeeper.Respositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using NuGet.Packaging.Signing;
-using System.Collections.Generic;
+using Stripe;
+using Stripe.BillingPortal;
+
 
 namespace HouseKeeper.Controllers
 {
     public class EmployerController : Controller
     {
         private readonly IEmployerRespository employerRespository;
-        public EmployerController(IEmployerRespository employerRespository)
+        private readonly IEmployeeRespository employeeRespository;
+        private readonly StripeSetting _stripeSettings;
+        public string SessionId { get; set; }
+        public EmployerController(IEmployerRespository employerRespository, IEmployeeRespository employeeRespository, IOptions<StripeSetting> stripeSetting)
         {
             this.employerRespository = employerRespository;
+            this.employeeRespository = employeeRespository;
+            this._stripeSettings = stripeSetting.Value;
         }
         public IActionResult Index()
         {
@@ -193,6 +199,14 @@ namespace HouseKeeper.Controllers
                 model.Recruitment.District = await employerRespository.GetDistrict(model.districtId);
                 int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
                 model.Recruitment.Employer = await employerRespository.GetEmployer(employerId);
+                var pricePacket = await employerRespository.GetPricePacket(model.PricePacketId);
+                int amount = (int)pricePacket.Price + (int)model.Recruitment.BidPrice;
+                var result = HandlePaidBill(amount, model.Recruitment.Employer.EmployerId);
+                if (!result)
+                {
+                    TempData["Error"] = "Fail to paid by credit card";
+                    return View("CheckOut", model);
+                }
                 var state = await employerRespository.CreateRecruitment(model.Recruitment, selectedJobs, model.PricePacketId);
                 if(state)
                 {
@@ -208,6 +222,58 @@ namespace HouseKeeper.Controllers
             TempData["Error"] = "Server error!";
             return RedirectToAction("Index", "Home");
         }
+        private bool HandlePaidBill(int amount, int customerId)
+        {
+            StripeConfiguration.ApiKey = _stripeSettings.SecretKey;
+            var service = new PaymentIntentService();
+            var options = new PaymentIntentCreateOptions
+            {
+                Amount = amount,
+                Currency = "vnd",
+                Description = "Customer with id " + customerId.ToString() + " has paid",
+                PaymentMethodTypes = new List<string> { "card" },
+                CaptureMethod = "manual",
+                Customer = "cus_Q6mvpowkYb0Rql",
+            };
+
+            var paymentIntent = service.Create(options);
+            switch (paymentIntent.Status)
+            {
+                case "requires_action":
+                case "requires_source_action":
+                    // Payment requires authentication
+                    Console.WriteLine("Payment requires authentication. Handle 3D Secure flow.");
+                    return false;
+                case "succeeded":
+                    // Payment succeeded
+                    Console.WriteLine("Payment succeeded!");
+                    return true;
+                case "requires_capture":
+                    // Payment failed or needs action
+                    Console.WriteLine("Payment failed or needs action. Handle accordingly.");
+                    return false;
+                default:
+                    Console.WriteLine($"Unknown PaymentIntent status: {paymentIntent.Status}");
+                    return true;
+            }
+        }
+        private void HandleRefund(int amount)
+        {
+            //StripeConfiguration.ApiKey = _stripeSettings.SecretKey;
+            //string chargeId = "cus_Q6mvpowkYb0Rql";
+
+            //var refundOptions = new RefundCreateOptions
+            //{
+            //    Amount = amount,
+            //    Currency = "vnd",
+            //    Customer = "cus_Q6mvpowkYb0Rql",
+            //};
+
+            //var refundService = new RefundService();
+            //Refund refund = refundService.Create(refundOptions);
+            
+            //Console.WriteLine("Refund processed successfully!");
+        }
         public async Task<IActionResult> ListRecruitment()
         {
             int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
@@ -216,10 +282,12 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> DeleteRecruitment(int recruitmentId)
         {
-            var result = await employerRespository.DeleteSpecificRecruitment(recruitmentId);
-            if(result)
+            var amount = await employerRespository.GetAmountMoneyForRecruitment(recruitmentId);
+            HandleRefund(amount);
+            var result = await employerRespository.DeleteSpecificRecruitment(recruitmentId);  
+            if (result>0)
             {
-                TempData["Success"] = "Your money will be back to your payment account!";
+                TempData["Success"] = "Your money will be back to your payment account in 3 to 5 days!";
                 return RedirectToAction("ListRecruitment");
             }
             else
@@ -402,7 +470,15 @@ namespace HouseKeeper.Controllers
         }
         public async Task<ActionResult> AddBidPriceCheckOut(int recruitmentId,decimal bidPrice)
         {
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
+            bool result0 = HandlePaidBill((int)bidPrice, employerId);
+            if (!result0)
+            {
+                TempData["Error"] = "Fail to paid by credit card";
+                return RedirectToAction("ShowBidPrice", recruitmentId);
+            }
             var result = await employerRespository.AddBidPrice(recruitmentId,bidPrice);
+            
             if (result)
             {
                 TempData["Success"] = "Add bid price to recruitment successfully!";
@@ -435,6 +511,15 @@ namespace HouseKeeper.Controllers
         }
         public async Task<ActionResult> AddPricePacketCheckOut(int recruitmentId, int pricePacketId)
         {
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
+            var pricePacket = await employerRespository.GetPricePacket(pricePacketId);
+            bool result0 = HandlePaidBill((int)pricePacket.Price, employerId);
+            if (!result0)
+            {
+                TempData["Error"] = "Fail to paid by credit card";
+                return RedirectToAction("ShowPricePacket", recruitmentId);
+            }
+
             var result = await employerRespository.ExtendDeadLine(recruitmentId,pricePacketId);
             if (result)
             {
@@ -496,6 +581,22 @@ namespace HouseKeeper.Controllers
             model.Employer = await employerRespository.GetEmployer(employerId);
             return View(model);
         }
+
+        public async Task<IActionResult> ShowSuitableCandidates()
+        {
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
+            ListCandidatesViewModel model = await employerRespository.GetSuitableCandidates(employerId);
+            return View("EmployeeProposer", model);
+        }
+        public async Task<IActionResult> ShowDetailCandidateProfile(int employeeId)
+        {
+            Models.Views.Employee.EmployeeProfileViewModel model = new Models.Views.Employee.EmployeeProfileViewModel();
+            model.Employee = await employeeRespository.GetEmployee(employeeId);
+            model.Districts = await employeeRespository.GetWorkplacesForEmployee(employeeId);
+            model.Jobs = await employeeRespository.GetJobsForEmployee(employeeId);
+            return View("CandidateProfile", model);
+        }
+       
 
     }
 }

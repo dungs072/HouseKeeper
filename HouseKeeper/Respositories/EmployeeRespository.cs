@@ -1,6 +1,8 @@
 ﻿using HouseKeeper.DBContext;
 using HouseKeeper.Models.DB;
+using HouseKeeper.Models.Views.Employee;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace HouseKeeper.Respositories
 {
@@ -205,6 +207,48 @@ namespace HouseKeeper.Respositories
             {
                 return false;
             }
+        }
+
+        public async Task<JobProposalViewModel> GetJobProposals(int employeeId)
+        {
+            var jobDetails = await dBContext.JobDetails.Where(a => a.Employee.EmployeeId== employeeId).ToListAsync();
+            var workableDetails = await dBContext.WorkplacesDetails.Where(a=>a.Employee.EmployeeId==employeeId).ToListAsync();
+            JobProposalViewModel jobProposalViewModel = new JobProposalViewModel();
+            jobProposalViewModel.recruitments = new List<TINTUYENDUNG>();
+            var houseWorkDetails = await dBContext.HouseWorkDetails.Where(a => a.Recruitment.Status.StatusName == status[2]).ToListAsync();
+            foreach(var houseWorkDetail in houseWorkDetails)
+            {
+                foreach(var jobDetail in jobDetails)
+                {
+                    if(jobDetail.Job==houseWorkDetail.Job)
+                    {
+                        if(!jobProposalViewModel.recruitments.Contains(houseWorkDetail.Recruitment))
+                        {
+                            jobProposalViewModel.recruitments.Add(houseWorkDetail.Recruitment);
+                            
+                        }
+                        break;
+                    }
+                }
+               
+            }
+            for(int i =jobProposalViewModel.recruitments.Count-1;i>=0;i--)
+            {
+                bool flag = false;
+                foreach (var workableDetail in workableDetails)
+                {
+                    if (workableDetail.District.City == jobProposalViewModel.recruitments[i].District.City)
+                    {
+                        flag = true;
+                    }
+                }
+                if(!flag)
+                {
+                    jobProposalViewModel.recruitments.RemoveAt(i);
+                }
+            }
+            return jobProposalViewModel;
+
         }
 
     }
