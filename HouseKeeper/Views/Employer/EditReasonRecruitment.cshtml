@@ -1,5 +1,5 @@
 ﻿@using HouseKeeper.Models.Views.Employer;
-@model EditReasonRecruitmentViewModel;
+@model EditRecruitmentViewModel;
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -52,50 +52,6 @@
                 background-color: #f0f0f0;
                 border-radius: 3px;
             }
-    </style>
-    <style>
-        .t {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 300px; /* Adjust the width as needed */
-            height: 100vh; /* Make the div take the full height of the viewport */
-            background-color: #f0f0f0; /* Example background color */
-            overflow-y: scroll; /* Add scrollbar if content exceeds height */
-            top: 25px;
-        }
-
-            .t section {
-                padding: 20px;
-            }
-    </style>
-    <style>
-        .t {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 300px; /* Adjust the width as needed */
-            height: 100vh; /* Make the div take the full height of the viewport */
-            background-color: #f0f0f0; /* Example background color */
-            overflow-y: scroll; /* Add scrollbar if content exceeds height */
-            top: 25px;
-        }
-
-            .t section {
-                padding: 20px;
-            }
-    </style>
-    <style>
-        .rounded-panel {
-            background-color: #f0f0f0; /* Background color of the panel */
-            border-radius: 10px; /* Border radius for rounded corners */
-            padding: 10px 15px; /* Padding inside the panel */
-            display: inline-block; /* Display as inline block to fit content */
-            margin-bottom: 10px;
-        }
-        .dateHead{
-            margin-top: 10px;
-        }
     </style>
     <script>
         function formatCurrency(input) {
@@ -253,32 +209,6 @@
             </section>
             <footer>Easy-Fast-Afordable</footer>
         </main>
-        <div class="t">
-            <section>
-                <div class="href-target" id="input-types"></div>
-                <h1>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                         class="feather feather-align-justify">
-                        <line x1="21" y1="10" x2="3" y2="10" />
-                        <line x1="21" y1="6" x2="3" y2="6" />
-                        <line x1="21" y1="14" x2="3" y2="14" />
-                        <line x1="21" y1="18" x2="3" y2="18" />
-                    </svg>
-                    Rejection History
-                </h1>
-                @foreach(var keyValue in Model.RejectionDetails)
-                {
-                    <h5 class="dateHead">Date time: @keyValue.Key.ToString("dd/MM/yyyy hh:mm:ss")</h5>
-                    foreach(var rejection in keyValue.Value)
-                    {
-                        <div class="rounded-panel">
-                            <h6>Reason: @rejection.Rejection.RejectionName</h6>
-                            <h6>Note: @rejection.Note</h6>
-                        </div>
-                    }
-                }
-        </div>
     </div>
     <script>
         // JavaScript to handle selection change
@@ -318,29 +248,14 @@
         const maxSalaryInput = document.getElementById('max-salary');
 
         minSalaryInput.addEventListener('change', function () {
-            var maxSalaryStr = maxSalaryInput.value;
-            var maxSalaryStrWithoutComma = maxSalaryStr.replace(/[^\d]/g, '').replace(/^0+/, '');
-            var maxSalary = parseInt(maxSalaryStrWithoutComma, 10);
-            var minSalaryStr = minSalaryInput.value;
-            var minSalaryStrWithoutComma = minSalaryStr.replace(/[^\d]/g, '').replace(/^0+/, '');
-            var minSalary = parseInt(minSalaryStrWithoutComma, 10);
-            if (minSalary > maxSalary) {
-                minSalaryInput.value = maxSalary;
-                formatCurrency(minSalaryInput);
+            if (parseInt(minSalaryInput.value) >= parseInt(maxSalaryInput.value)) {
+                minSalaryInput.value = parseInt(maxSalaryInput.value) - 1;
             }
-
         });
 
         maxSalaryInput.addEventListener('change', function () {
-            var maxSalaryStr = maxSalaryInput.value;
-            var maxSalaryStrWithoutComma = maxSalaryStr.replace(/[^\d]/g, '').replace(/^0+/, '');
-            var maxSalary = parseInt(maxSalaryStrWithoutComma, 10);
-            var minSalaryStr = minSalaryInput.value;
-            var minSalaryStrWithoutComma = minSalaryStr.replace(/[^\d]/g, '').replace(/^0+/, '');
-            var minSalary = parseInt(minSalaryStrWithoutComma, 10);
-            if (maxSalary < minSalary) {
-                maxSalaryInput.value = minSalary + 1;
-                formatCurrency(maxSalaryInput);
+            if (parseInt(maxSalaryInput.value) <= parseInt(minSalaryInput.value)) {
+                maxSalaryInput.value = parseInt(minSalaryInput.value) + 1;
             }
         });
     </script>
@@ -381,7 +296,36 @@
         // Trigger change event initially to set the initial state
         citySelect.dispatchEvent(new Event('change'));
     </script>
+    <script>
+        const minSalaryInput = document.getElementById('min-salary');
+        const maxSalaryInput = document.getElementById('max-salary');
+
+        minSalaryInput.addEventListener('change', function () {
+            var maxSalaryStr = maxSalaryInput.value;
+            var maxSalaryStrWithoutComma = maxSalaryStr.replace(/[^\d]/g, '').replace(/^0+/, '');
+            var maxSalary = parseInt(maxSalaryStrWithoutComma, 10);
+            var minSalaryStr = minSalaryInput.value;
+            var minSalaryStrWithoutComma = minSalaryStr.replace(/[^\d]/g, '').replace(/^0+/, '');
+            var minSalary = parseInt(minSalaryStrWithoutComma, 10);
+            if (minSalary > maxSalary) {
+                minSalaryInput.value = maxSalary;
+                formatCurrency(minSalaryInput);
+            }
+        });
+
+        maxSalaryInput.addEventListener('change', function () {
+            var maxSalaryStr = maxSalaryInput.value;
+            var maxSalaryStrWithoutComma = maxSalaryStr.replace(/[^\d]/g, '').replace(/^0+/, '');
+            var maxSalary = parseInt(maxSalaryStrWithoutComma, 10);
+            var minSalaryStr = minSalaryInput.value;
+            var minSalaryStrWithoutComma = minSalaryStr.replace(/[^\d]/g, '').replace(/^0+/, '');
+            var minSalary = parseInt(minSalaryStrWithoutComma, 10);
+            if (maxSalary < minSalary) {
+                maxSalaryInput.value = minSalary + 1;
+                formatCurrency(maxSalaryInput);
+            }
+        });
+    </script>
 </body>
 </html>
-
 

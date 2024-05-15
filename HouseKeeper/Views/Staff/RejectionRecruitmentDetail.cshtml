@@ -1,0 +1,196 @@
+﻿@using HouseKeeper.Models.Views.Staff;
+@model RecruitmentModerationViewModel;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <partial name="DefaultHeaderInclude" />
+    <style>
+        button {
+            margin-top: 10px;
+            margin-bottom: 10px; /* Adjust this value as needed */
+        }
+
+        .text-danger {
+            margin: 0;
+            margin-left: 5px;
+            visibility: hidden
+        }
+    </style>
+
+</head>
+
+<body>
+    <partial name="BodyInclude" />
+
+    <!-- Header -->
+    <div class="container-xxl py-5 bg-dark page-header mb-5">
+        <div class="container my-5 pt-5 pb-4">
+            <h1 class="display-3 text-white mb-3 animated slideInDown">Job Detail</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb text-uppercase">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a href="#">Pages</a></li>
+                    <li class="breadcrumb-item text-white active" aria-current="page">Job Detail</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Job Detail -->
+    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+        <div class="container">
+            <div class="row gy-5 gx-4">
+                <div class="col-lg-8">
+                    <div class="d-flex align-items-center mb-5">
+                        <img class="flex-shrink-0 img-fluid border rounded" src="img/com-logo-2.jpg" alt="" style="width: 80px; height: 80px;">
+                        <div class="text-start ps-4">
+                            <h3 class="mb-3">@Model.Recruitment.HouseWorkName</h3>
+                            <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@Model.Recruitment.Address, @Model.Recruitment.District.DistrictName, @Model.Recruitment.District.City.CityName</span>
+                            @if (Model.Recruitment.FullTime)
+                            {
+                                <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Full Time</span>
+                            }
+                            else
+                            {
+                                <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Part Time</span>
+                            }
+
+                            <span class="text-truncate me-0"><i class="far fa-money-bill-alt text-primary me-2"></i>@string.Format("{0:0,0} VND", @Model.Recruitment.MinSalary) - @string.Format("{0:0,0} VND", @Model.Recruitment.MaxSalary)</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-5">
+                        <h4 class="mb-3">Job description</h4>
+                        <p>@Model.Recruitment.Note</p>
+                    </div>
+
+                    <!-- Button Group -->
+                    <div class="">
+                        <h4 class="mb-4">Rejection History</h4>
+                        <div class="rejections-list">
+                            <form id="recruitment-form" asp-action="EditNotesOfRejection" method="post" enctype="multipart/form-data">
+                                <input type="hidden" asp-for="@Model.RecruitmentId" value="@Model.Recruitment.RecruitmentId" />
+                                @{
+                                    int noteIndex = 1;
+                                }
+                                @foreach (var (date, reasonslist) in Model.RejectionsDetails.Reverse())
+                                {
+                                    <table class="table table-bordered caption-top table-hover">
+                                        <caption>@date.ToString("dd/MM/yyyy hh:mm:ss")</caption>
+
+                                        <tr>
+                                            <th scope="col" class="col-1">#</th>
+                                            <th scope="col" class="col-3">Reason</th>
+                                            <th scope="col" class="col-6">Note</th>
+                                        </tr>
+                                        <tbody>
+
+                                            @for (int i = 0; i < reasonslist.Count; i++)
+                                            {
+                                                <tr>
+                                                    <th scope="row">@(i + 1)</th>
+                                                    <td>@Model.getRejectionName(reasonslist[i].Rejection.RejectionId)</td>
+                                                    <td>
+                                                        @if (noteIndex == Model.NoteIndexCanEdit)
+                                                        {
+                                                            <input type="hidden" asp-for="@Model.NoteIdCanEditList[i]" value="@Model.NoteIdCanEditList[i]" />
+                                                            <textarea asp-for="@Model.NoteCanEditList[i]" value="@Model.NoteCanEditList[i]" class="form-control" aria-label="With textarea" id="input-note-@i" placeholder="Type notes here"></textarea>
+                                                        }
+                                                        else
+                                                        {
+                                                            @reasonslist[i].Note
+                                                        }
+
+                                                    </td>
+                                                </tr>
+                                            }
+
+                                        </tbody>
+                                    </table>
+
+                                    @if (noteIndex == Model.NoteIndexCanEdit && Model.NoteIndexCanEdit > 0)
+                                    {
+                                        <p id="edit-notification">Time left to edit notes: <span id="time-left"></span></p>
+                                        <button id="btn-edit" type="submit" class="btn btn-danger w-25 btn_function" data-recruitment-id="@Model.Recruitment.RecruitmentId">
+                                            Edit Notes
+                                        </button>
+
+                                    }
+                                    @if (noteIndex < Model.RejectionsDetails.Count)
+                                    {
+                                        <hr />
+                                    }
+                                    noteIndex++;
+                                }
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="bg-light rounded p-5 mb-4 wow slideInUp" data-wow-delay="0.1s">
+                        <h4 class="mb-4">Job Summery</h4>
+                        <p><i class="fa fa-angle-right text-primary me-2"></i>Published On: @Model.Recruitment.PostTime.ToString("dd/MM/yyyy")</p>
+                        <p><i class="fa fa-angle-right text-primary me-2"></i>Vacancy: @Model.Recruitment.MaxApplications</p>
+                        @if (Model.Recruitment.FullTime)
+                        {
+                            <p><i class="fa fa-angle-right text-primary me-2"></i>Job Nature: Full Time</p>
+                        }
+                        else
+                        {
+                            <p><i class="fa fa-angle-right text-primary me-2"></i>Job Nature: Part Time</p>
+                        }
+
+                        <p><i class="fa fa-angle-right text-primary me-2"></i>Age range: @Model.Recruitment.Age</p>
+                        <p><i class="fa fa-angle-right text-primary me-2"></i>Experience: @Model.Recruitment.Experience.ExperienceName</p>
+                        <p><i class="fa fa-angle-right text-primary me-2"></i>Gender: @Model.Recruitment.Gender</p>
+                        <p><i class="fa fa-angle-right text-primary me-2"></i>Paid type: @Model.Recruitment.SalaryForm.SalaryFormName</p>
+                        <p class="m-0"><i class="fa fa-angle-right text-primary me-2"></i>Deadline: @Model.Recruitment.RecruitDeadlineDate.ToString("dd/MM/yyyy")</p>
+                    </div>
+                    <div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
+                        <h4 class="mb-4">Company Detail</h4>
+                        <p class="m-0">Ipsum dolor ipsum accusam stet et et diam dolores, sed rebum sadipscing elitr vero dolores. Lorem dolore elitr justo et no gubergren sadipscing, ipsum et takimata aliquyam et rebum est ipsum lorem diam. Et lorem magna eirmod est et et sanctus et, kasd clita labore.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <partial name="FooterPage" />
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+    </div>
+    <!-- Script -->
+    <partial name="ScriptInclude" />
+
+    <!-- Script -->
+    <script>
+        $(document).ready(function () {
+            
+            var lastRejectionTime = new Date('@Model.LastTimeCanEditNotes');
+            var x = setInterval(function () {
+                var now = new Date().getTime();
+                var distance = lastRejectionTime - now;
+
+
+                // Time calculations for days, hours, minutes and seconds
+                var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                $('#time-left').text(hours + "h " + minutes + "m " + seconds + "s ");
+
+                if (distance < 0) {
+                    clearInterval(x);
+                    $('#time-left').text("Timeout, Notes can no longer be edited");
+                    $('#btn-edit').remove();
+                }
+            }, 1000);
+        })
+    </script>
+
+</body>
+
+</html>

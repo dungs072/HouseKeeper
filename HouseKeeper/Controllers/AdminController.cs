@@ -1,6 +1,8 @@
-﻿using HouseKeeper.Models.Views.Admin;
+﻿using HouseKeeper.Enum;
+using HouseKeeper.Models.Views.Admin;
 using HouseKeeper.Respositories;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace HouseKeeper.Controllers
 {
@@ -253,6 +255,23 @@ namespace HouseKeeper.Controllers
             }
             return RedirectToAction("ShowPricePackets");
         }
-        #endregion
-    }
+		#endregion
+
+        
+		public ActionResult DrawChart(int selectedYear = 0)
+		{
+            if (selectedYear == 0) selectedYear = DateTime.Now.Year;
+
+            // Get data points for price packet revenue, bid revenue, total revenue
+            var revenueDataPoints = adminRespository.GetRevenueDataPoints(selectedYear).Result;
+            
+            ViewBag.pricePacketRevenueDataPoints = JsonConvert.SerializeObject(revenueDataPoints[AdminEnum.RevenueType.PricePacket]);
+            ViewBag.bidRevenueDataPoints = JsonConvert.SerializeObject(revenueDataPoints[AdminEnum.RevenueType.Bid]);
+            ViewBag.totalRevenueDataPoints = JsonConvert.SerializeObject(revenueDataPoints[AdminEnum.RevenueType.Total]);
+            ViewBag.SelectedYear = selectedYear;
+            ViewBag.StartYear = Configs.StatisticConfig.startYearStatistic;
+            ViewBag.EndYear = Configs.StatisticConfig.endYearStatistic;
+            return View("RevenueStatistic");
+		}
+	}
 }

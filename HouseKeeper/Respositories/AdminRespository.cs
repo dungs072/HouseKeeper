@@ -1,10 +1,12 @@
 ﻿using HouseKeeper.DBContext;
+using HouseKeeper.Enum;
 using HouseKeeper.Models.DB;
+using HouseKeeper.Models.Views.Admin;
 using Microsoft.EntityFrameworkCore;
 
 namespace HouseKeeper.Respositories
 {
-    public class AdminRespository:IAdminRespository
+    public class AdminRespository : IAdminRespository
     {
         private readonly HouseKeeperDBContext dBContext;
         public AdminRespository(HouseKeeperDBContext dBContext)
@@ -28,12 +30,13 @@ namespace HouseKeeper.Respositories
                 return true;
 
 
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return false;
             }
         }
-        public async Task<bool> EditJobType(int jobId,string jobName)
+        public async Task<bool> EditJobType(int jobId, string jobName)
         {
             try
             {
@@ -42,11 +45,12 @@ namespace HouseKeeper.Respositories
                 dBContext.Jobs.Update(jobType);
                 dBContext.SaveChanges();
                 return true;
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return false;
             }
-         
+
         }
         public async Task<bool> DeleteJobType(int jobId)
         {
@@ -56,7 +60,8 @@ namespace HouseKeeper.Respositories
                 dBContext.Jobs.Remove(jobType);
                 dBContext.SaveChanges();
                 return true;
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return false;
             }
@@ -280,6 +285,41 @@ namespace HouseKeeper.Respositories
             {
                 return false;
             }
+        }
+        #endregion
+
+        #region RevenueChart
+        public async Task<Dictionary<AdminEnum.RevenueType, List<DataPoint>>> GetRevenueDataPoints(int year)
+        {
+            var pricePacketRevenueInYear = await dBContext.PricePacketDetails.Where(x => x.BuyDate.Year == year && x.HasPaid).ToListAsync();
+            var bidRevenueInYear = await dBContext.BidHistories.Where(x => x.BuyDate.Year == year && x.IsPaid).ToListAsync();
+
+            List<decimal> pricePacketRevenueMonthly = new List<decimal>(new decimal[12]);
+            List<decimal> bidRevenueMonthly = new List<decimal>(new decimal[12]);
+
+            foreach (var pricePacketRevenue in pricePacketRevenueInYear)
+            {
+                pricePacketRevenueMonthly[pricePacketRevenue.BuyDate.Month - 1] += pricePacketRevenue.PricePacket.Price;
+            }
+
+            foreach (var bidRevenue in bidRevenueInYear)
+            {
+                bidRevenueMonthly[bidRevenue.BuyDate.Month - 1] += bidRevenue.IncreasePrice;
+            }
+
+            Dictionary<AdminEnum.RevenueType, List<DataPoint>> dataPoints = new();
+            dataPoints.Add(AdminEnum.RevenueType.PricePacket, new List<DataPoint>());
+            dataPoints.Add(AdminEnum.RevenueType.Bid, new List<DataPoint>());
+            dataPoints.Add(AdminEnum.RevenueType.Total, new List<DataPoint>());
+
+            for (int i = 0; i < 12; i++)
+            {
+                dataPoints[AdminEnum.RevenueType.PricePacket].Add(new DataPoint(Configs.StatisticConfig.monthsArray[i], pricePacketRevenueMonthly[i]));
+                dataPoints[AdminEnum.RevenueType.Bid].Add(new DataPoint(Configs.StatisticConfig.monthsArray[i], bidRevenueMonthly[i]));
+                dataPoints[AdminEnum.RevenueType.Total].Add(new DataPoint(Configs.StatisticConfig.monthsArray[i], pricePacketRevenueMonthly[i] + bidRevenueMonthly[i]));
+            }
+
+            return dataPoints;
         }
         #endregion
     }

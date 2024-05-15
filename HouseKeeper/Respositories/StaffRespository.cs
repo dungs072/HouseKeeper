@@ -1,5 +1,4 @@
-﻿using HouseKeeper.Contanst;
-using HouseKeeper.Enum.Staff;
+﻿using HouseKeeper.Enum;
 using HouseKeeper.Models.DB;
 using HouseKeeper.Models.Views.Staff;
 using Microsoft.AspNetCore.Mvc;
@@ -19,17 +18,17 @@ namespace HouseKeeper.Respositories
         // Get all recruitment is pending approval
         public async Task<List<Models.DB.TINTUYENDUNG>> GetRecruitmentNotHandled()
         {
-            return await dBContext.Recruitments.Where(a => a.Status.StatusName == RecruitmentsStatus.PendingApproval && a.Staff == null).ToListAsync();
+            return await dBContext.Recruitments.Where(a => a.Status.StatusId == (int)RecruitmentEnum.RecruitmentStatus.PendingApproval && a.Staff == null).ToListAsync();
         }
 
         // Get all recruitment are handled by staff
-        public async Task<List<Models.DB.TINTUYENDUNG>> ListRecruitmentAreHandledByStaff(int staffId)
+        public async Task<List<Models.DB.TINTUYENDUNG>> ListRecruitmentAreHandledByStaff(int staffId, RecruitmentEnum.RecruitmentStatus recruitmentStatus)
         {
-            return await dBContext.Recruitments.Where(a => a.Status.StatusName == RecruitmentsStatus.PendingApproval && a.Staff != null && a.Staff.StaffId == staffId).ToListAsync();
+            return await dBContext.Recruitments.Where(a => a.Status.StatusId == (int)recruitmentStatus && a.Staff != null && a.Staff.StaffId == staffId).ToListAsync();
         }
 
         // Accept recruitment by id and change status to Displayed
-        public async Task<EnumStaff.ModerationStatus> AcceptRecruitment(int recruitmentId)
+        public async Task<StaffEnum.ModerationStatus> AcceptRecruitment(int recruitmentId)
         {
             using var transaction = await dBContext.Database.BeginTransactionAsync();
 
@@ -43,11 +42,11 @@ namespace HouseKeeper.Respositories
                 {
                     // Recruitment not found, or Status not loaded
                     transaction.Rollback();
-                    return EnumStaff.ModerationStatus.NotFound;
+                    return StaffEnum.ModerationStatus.NotFound;
                 }
 
                 // Associate the new Status object with the Recruitment object
-                recruitment.Status = await dBContext.RecruitmentStatus.FindAsync(RecruitmentsStatus.GetStatusId(RecruitmentsStatus.Displayed));
+                recruitment.Status = await dBContext.RecruitmentStatus.FindAsync((int)RecruitmentEnum.RecruitmentStatus.Displayed);
                 var PricePacketList = await dBContext.PricePacketDetails.Where(x => x.BuyDate >= recruitment.PostTime && x.Recruitment.RecruitmentId == recruitmentId && x.HasPaid == true).ToListAsync();
                 var currentTime = DateTime.Now;
                 recruitment.RecruitDeadlineDate = currentTime;
@@ -57,19 +56,19 @@ namespace HouseKeeper.Respositories
                 }
                 await dBContext.SaveChangesAsync();
                 transaction.Commit();
-                return EnumStaff.ModerationStatus.OK;
+                return StaffEnum.ModerationStatus.OK;
             }
             catch (Exception ex)
             {
                 transaction.Rollback();
-                return EnumStaff.ModerationStatus.ServerError;
+                return StaffEnum.ModerationStatus.ServerError;
             }
         }
 
 
         // reject recruitment by id and change status to Rejected and add list reason
         [HttpPost]
-        public async Task<EnumStaff.ModerationStatus> RejectRecruitment(RecruitmentModerationViewModel model)
+        public async Task<StaffEnum.ModerationStatus> RejectRecruitment(RecruitmentModerationViewModel model)
         {
             using var transaction = await dBContext.Database.BeginTransactionAsync();
             try
@@ -81,10 +80,10 @@ namespace HouseKeeper.Respositories
                 if (recruitment == null)
                 {
                     transaction.Rollback();
-                    return EnumStaff.ModerationStatus.NotFound;
+                    return StaffEnum.ModerationStatus.NotFound;
                 }
 
-                recruitment.Status = await dBContext.RecruitmentStatus.FindAsync(RecruitmentsStatus.GetStatusId(RecruitmentsStatus.RejectApproval));
+                recruitment.Status = await dBContext.RecruitmentStatus.FindAsync((int)RecruitmentEnum.RecruitmentStatus.RejectApproval);
                 var currentTime = DateTime.Now;
                 for (int i = 0; i < model.RejectionId.Count; i++)
                 {
@@ -102,26 +101,26 @@ namespace HouseKeeper.Respositories
                 dBContext.Recruitments.Update(recruitment);
                 await dBContext.SaveChangesAsync();
                 transaction.Commit();
-                return EnumStaff.ModerationStatus.OK;
+                return StaffEnum.ModerationStatus.OK;
             }
             catch (Exception ex)
             {
                 transaction.Rollback();
-                return EnumStaff.ModerationStatus.ServerError;
+                return StaffEnum.ModerationStatus.ServerError;
             }
         }
 
         // Get recruitment by id
-        public async Task<Tuple<EnumStaff.ModerationStatus, TINTUYENDUNG>> GetRecruitment(int recruitmentId, int staffId)
+        public async Task<Tuple<StaffEnum.ModerationStatus, TINTUYENDUNG>> GetRecruitment(int recruitmentId, int staffId)
         {
             var recruitment = await dBContext.Recruitments.FindAsync(recruitmentId);
             if (recruitment == null)
             {
-                return new Tuple<EnumStaff.ModerationStatus, TINTUYENDUNG>(EnumStaff.ModerationStatus.NotFound, null);
+                return new Tuple<StaffEnum.ModerationStatus, TINTUYENDUNG>(StaffEnum.ModerationStatus.NotFound, null);
             }
             if (recruitment.Staff != null && recruitment.Staff.StaffId != staffId)
             {
-                return new Tuple<EnumStaff.ModerationStatus, TINTUYENDUNG>(EnumStaff.ModerationStatus.IsHandledByOther, null);
+                return new Tuple<StaffEnum.ModerationStatus, TINTUYENDUNG>(StaffEnum.ModerationStatus.IsHandledByOther, null);
             }
             if (recruitment.Staff == null)
             {
@@ -136,10 +135,10 @@ namespace HouseKeeper.Respositories
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    return new Tuple<EnumStaff.ModerationStatus, TINTUYENDUNG>(EnumStaff.ModerationStatus.ServerError, recruitment);
+                    return new Tuple<StaffEnum.ModerationStatus, TINTUYENDUNG>(StaffEnum.ModerationStatus.ServerError, recruitment);
                 }
             }
-            return new Tuple<EnumStaff.ModerationStatus, TINTUYENDUNG>(EnumStaff.ModerationStatus.OK, recruitment);
+            return new Tuple<StaffEnum.ModerationStatus, TINTUYENDUNG>(StaffEnum.ModerationStatus.OK, recruitment);
         }
 
         // Get all LYDOTUCHOI
@@ -164,6 +163,42 @@ namespace HouseKeeper.Respositories
         public async Task<List<CHITIETTUCHOI>?> GetRejectionsDetail(int recruitmentId)
         {
             return await dBContext.RejectionDetails.Where(a => a.Recruitment.RecruitmentId == recruitmentId).ToListAsync();
+        }
+
+        // Edit note of rejection
+        public async Task<StaffEnum.ModerationStatus> EditNotesOfRejection(RecruitmentModerationViewModel model)
+        {
+            using var transaction = await dBContext.Database.BeginTransactionAsync();
+            try
+            {
+                var recruitment = await dBContext.Recruitments
+                    .Include(r => r.Status)  // Ensure that the Status property is loaded
+                    .FirstOrDefaultAsync(r => r.RecruitmentId == model.RecruitmentId);
+                if (recruitment == null)
+                {
+                    return StaffEnum.ModerationStatus.NotFound;
+
+                }
+                for (int i = 0; i < model.NoteIdCanEditList.Count; i++)
+                {
+                    var rejectionDetail = await dBContext.RejectionDetails.FindAsync(model.NoteIdCanEditList[i]);
+                    rejectionDetail.Note = model.NoteCanEditList[i];
+                }
+                await dBContext.SaveChangesAsync();
+                transaction.Commit();
+                return StaffEnum.ModerationStatus.OK;
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                return StaffEnum.ModerationStatus.ServerError;
+            }
+        }
+
+        // get staff profile by id
+        public async Task<NHANVIEN> GetStaffProfile(int staffId)
+        {
+            return await dBContext.Staffs.FindAsync(staffId);
         }
     }
 }

@@ -11,10 +11,11 @@ namespace HouseKeeper.Models.DB
         [Column("ID_CCCD")]
         public int CitizenId {  get; set; }
         [Column("CCCD")]
-        public int CitizenNumber { get; set; }
+        public string CitizenNumber { get; set; }
+
         [Column("MATTRUOC")]
-        public int FrontImage { get; set; }
+        public string FrontImage { get; set; }
         [Column("MATSAU")]
-        public int BackImage { get; set; }
+        public string BackImage { get; set; }
     }
 }

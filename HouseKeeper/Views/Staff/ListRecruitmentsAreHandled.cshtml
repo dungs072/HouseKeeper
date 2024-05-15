@@ -24,42 +24,90 @@
 
         <!-- Jobs Start -->
         <div class="container-xxl py-5 align-items-center">
-            <h1>Recruitments Are Handled By Me</h1>
-            @foreach (var item in Model.RecruimentsAreHandled)
-            {
-                <div class="job-item p-4 mb-4">
-                    <div class="row g-4">
-                        <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                            <img class="flex-shrink-0 img-fluid border rounded" src="/img/com-logo-1.jpg" alt="" style="width: 80px; height: 80px;">
-                            <div class="text-start ps-4">
-                                <h5 class="mb-3">@item.HouseWorkName</h5>
-                                <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@item.District.DistrictName / @item.District.City.CityName</span>
-                                @if (item.FullTime)
-                                {
-                                    <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Full Time</span>
-                                }
-                                else
-                                {
-                                    <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Part Time</span>
-                                }
-                                <span class="text-truncate me-3"><i class="far fa-money-bill-alt text-primary me-2"></i>@string.Format("{0:0,0} VND", @item.MinSalary) - @string.Format("{0:0,0} VND", @item.MaxSalary)</span>
-                                <span class="text-truncate me-0"><i class="fa fa-hourglass-half text-primary me-2"></i>@item.SalaryForm.SalaryFormName</span>
-                            </div>
+            <div class="container">
+                <h1>Recruitments Are Handled By Me</h1>
+                <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.3s">
+                    <ul class="nav nav-pills d-inline-flex justify-content-center border-bottom mb-5">
+                        <li class="nav-item">
+                            <a class="d-flex align-items-center text-start mx-3 pb-3 active" data-bs-toggle="pill" href="#tab-1">
+                                <h6 class="mt-n1 mb-0">Pending approval</h6>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="d-flex align-items-center text-start mx-3 pb-3" data-bs-toggle="pill" href="#tab-2">
+                                <h6 class="mt-n1 mb-0">Disapproval</h6>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="tab-1" class="tab-pane fade show p-0 active">
+                            @foreach (var item in Model.PendingApprovalRecruitments)
+                            {
+                                <div class="job-item p-4 mb-4">
+                                    <div class="row g-4">
+                                        <div class="col-sm-12 col-md-8 d-flex align-items-center">
+                                            <img class="flex-shrink-0 img-fluid border rounded" src="/img/com-logo-1.jpg" alt="" style="width: 80px; height: 80px;">
+                                            <div class="text-start ps-4">
+                                                <h5 class="mb-3">@item.HouseWorkName</h5>
+                                                <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@item.District.DistrictName / @item.District.City.CityName</span>
+                                                @if (item.FullTime)
+                                                {
+                                                    <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Full Time</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Part Time</span>
+                                                }
+                                                <span class="text-truncate me-3"><i class="far fa-money-bill-alt text-primary me-2"></i>@string.Format("{0:0,0} VND", @item.MinSalary) - @string.Format("{0:0,0} VND", @item.MaxSalary)</span>
+                                                <span class="text-truncate me-0"><i class="fa fa-hourglass-half text-primary me-2"></i>@item.SalaryForm.SalaryFormName</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
+                                            <div class="d-flex mb-3">
+                                                <a class="btn btn-info btn_function" href="ShowRecruitmentDetail?recruitmentID=@item.RecruitmentId&isPending=1">Detail</a>
+                                            </div>
+                                            <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: @item.PostTime.ToString("dd/MM/yyyy")</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
                         </div>
-                        <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
-                            <div class="d-flex mb-3">
-                                <a class="btn btn-info btn_function" href="ShowRecruitmentDetail?recruitmentID=@item.RecruitmentId">Detail</a>
-                            </div>
-                            <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: @item.PostTime.ToString("dd/MM/yyyy")</small>
+                        <div id="tab-2" class="tab-pane fade show p-0">
+                            @foreach (var item in Model.DisapprovalRecruitments)
+                            {
+                                <div class="job-item p-4 mb-4">
+                                    <div class="row g-4">
+                                        <div class="col-sm-12 col-md-8 d-flex align-items-center">
+                                            <img class="flex-shrink-0 img-fluid border rounded" src="/img/com-logo-1.jpg" alt="" style="width: 80px; height: 80px;">
+                                            <div class="text-start ps-4">
+                                                <h5 class="mb-3">@item.HouseWorkName</h5>
+                                                <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@item.District.DistrictName / @item.District.City.CityName</span>
+                                                @if (item.FullTime)
+                                                {
+                                                    <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Full Time</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Part Time</span>
+                                                }
+                                                <span class="text-truncate me-3"><i class="far fa-money-bill-alt text-primary me-2"></i>@string.Format("{0:0,0} VND", @item.MinSalary) - @string.Format("{0:0,0} VND", @item.MaxSalary)</span>
+                                                <span class="text-truncate me-0"><i class="fa fa-hourglass-half text-primary me-2"></i>@item.SalaryForm.SalaryFormName</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
+                                            <div class="d-flex mb-3">
+                                                <a class="btn btn-info btn_function" href="ShowRecruitmentDetail?recruitmentID=@item.RecruitmentId&isPending=0">Detail</a>
+                                            </div>
+                                            <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: @item.PostTime.ToString("dd/MM/yyyy")</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
                         </div>
-
-
-
                     </div>
                 </div>
-            }
+            </div>
 
-            <a class="btn btn-primary py-3 px-5" href="">Browse More Jobs</a>
 
             <!-- Footer -->
             <partial name="FooterPage" />

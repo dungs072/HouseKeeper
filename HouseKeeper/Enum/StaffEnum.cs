@@ -1,13 +1,13 @@
-﻿namespace HouseKeeper.Enum.Staff
+﻿namespace HouseKeeper.Enum
 {
-    public class EnumStaff
+    public class StaffEnum
     {
-        public enum ModerationStatus{
+        public enum ModerationStatus
+        {
             OK,
             NotFound,
             IsHandledByOther,
             ServerError,
-
         }
     }
 }

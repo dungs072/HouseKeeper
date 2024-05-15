@@ -4,6 +4,9 @@ using HouseKeeper.Models.Views.OutPage;
 using HouseKeeper.Models.Views.Employer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using HouseKeeper.Services;
+using HouseKeeper.Enum;
+using HouseKeeper.IServices;
 using Stripe;
 
 namespace HouseKeeper.Respositories
@@ -11,12 +14,14 @@ namespace HouseKeeper.Respositories
     public class EmployerRespository : IEmployerRespository
     {
         private readonly HouseKeeperDBContext dBContext;
+        private readonly IFirebaseService _firebaseService;
         private string[] status = new string[] { "Pending approval", "Reject approval",
                                                     "Displayed", "Hidden", "Expired" };
-        public EmployerRespository(HouseKeeperDBContext dBContext)
+        public EmployerRespository(HouseKeeperDBContext dBContext, IFirebaseService firebaseService)
         {
 
             this.dBContext = dBContext;
+            _firebaseService = firebaseService;
         }
         public async Task<List<HINHTHUCTRALUONG>> GetPaidTypes()
         {
@@ -41,6 +46,11 @@ namespace HouseKeeper.Respositories
         public async Task<List<HUYEN>> GetDistricts()
         {
             return await dBContext.Districts.ToListAsync();
+        }
+
+        public async Task<List<HUYEN>> GetDistricts(int cityId)
+        {
+            return await dBContext.Districts.Where(a => a.City.CityId == cityId).ToListAsync();
         }
         public async Task<List<TINTUYENDUNG>> GetOnlineRecruitments()
         {
@@ -390,7 +400,52 @@ namespace HouseKeeper.Respositories
 
 
         #endregion
+        // edit employer profile
+        public async Task<bool> EditEmployerProfile(EditEmployerProfileViewModel model, int employerId, IFormFile avatarImage, IFormFile frontImage, IFormFile backImage, AccountEnum.AccountType accountType)
+        {
+            using var transaction = await dBContext.Database.BeginTransactionAsync();
+            try
+            {
+                var employer = await dBContext.Employers.FindAsync(employerId);
 
+                if (employer == null)
+                {
+                    return false;
+                }
+                
+                employer.FirstName = model.Employer.FirstName;
+                employer.LastName = model.Employer.LastName;
+                employer.District = await dBContext.Districts.FindAsync(model.Employer.District.DistrictId);
+                employer.Address = model.Employer.Address;
+
+                employer.Identity.CitizenNumber = model.Employer.Identity.CitizenNumber;
+
+                var tempfrontImage = await _firebaseService.UploadImage(frontImage, accountType, ImageEnum.ImageType.Identity);
+                var tempbackImage = await _firebaseService.UploadImage(backImage, accountType, ImageEnum.ImageType.Identity);
+                employer.Identity.FrontImage = (tempfrontImage == null) ? employer.Identity.FrontImage : tempfrontImage;
+                employer.Identity.BackImage = (tempbackImage == null) ? employer.Identity.BackImage : tempbackImage;
+
+                var tempAvatar = await _firebaseService.UploadImage(avatarImage, accountType, ImageEnum.ImageType.Avatar);
+                employer.Account.AvatarUrl = (tempAvatar == null) ? employer.Account.AvatarUrl : tempAvatar;
+                employer.Account.Gmail = model.Employer.Account.Gmail;
+                employer.Account.PhoneNumber = model.Employer.Account.PhoneNumber;
+
+                if (employer.IdentityState == null || employer.IdentityState.IdentityStateId == (int)IdentityEnum.IdentiyStatus.Disapprove)
+                {
+                    employer.IdentityState = await dBContext.IdentityStates.FindAsync((int)IdentityEnum.IdentiyStatus.Waiting);
+                }
+
+                dBContext.Employers.Update(employer);
+                
+                await dBContext.SaveChangesAsync();
+                transaction.Commit();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                return false;
+            }
         public async Task<ListCandidatesViewModel> GetSuitableCandidates(int employerId)
         {
             var houseWorkDetails = await dBContext.HouseWorkDetails.Where(a =>a.Recruitment.Status.StatusName== status[2]

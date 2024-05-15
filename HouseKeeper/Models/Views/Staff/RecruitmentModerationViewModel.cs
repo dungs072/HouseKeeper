@@ -12,8 +12,15 @@ namespace HouseKeeper.Models.Views.Staff
         public List<string>? NoteList { get; set; }
         public List<bool>? IsSelectedList { get; set; }
 
+        public List<int> NoteIdCanEditList { get; set; }
+        public List<string?> NoteCanEditList { get; set; }
+
         public int RecruitmentId { get; set; }
         public int StaffId { get; set; }
+
+        public int NoteIndexCanEdit { get; set; }
+        
+        public DateTime LastTimeCanEditNotes { get; set; }
 
         public string getRejectionName(int rejectionId)
         {
@@ -26,5 +33,7 @@ namespace HouseKeeper.Models.Views.Staff
             }
             return "";
         }
+
+
     }
 }

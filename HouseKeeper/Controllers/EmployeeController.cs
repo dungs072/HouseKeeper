@@ -2,6 +2,8 @@
 using HouseKeeper.Respositories;
 using Microsoft.AspNetCore.Mvc;
 using HouseKeeper.Models.Views.Employer;
+using HouseKeeper.Enum;
+using static HouseKeeper.Enum.AccountEnum;
 
 
 namespace HouseKeeper.Controllers
@@ -9,6 +11,8 @@ namespace HouseKeeper.Controllers
     public class EmployeeController:Controller
     {
         private readonly IEmployeeRespository employeeRespository;
+        private AccountEnum.AccountType accountType = AccountEnum.AccountType.Employee;
+
         public EmployeeController(IAccountTypeRespository accountTypeRespository, 
                                 IEmployeeRespository employeeRespository)
         {
@@ -167,6 +171,35 @@ namespace HouseKeeper.Controllers
                 return RedirectToAction("Profile");
             }
         }
+
+        public async Task<IActionResult> EditProfile()
+        {
+            EditEmployeeProfileViewModel model = new EditEmployeeProfileViewModel();
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employeeId);
+            model.Employee = await employeeRespository.GetEmployee(employeeId);
+            model.Cities = await employeeRespository.GetCities();
+            model.Districts = await employeeRespository.GetDistricts();
+            model.isIdentityApproved = (model.Employee.IdentityState != null && model.Employee.IdentityState.IdentityStateId == (int)IdentityEnum.IdentiyStatus.Approve) ? 1 : 0;
+            
+            return View("EditProfile", model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditProfile(EditEmployeeProfileViewModel model, IFormFile avatarImage, IFormFile frontImage, IFormFile backImage)
+        {
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employeeId);
+            model.Employee.EmployeeId = employeeId;
+            var result = await employeeRespository.EditEmployeeProfile(model, employeeId, avatarImage, frontImage, backImage, accountType);
+            if (result)
+            {
+                TempData["Success"] = "Edit profile successfully";
+                return RedirectToAction("Profile");
+            }
+            else
+            {
+                TempData["Error"] = "Server error!!!. Edit profile failed";
+                return RedirectToAction("Profile");
+            }
         public async Task<IActionResult> ShowProposalJob()
         {
             int.TryParse(HttpContext.Session.GetString("UserId"), out int employeeId);
