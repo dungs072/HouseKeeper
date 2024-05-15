@@ -412,7 +412,7 @@ namespace HouseKeeper.Respositories
                 {
                     return false;
                 }
-                
+
                 employer.FirstName = model.Employer.FirstName;
                 employer.LastName = model.Employer.LastName;
                 employer.District = await dBContext.Districts.FindAsync(model.Employer.District.DistrictId);
@@ -436,7 +436,7 @@ namespace HouseKeeper.Respositories
                 }
 
                 dBContext.Employers.Update(employer);
-                
+
                 await dBContext.SaveChangesAsync();
                 transaction.Commit();
                 return true;
@@ -446,6 +446,7 @@ namespace HouseKeeper.Respositories
                 transaction.Rollback();
                 return false;
             }
+        }
         public async Task<ListCandidatesViewModel> GetSuitableCandidates(int employerId)
         {
             var houseWorkDetails = await dBContext.HouseWorkDetails.Where(a =>a.Recruitment.Status.StatusName== status[2]

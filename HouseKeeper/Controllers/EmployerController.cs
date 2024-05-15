@@ -18,13 +18,6 @@ namespace HouseKeeper.Controllers
         private readonly IEmployerRespository employerRespository;
 
         private AccountEnum.AccountType accountType = AccountEnum.AccountType.Employer;
-
-
-        public EmployerController(
-            IEmployerRespository employerRespository)
-        {
-            this.employerRespository = employerRespository;
-            
         private readonly IEmployeeRespository employeeRespository;
         private readonly StripeSetting _stripeSettings;
         public string SessionId { get; set; }
