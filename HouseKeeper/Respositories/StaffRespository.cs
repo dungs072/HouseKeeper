@@ -1,4 +1,5 @@
 ﻿using HouseKeeper.Enum;
+using HouseKeeper.IServices;
 using HouseKeeper.Models.DB;
 using HouseKeeper.Models.Views.Staff;
 using Microsoft.AspNetCore.Mvc;
@@ -199,6 +200,31 @@ namespace HouseKeeper.Respositories
         public async Task<NHANVIEN> GetStaffProfile(int staffId)
         {
             return await dBContext.Staffs.FindAsync(staffId);
+        }
+
+        public async Task<bool> HasRightPassword(string password, int userId)
+        {
+            var staff = await dBContext.Staffs.FindAsync(userId);
+            if (staff == null) { return false; }
+            return staff.Account.Password.Trim() == password.Trim();
+        }
+
+        public async Task<bool> ChangePassword(string password, int userId)
+        {
+            try
+            {
+                var staff = await dBContext.Staffs.FindAsync(userId);
+                var account = staff.Account;
+                account.Password = password;
+                dBContext.Accounts.Update(account);
+                dBContext.SaveChanges();
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+
         }
     }
 }

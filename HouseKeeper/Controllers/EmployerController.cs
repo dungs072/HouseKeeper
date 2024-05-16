@@ -10,6 +10,8 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Stripe;
 using Stripe.BillingPortal;
+using HouseKeeper.Models.Views;
+using HouseKeeper.IServices;
 
 namespace HouseKeeper.Controllers
 {
@@ -21,7 +23,8 @@ namespace HouseKeeper.Controllers
         private readonly IEmployeeRespository employeeRespository;
         private readonly StripeSetting _stripeSettings;
         public string SessionId { get; set; }
-        public EmployerController(IEmployerRespository employerRespository, IEmployeeRespository employeeRespository, IOptions<StripeSetting> stripeSetting)
+        public EmployerController(IEmployerRespository employerRespository, IEmployeeRespository employeeRespository, 
+                                    IOptions<StripeSetting> stripeSetting)
         {
             this.employerRespository = employerRespository;
             this.employeeRespository = employeeRespository;
@@ -645,6 +648,36 @@ namespace HouseKeeper.Controllers
             model.Jobs = await employeeRespository.GetJobsForEmployee(employeeId);
             return View("CandidateProfile", model);
         }
-       
+
+        public async Task<IActionResult> ChangePassword()
+        {
+            ChangePasswordViewModel model = new ChangePasswordViewModel();
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if(model.NewPassword!=model.ConfirmPassword)
+            {
+                TempData["Error"] = "New password and conform password are not match!";
+                return View(model);
+            }
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
+            var result = await employerRespository.HasRightPassword(model.CurrentPassword, employerId);
+            if(!result)
+            {
+                TempData["Error"] = "Wrong current password!";
+                return View(model);
+            }
+            var updateResult = await employerRespository.ChangePassword(model.NewPassword, employerId);
+            if(!updateResult)
+            {
+                TempData["Error"] = "Server error!";
+                return View(model);
+            }
+            TempData["Success"] = "Change password successfully!";
+            return RedirectToAction("ChangePassword");
+        }
+
     }
 }

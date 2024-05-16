@@ -300,5 +300,29 @@ namespace HouseKeeper.Respositories
             return jobProposalViewModel;
 
         }
+        public async Task<bool> HasRightPassword(string password, int userId)
+        {
+            var employer = await dBContext.Employees.FindAsync(userId);
+            if (employer == null) { return false; }
+            return employer.Account.Password.Trim() == password.Trim();
+        }
+
+        public async Task<bool> ChangePassword(string password, int userId)
+        {
+            try
+            {
+                var employer = await dBContext.Employees.FindAsync(userId);
+                var account = employer.Account;
+                account.Password = password;
+                dBContext.Accounts.Update(account);
+                dBContext.SaveChanges();
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+
+        }
     }
 }

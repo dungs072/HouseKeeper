@@ -15,5 +15,7 @@ namespace HouseKeeper.Respositories
         Task<List<CHITIETTUCHOI>?> GetRejectionsDetail(int recruitmentId);
         Task<StaffEnum.ModerationStatus> EditNotesOfRejection(RecruitmentModerationViewModel model);
         Task<NHANVIEN> GetStaffProfile(int staffId);
+        Task<bool> HasRightPassword(string password, int userId);
+        Task<bool> ChangePassword(string password, int userId);
     }
 }

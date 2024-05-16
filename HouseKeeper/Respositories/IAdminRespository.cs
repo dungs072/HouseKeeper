@@ -33,5 +33,7 @@ namespace HouseKeeper.Respositories
         Task<bool> DeletePricePacket(int pricePacketId);
         //Revenue
         Task<Dictionary<AdminEnum.RevenueType, List<DataPoint>>> GetRevenueDataPoints(int year);
+        Task<bool> HasRightPassword(string password, int userId);
+        Task<bool> ChangePassword(string password, int userId);
     }
 }

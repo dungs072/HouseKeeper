@@ -110,6 +110,33 @@
             font-size: 16px;
         }
     </style>
+    <style>
+        .badge {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .text-bg-secondary {
+            background-color: #6c757d; /* Example color */
+            color: #fff; /* Text color */
+        }
+
+        .text-bg-info {
+            background-color: #17a2b8; /* Example color */
+            color: #fff; /* Text color */
+        }
+
+        .text-bg-success {
+            background-color: #28a745; /* Example color */
+            color: #fff; /* Text color */
+        }
+
+        .text-bg-danger {
+            background-color: #dc3545; /* Example color */
+            color: #fff; /* Text color */
+        }
+    </style>
     <script>
         $(document).ready(function () {
             $('#confirmAddJob').click(function () {
@@ -178,6 +205,7 @@
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Personal</a>
                         <div class="dropdown-menu rounded-0 m-0">
                             <a href="@Url.Action("Profile","Employee")" class="dropdown-item">Your infor</a>
+                            <a href="@Url.Action("ChangePassword", "Employee")" class="dropdown-item">Change password</a>
                             <a href="/Home/LogOut" class="dropdown-item">Log out</a>
                         </div>
                     </div>

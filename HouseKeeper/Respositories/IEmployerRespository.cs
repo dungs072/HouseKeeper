@@ -39,5 +39,7 @@ namespace HouseKeeper.Respositories
 
         Task<ListCandidatesViewModel> GetSuitableCandidates(int employerId);
         Task<NGUOIGIUPVIEC> GetDetailCandidate(int employeeId);
+        Task<bool> HasRightPassword(string password, int userId);
+        Task<bool> ChangePassword(string password, int userId);
     }
 }

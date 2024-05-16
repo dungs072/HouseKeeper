@@ -23,6 +23,8 @@ namespace HouseKeeper.Respositories
         Task<bool> DeleteDistrict(int districtId, int employeeId);
         Task<bool> EditEmployeeProfile(EditEmployeeProfileViewModel model, int employeeId, IFormFile avatarImage, IFormFile frontImage, IFormFile backImage, AccountEnum.AccountType accountType);
         Task<JobProposalViewModel> GetJobProposals(int employeeId);
+        Task<bool> HasRightPassword(string password, int userId);
+        Task<bool> ChangePassword(string password, int userId);
 
     }
 }

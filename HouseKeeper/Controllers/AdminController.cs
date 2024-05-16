@@ -1,4 +1,6 @@
 ﻿using HouseKeeper.Enum;
+using HouseKeeper.IServices;
+using HouseKeeper.Models.Views;
 using HouseKeeper.Models.Views.Admin;
 using HouseKeeper.Respositories;
 using Microsoft.AspNetCore.Mvc;
@@ -273,5 +275,35 @@ namespace HouseKeeper.Controllers
             ViewBag.EndYear = Configs.StatisticConfig.endYearStatistic;
             return View("RevenueStatistic");
 		}
-	}
+
+        public async Task<IActionResult> ChangePassword()
+        {
+            ChangePasswordViewModel model = new ChangePasswordViewModel();
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (model.NewPassword != model.ConfirmPassword)
+            {
+                TempData["Error"] = "New password and conform password are not match!";
+                return View(model);
+            }
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
+            var result = await adminRespository.HasRightPassword(model.CurrentPassword, employerId);
+            if (!result)
+            {
+                TempData["Error"] = "Wrong current password!";
+                return View(model);
+            }
+            var updateResult = await adminRespository.ChangePassword(model.NewPassword, employerId);
+            if (!updateResult)
+            {
+                TempData["Error"] = "Server error!";
+                return View(model);
+            }
+            TempData["Success"] = "Change password successfully!";
+            return RedirectToAction("ChangePassword");
+        }
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using HouseKeeper.DBContext;
 using HouseKeeper.Enum;
+using HouseKeeper.IServices;
 using HouseKeeper.Models.DB;
 using HouseKeeper.Models.Views.Admin;
 using Microsoft.EntityFrameworkCore;
@@ -322,5 +323,30 @@ namespace HouseKeeper.Respositories
             return dataPoints;
         }
         #endregion
+
+        public async Task<bool> HasRightPassword(string password, int userId)
+        {
+            var account = await dBContext.Accounts.FindAsync(userId);
+            if (account == null) { return false; }
+            return account.Password.Trim() == password.Trim();
+        }
+
+        public async Task<bool> ChangePassword(string password, int userId)
+        {
+            try
+            {
+                var account = await dBContext.Accounts.FindAsync(userId);
+                if (account == null) { return false; }
+                account.Password = password;
+                dBContext.Accounts.Update(account);
+                dBContext.SaveChanges();
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+
+        }
     }
 }

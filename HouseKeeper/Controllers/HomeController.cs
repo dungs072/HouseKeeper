@@ -213,6 +213,10 @@ namespace HouseKeeper.Controllers
             LoginViewModel model = new LoginViewModel();
             return View("Login",model);
         }
+        public IActionResult ForgetPassword()
+        {
+            return View();
+        }
         public IActionResult Privacy()
         {
             return View();
@@ -223,5 +227,7 @@ namespace HouseKeeper.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+
     }
 }
