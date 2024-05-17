@@ -4,6 +4,8 @@ using HouseKeeper.Models.DB;
 using HouseKeeper.Models.Views.Staff;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
+using System.Text;
 
 
 namespace HouseKeeper.Respositories
@@ -206,7 +208,7 @@ namespace HouseKeeper.Respositories
         {
             var staff = await dBContext.Staffs.FindAsync(userId);
             if (staff == null) { return false; }
-            return staff.Account.Password.Trim() == password.Trim();
+            return staff.Account.Password.Trim() == HashPassword(password.Trim());
         }
 
         public async Task<bool> ChangePassword(string password, int userId)
@@ -215,7 +217,7 @@ namespace HouseKeeper.Respositories
             {
                 var staff = await dBContext.Staffs.FindAsync(userId);
                 var account = staff.Account;
-                account.Password = password;
+                account.Password = HashPassword(password);
                 dBContext.Accounts.Update(account);
                 dBContext.SaveChanges();
                 return true;
@@ -225,6 +227,20 @@ namespace HouseKeeper.Respositories
                 return false;
             }
 
+        }
+        public string HashPassword(string password)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    builder.Append(bytes[i].ToString("x2"));
+                }
+                return builder.ToString();
+            }
         }
     }
 }
