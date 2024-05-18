@@ -70,9 +70,10 @@
         <!-- Spinner End -->
         <!-- Navbar Start -->
         <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
-            <a href="index.html" class="navbar-brand d-flex align-items-center text-center py-0 px-4 px-lg-5">
+            <a href="@Url.Action("DisplayList", "Employee",1)" class="navbar-brand d-flex align-items-center text-center py-0 px-2 px-lg-3">
                 <h1 class="m-0 text-primary">HouseKeeper</h1>
             </a>
+            
             <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -93,7 +94,16 @@
                         </div>
 
                         <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Personal</a>
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Personal
+                                @if (Model.Employee.Account.AvatarUrl != null)
+                                {
+                                    <img src="@Model.Employee.Account.AvatarUrl" alt="Avatar" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;">
+                                }
+                                else
+                                {
+                                    <img src="/images/Avatar.png" alt="Avatar" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;">
+                                }
+                            </a>
                             <div class="dropdown-menu rounded-0 m-0">
                                 <a href="@Url.Action("Profile","Employee")" class="dropdown-item">Your infor</a>
                                 <a href="@Url.Action("ChangePassword", "Employee")" class="dropdown-item">Change password</a>
@@ -121,7 +131,9 @@
                         </div>
 
                         <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Personal</a>
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Personal
+                                <img src="/images/Avatar.png" alt="Avatar" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;">
+                            </a>
                             <div class="dropdown-menu rounded-0 m-0">
                                 <a href="@Url.Action("Profile","Employee")" class="dropdown-item">Your infor</a>
                                 <a href="@Url.Action("ChangePassword", "Employee")" class="dropdown-item disabled">Change password</a>

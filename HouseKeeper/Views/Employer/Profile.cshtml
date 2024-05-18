@@ -192,7 +192,14 @@
                     <div class="col-lg-4">
                         <div class="card shadow-sm">
                             <div class="card-header bg-transparent text-center">
-                                <img class="profile_img" src=@Model.Employer.Account.AvatarUrl alt="student dp">
+                                @if (Model.Employer.Account.AvatarUrl == null)
+                                {
+                                    <img class="profile_img" src="~/images/Avatar.png" alt="student dp">
+                                }
+                                else
+                                {
+                                    <img class="profile_img" src=@Model.Employer.Account.AvatarUrl alt="student dp">
+                                }
                                 <h3>@Model.Employer.LastName @Model.Employer.FirstName</h3>
                                 @if (Model.Employer.IdentityState == null)
                                 {
