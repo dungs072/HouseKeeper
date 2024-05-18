@@ -210,7 +210,7 @@ namespace HouseKeeper.Respositories
         {
             var staff = await dBContext.Staffs.FindAsync(userId);
             if (staff == null) { return false; }
-            return staff.Account.Password.Trim() == HashPassword(password.Trim());
+            return staff.Account.Password.Trim() == passwordService.HashPassword(password.Trim());
         }
 
         public async Task<bool> ChangePassword(string password, int userId)
@@ -219,7 +219,7 @@ namespace HouseKeeper.Respositories
             {
                 var staff = await dBContext.Staffs.FindAsync(userId);
                 var account = staff.Account;
-                account.Password = HashPassword(password);
+                account.Password = passwordService.HashPassword(password);
                 dBContext.Accounts.Update(account);
                 dBContext.SaveChanges();
                 return true;
