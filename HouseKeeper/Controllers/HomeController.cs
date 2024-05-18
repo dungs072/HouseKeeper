@@ -24,10 +24,8 @@ namespace HouseKeeper.Controllers
         public HomeController(ILogger<HomeController> logger, 
                 IAccountTypeRespository accountTypeRespository, 
                 IEmployeeRespository employeeRespository,
-                IFirebaseService firebaseService)
                 IFirebaseService firebaseService,
-                IPasswordService passwordService
-            )
+                IPasswordService passwordService)
         {
             _logger = logger;
             this.accountTypeRespository = accountTypeRespository;
