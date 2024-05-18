@@ -27,6 +27,8 @@ namespace HouseKeeper.Controllers
                 listRecruitmentViewModel.Recruitments = await employeeRespository.GetRecruitments(page,"",null,null);
                 listRecruitmentViewModel.Cities = await employeeRespository.GetCities();
                 listRecruitmentViewModel.Districts = await employeeRespository.GetDistricts();
+                int.TryParse(HttpContext.Session.GetString("UserId"), out int employeeId);
+                listRecruitmentViewModel.Employee = await employeeRespository.GetEmployee(employeeId);
                 return View("IndexEmployee", listRecruitmentViewModel);
             }
             catch (Exception ex)

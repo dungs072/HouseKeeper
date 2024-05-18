@@ -20,5 +20,7 @@ namespace HouseKeeper.Respositories
         Task<TRANGTHAIDANHTINH> GetIdentityState(int id);
         Task<bool> HandleForgetPassword(ForgetPasswordViewModel model);
         Task<bool> SendMessage(ContactViewModel model);
+        Task<NGUOITHUE> GetEmployer(int employerId);
+        Task<NGUOIGIUPVIEC> GetEmployee(int employeeId);
     }
 }

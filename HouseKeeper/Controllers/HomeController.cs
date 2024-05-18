@@ -70,9 +70,11 @@ namespace HouseKeeper.Controllers
         {
             return View("Login", model);
         }
-        public IActionResult IndexEmployer()
+        public async Task<IActionResult> IndexEmployer()
         {
-            return View();
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
+            NGUOITHUE employer = await accountTypeRespository.GetEmployer(employerId);
+            return View(employer);
         }
         [HttpPost]
         public async Task<IActionResult> HandleLogin(LoginViewModel model)
@@ -92,7 +94,8 @@ namespace HouseKeeper.Controllers
             HttpContext.Session.SetString("UserId", loginInfor.Id.ToString());
             if (loginInfor.ViewIndex == (int)AccountEnum.AccountType.Employer)
             {
-                return View("IndexEmployer");
+                NGUOITHUE employer = await accountTypeRespository.GetEmployer(loginInfor.Id);
+                return View("IndexEmployer",employer);
             }
             else if(loginInfor.ViewIndex == (int)AccountEnum.AccountType.Employee)
             {

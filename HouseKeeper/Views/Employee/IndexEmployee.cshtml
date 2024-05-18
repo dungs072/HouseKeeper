@@ -76,30 +76,63 @@
             <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                <div class="navbar-nav ms-auto p-4 p-lg-0">
-                    <a href="@Url.Action("DisplayList", "Employee",1)" class="nav-item nav-link active">Home</a>
+            @if (Model.Employee.IdentityState.IdentityStateId == 2)
+            {
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <div class="navbar-nav ms-auto p-4 p-lg-0">
 
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Jobs</a>
-                        <div class="dropdown-menu rounded-0 m-0">
-                            <a href="@Url.Action("DisplayList", "Employee",1)" class="dropdown-item">Job List</a>
-                            <a href="@Url.Action("GetAppliedRecruitment","Employee")" class="dropdown-item">Job you applied</a>
-                            <a href="@Url.Action("ShowProposalJob","Employee")" class="dropdown-item">Job Proposals</a>
+                        <a href="@Url.Action("DisplayList", "Employee",1)" class="nav-item nav-link active">Home</a>
+
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Jobs</a>
+                            <div class="dropdown-menu rounded-0 m-0">
+                                <a href="@Url.Action("DisplayList", "Employee",1)" class="dropdown-item">Job List</a>
+                                <a href="@Url.Action("GetAppliedRecruitment","Employee")" class="dropdown-item">Job you applied</a>
+                                <a href="@Url.Action("ShowProposalJob","Employee")" class="dropdown-item">Job Proposals</a>
+                            </div>
+                        </div>
+
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Personal</a>
+                            <div class="dropdown-menu rounded-0 m-0">
+                                <a href="@Url.Action("Profile","Employee")" class="dropdown-item">Your infor</a>
+                                <a href="@Url.Action("ChangePassword", "Employee")" class="dropdown-item">Change password</a>
+                                <a href="/Home/LogOut" class="dropdown-item">Log out</a>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Personal</a>
-                        <div class="dropdown-menu rounded-0 m-0">
-                            <a href="@Url.Action("Profile","Employee")" class="dropdown-item">Your infor</a>
-                            <a href="@Url.Action("ChangePassword", "Employee")" class="dropdown-item">Change password</a>
-                            <a href="/Home/LogOut" class="dropdown-item">Log out</a>
-                        </div>
-                    </div>
+                    <a href="" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Search A Job<i class="fa fa-arrow-right ms-3"></i></a>
                 </div>
-                <a href="" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Search A Job<i class="fa fa-arrow-right ms-3"></i></a>
-            </div>
+            }
+            else
+            {
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <div class="navbar-nav ms-auto p-4 p-lg-0">
+
+                        <a href="@Url.Action("DisplayList", "Employee",1)" class="nav-item nav-link active">Home</a>
+
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle disabled" data-bs-toggle="dropdown">Jobs</a>
+                            <div class="dropdown-menu rounded-0 m-0 disabled">
+                                <a href="@Url.Action("DisplayList", "Employee",1)" class="dropdown-item disabled">Job List</a>
+                                <a href="@Url.Action("GetAppliedRecruitment","Employee")" class="dropdown-item disabled">Job you applied</a>
+                                <a href="@Url.Action("ShowProposalJob","Employee")" class="dropdown-item disabled">Job Proposals</a>
+                            </div>
+                        </div>
+
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Personal</a>
+                            <div class="dropdown-menu rounded-0 m-0">
+                                <a href="@Url.Action("Profile","Employee")" class="dropdown-item">Your infor</a>
+                                <a href="@Url.Action("ChangePassword", "Employee")" class="dropdown-item disabled">Change password</a>
+                                <a href="/Home/LogOut" class="dropdown-item">Log out</a>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block disabled">Search A Job<i class="fa fa-arrow-right ms-3"></i></a>
+                </div>
+            }
+          
         </nav>
         <!-- Navbar End -->
         <!-- Carousel Start -->
@@ -208,7 +241,15 @@
                                             <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
                                                 <div class="d-flex mb-3">
                                                     @* <a class="btn btn-light btn-square me-3" href=""><i class="far fa-heart text-primary"></i></a> *@
-                                                    <a class="btn btn-primary btn_function" href="JobDetail?recruitmentId=@item.RecruitmentId">See more</a>
+                                                    @if(Model.Employee.IdentityState.IdentityStateId==2)
+                                                    {
+                                                        <a class="btn btn-primary btn_function" href="JobDetail?recruitmentId=@item.RecruitmentId">See more</a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a class="btn btn-primary btn_function disabled" href="JobDetail?recruitmentId=@item.RecruitmentId">See more</a>
+                                                    }
+
                                                 </div>
                                                 <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Deadline: @item.RecruitDeadlineDate.ToString("dd/MM/yyyy")</small>
                                             </div>

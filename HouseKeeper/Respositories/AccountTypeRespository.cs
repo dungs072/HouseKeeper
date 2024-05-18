@@ -257,5 +257,16 @@ namespace HouseKeeper.Respositories
             return account;
         }
 
+        public async Task<NGUOITHUE> GetEmployer(int employerId)
+        {
+            var employer = await dBContext.Employers.FindAsync(employerId);
+            return employer;
+        }
+        public async Task<NGUOIGIUPVIEC> GetEmployee(int employeeId)
+        {
+            var employee = await dBContext.Employees.FindAsync(employeeId);
+            return employee;
+        }
+
     }
 }

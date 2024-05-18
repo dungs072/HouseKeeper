@@ -17,7 +17,7 @@ namespace HouseKeeper.Controllers
         }
         public IActionResult Index()
         {
-            return View("IndexAdmin");
+            return RedirectToAction("DrawChart");
         }
         #region JobType
         public async Task<IActionResult> ShowJobType()
