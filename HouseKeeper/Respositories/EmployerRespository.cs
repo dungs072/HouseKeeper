@@ -10,6 +10,7 @@ using HouseKeeper.IServices;
 using Stripe;
 using System.Text;
 using System.Security.Cryptography;
+using Microsoft.IdentityModel.Tokens;
 
 namespace HouseKeeper.Respositories
 {
@@ -17,13 +18,15 @@ namespace HouseKeeper.Respositories
     {
         private readonly HouseKeeperDBContext dBContext;
         private readonly IFirebaseService _firebaseService;
+        private readonly IPasswordService _passwordService;
         private string[] status = new string[] { "Pending approval", "Reject approval",
                                                     "Displayed", "Hidden", "Expired" };
-        public EmployerRespository(HouseKeeperDBContext dBContext, IFirebaseService firebaseService)
+        public EmployerRespository(HouseKeeperDBContext dBContext, IFirebaseService firebaseService, IPasswordService passwordService)
         {
 
             this.dBContext = dBContext;
             _firebaseService = firebaseService;
+            _passwordService = passwordService;
         }
         public async Task<List<HINHTHUCTRALUONG>> GetPaidTypes()
         {
@@ -78,6 +81,41 @@ namespace HouseKeeper.Respositories
         public async Task<NGUOITHUE> GetEmployer(int id)
         {
             return await dBContext.Employers.FindAsync(id);
+        }
+
+        public async Task<List<NGUOITHUE>> GetEmployersWithIdentityStatus(string q, int status)
+        {
+            // 1 1
+            if (!q.IsNullOrEmpty() && status != 0)
+            {
+                return await dBContext.Employers.Where(a => a.IdentityState.IdentityStateId == (int)status
+                                                        && (a.FirstName.Contains(q) 
+                                                            || a.LastName.Contains(q) 
+                                                            || a.Identity.CitizenNumber.Contains(q)
+                                                            || a.Account.PhoneNumber.Contains(q) 
+                                                            || (a.Account.Gmail != null && a.Account.Gmail.Contains(q)))
+                                                            ).ToListAsync();
+                
+            }
+            // 1 0
+            if (!q.IsNullOrEmpty() && status == 0)
+            {
+                return await dBContext.Employers.Where(a => a.FirstName.Contains(q)
+                                                            || a.LastName.Contains(q)
+                                                            || a.Identity.CitizenNumber.Contains(q)
+                                                            || a.Account.PhoneNumber.Contains(q)
+                                                            || (a.Account.Gmail != null && a.Account.Gmail.Contains(q))
+                                                            ).ToListAsync();
+            }
+
+            // 0 1
+            if (q.IsNullOrEmpty() && status != 0)
+            {
+                return await dBContext.Employers.Where(a => a.IdentityState.IdentityStateId == (int)status).ToListAsync();
+            }
+
+            // 0 0
+            return await dBContext.Employers.ToListAsync();
         }
         public async Task<GOITIN> GetPricePacket(int id)
         {
@@ -515,6 +553,9 @@ namespace HouseKeeper.Respositories
                 return builder.ToString();
             }
         }
+        public async Task<List<TRANGTHAIDANHTINH>> GetIdentityStatus()
+        {
+            return await dBContext.IdentityStates.ToListAsync();
+        }
     }
-
 }

@@ -15,6 +15,7 @@ namespace HouseKeeper.Respositories
         Task<bool> CancelApplyJob(int applyDetailId);
         Task<List<CHITIETAPPLY>> GetApplyRecruitmentList(int employeeId);
         Task<NGUOIGIUPVIEC> GetEmployee(int employeeId);
+        Task<List<NGUOIGIUPVIEC>> GetEmployeesWithIdentityStatus(string q, int identiyStatus);
         Task<List<LOAICONGVIEC>> GetJobsForEmployee(int employeeId);
         Task<List<HUYEN>> GetWorkplacesForEmployee(int employeeId);
         Task<bool> AddJob(int jobId, int employeeId);
@@ -25,6 +26,8 @@ namespace HouseKeeper.Respositories
         Task<JobProposalViewModel> GetJobProposals(int employeeId);
         Task<bool> HasRightPassword(string password, int userId);
         Task<bool> ChangePassword(string password, int userId);
+        Task<List<TRANGTHAIDANHTINH>> GetIdentityStatus();
+
 
     }
 }

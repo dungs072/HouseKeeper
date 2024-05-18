@@ -18,6 +18,8 @@ namespace HouseKeeper.Models.DB
         public string Password { get; set; }
         [Column("HINHDAIDIEN")]
         public string? AvatarUrl { get; set; }
+        [Column("TRANGTHAI")]
+        public bool Status { get; set; }
         [ForeignKey("ID_LOAI")]
         public virtual LOAITK AccountType { get; set; }
 

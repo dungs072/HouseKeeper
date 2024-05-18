@@ -17,5 +17,10 @@ namespace HouseKeeper.Respositories
         Task<NHANVIEN> GetStaffProfile(int staffId);
         Task<bool> HasRightPassword(string password, int userId);
         Task<bool> ChangePassword(string password, int userId);
+        Task<List<NGUOITHUE>> GetEmployers(string q);
+        Task<bool> ApproveEmployer(int employerId);
+        Task<bool> DisapproveEmployer(EmployerDetailViewModel model);
+        Task<bool> ApproveEmployee(int employeeId);
+        Task<bool> DisapproveEmployee(EmployeeDetailViewModel employeeId);
     }
 }

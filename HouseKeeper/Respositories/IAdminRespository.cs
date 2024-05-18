@@ -35,5 +35,17 @@ namespace HouseKeeper.Respositories
         Task<Dictionary<AdminEnum.RevenueType, List<DataPoint>>> GetRevenueDataPoints(int year);
         Task<bool> HasRightPassword(string password, int userId);
         Task<bool> ChangePassword(string password, int userId);
+        //Staff
+        Task<List<NHANVIEN>> GetStaffs(string queryInput);
+        Task<NHANVIEN> GetStaffProfile(int staffId);
+        Task<bool> ToggleStaffAccount(int staffId, bool status);
+        Task<AccountEnum.CreateAccountResult> AddStaff(StaffProfileViewModel model, IFormFile frontImage, IFormFile backImage, AccountEnum.AccountType staffAccountType);
+        Task<AccountEnum.CreateAccountResult> EditStaff(StaffProfileViewModel model, IFormFile frontImage, IFormFile backImage, AccountEnum.AccountType staffAccountType);
+        //Employer
+        Task<List<NGUOITHUE>> GetEmployers(string queryInput);
+        Task<bool> ToggleEmployerAccount(int employerId, bool status);
+        Task<List<NGUOIGIUPVIEC>> GetEmployees(string q);
+        Task<bool> ToggleEmployeeAccount(int employeeId, bool status);
+        //Employee
     }
 }

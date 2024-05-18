@@ -1,16 +1,20 @@
-﻿using HouseKeeper.Enum;
+﻿using HouseKeeper.Configs;
+using HouseKeeper.Enum;
 using HouseKeeper.IServices;
 using HouseKeeper.Models.Views;
 using HouseKeeper.Models.Views.Admin;
 using HouseKeeper.Respositories;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Stripe;
+using System.Drawing;
 
 namespace HouseKeeper.Controllers
 {
     public class AdminController : Controller
     {
         private readonly IAdminRespository adminRespository;
+        private readonly AccountEnum.AccountType staffAccountType = AccountEnum.AccountType.Staff;
         public AdminController(IAdminRespository adminRespository)
         {
             this.adminRespository = adminRespository;
@@ -305,5 +309,147 @@ namespace HouseKeeper.Controllers
             TempData["Success"] = "Change password successfully!";
             return RedirectToAction("ChangePassword");
         }
+
+        // public async Task<IActionResult> ShowStaffs()
+        public async Task<IActionResult> ShowStaffs(string q = "")
+        {
+            StaffsViewModel model = new StaffsViewModel();
+            model.Staffs = await adminRespository.GetStaffs(q);
+            model.QueryInput = q;
+            return View("Staffs", model);
+        }
+
+        // add new staff
+        public async Task<IActionResult> AddStaff()
+        {
+            StaffProfileViewModel model = new StaffProfileViewModel();
+            model.Staff = new();
+            model.Staff.Account = new();
+            model.Staff.Identity = new();
+            model.Staff.Identity.FrontImage = Configs.DefaultImageUrlConfig.FrontImage;
+            model.Staff.Identity.BackImage = Configs.DefaultImageUrlConfig.BackImage;
+            model.isEdit = false;
+            return View("StaffProfile", model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddStaff(StaffProfileViewModel model, IFormFile frontImage, IFormFile backImage)
+        {
+            var result = await adminRespository.AddStaff(model, frontImage, backImage, staffAccountType);
+            if (result == AccountEnum.CreateAccountResult.Success)
+            {
+                TempData["Success"] = CreateAccountConfig.AddStaffSuccess;
+                return RedirectToAction("ShowStaffs");
+            }
+            switch (result)
+            {
+                case AccountEnum.CreateAccountResult.PhoneDuplicated:
+                    TempData["Error"] = CreateAccountConfig.PhoneDuplicated;
+                    break;
+                case AccountEnum.CreateAccountResult.GmailDuplicated:
+                    TempData["Error"] = CreateAccountConfig.GmailDuplicated;
+                    break;
+                case AccountEnum.CreateAccountResult.CitizenNumberDuplicated:
+                    TempData["Error"] = CreateAccountConfig.CitizenNumberDuplicated;
+                    break;
+                case AccountEnum.CreateAccountResult.ServerError:
+                    TempData["Error"] = CreateAccountConfig.ServerError;
+                    break;
+                case AccountEnum.CreateAccountResult.FrontImageError:
+                    TempData["Error"] = CreateAccountConfig.FrontImageError;
+                    break;
+                case AccountEnum.CreateAccountResult.BackImageError:
+                    TempData["Error"] = CreateAccountConfig.BackImageError;
+                    break;
+            }
+            model.Staff.Identity.FrontImage = Configs.DefaultImageUrlConfig.FrontImage;
+            model.Staff.Identity.BackImage = Configs.DefaultImageUrlConfig.BackImage;
+            return View("StaffProfile", model);
+        }
+
+        public async Task<IActionResult> EditStaff(int staffId)
+        {
+            StaffProfileViewModel model = new StaffProfileViewModel();
+            model.Staff = await adminRespository.GetStaffProfile(staffId);
+            model.isEdit = true;
+            return View("StaffProfile", model);
+        }
+
+        public async Task<IActionResult> ToggleStaffAccount(int staffId, bool status, string q)
+        {
+            var result = await adminRespository.ToggleStaffAccount(staffId, status);
+            return await ShowStaffs(q);
+        }
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> EditStaff(StaffProfileViewModel model, IFormFile frontImage, IFormFile backImage)
+        {
+            var result = await adminRespository.EditStaff(model, frontImage, backImage, staffAccountType);
+            
+            if (result == AccountEnum.CreateAccountResult.Success)
+            {
+                TempData["Success"] = CreateAccountConfig.EditStaffSuccess;
+                return RedirectToAction("ShowStaffs");
+            }
+            switch (result)
+            {
+                case AccountEnum.CreateAccountResult.PhoneDuplicated:
+                    TempData["Error"] = CreateAccountConfig.PhoneDuplicated;
+                    break;
+                case AccountEnum.CreateAccountResult.GmailDuplicated:
+                    TempData["Error"] = CreateAccountConfig.GmailDuplicated;
+                    break;
+                case AccountEnum.CreateAccountResult.CitizenNumberDuplicated:
+                    TempData["Error"] = CreateAccountConfig.CitizenNumberDuplicated;
+                    break;
+                case AccountEnum.CreateAccountResult.ServerError:
+                    TempData["Error"] = CreateAccountConfig.ServerError;
+                    break;
+                case AccountEnum.CreateAccountResult.FrontImageError:
+                    TempData["Error"] = CreateAccountConfig.FrontImageError;
+                    break;
+                case AccountEnum.CreateAccountResult.BackImageError:
+                    TempData["Error"] = CreateAccountConfig.BackImageError;
+                    break;
+            }
+            model.Staff.Identity.FrontImage = Configs.DefaultImageUrlConfig.FrontImage;
+            model.Staff.Identity.BackImage = Configs.DefaultImageUrlConfig.BackImage;
+            model.isEdit = true;
+            return View("StaffProfile", model);
+        }
+
+        // show employers list
+        public async Task<IActionResult> ShowEmployers(string q = "")
+        {
+            EmployersViewModel model = new EmployersViewModel();
+            model.Employers = await adminRespository.GetEmployers(q);
+            model.QueryInput = q;
+            return View("Employers", model);
+        }
+
+        public async Task<IActionResult> ToggleEmployerAccount(int employerId, bool status, string q)
+        {
+            var result = await adminRespository.ToggleEmployerAccount(employerId, status);
+            return await ShowEmployers(q);
+        }
+
+        // show employees list
+        public async Task<IActionResult> ShowEmployees(string q = "")
+        {
+            EmployeesViewModel model = new EmployeesViewModel();
+            model.Employees = await adminRespository.GetEmployees(q);
+            model.QueryInput = q;
+            return View("Employees", model);
+        }
+
+        public async Task<IActionResult> ToggleEmployeeAccount(int employeeId, bool status, string q)
+        {
+            var result = await adminRespository.ToggleEmployeeAccount(employeeId, status);
+            return await ShowEmployees(q);
+        }
+
+
     }
 }

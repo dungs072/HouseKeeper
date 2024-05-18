@@ -165,8 +165,8 @@
                     </div>
 
                     <div class="nice-form-group">
-                        <label>Identity Number</label>
-                        <input id="citizenNumberInput" asp-for="@Model.Employee.Identity.CitizenNumber" type="text" placeholder="Type Address" value=@Model.Employee.Identity.CitizenNumber required />
+                        <label>Citizen Number</label>
+                        <input id="citizenNumberInput" asp-for="@Model.Employee.Identity.CitizenNumber" type="text" placeholder="Citizen Number" value=@Model.Employee.Identity.CitizenNumber required />
                     </div>
 
                     <div class="nice-form-group">
@@ -180,7 +180,7 @@
 
                     <div class="nice-form-group">
                         <label>Back Identity Image</label>
-                        <img id="backImage" width="70%" height="360" src="@Model.Employee.Identity.FrontImage" alt="Front Id Card" />
+                        <img id="backImage" width="70%" height="360" src="@Model.Employee.Identity.BackImage" alt="Back Id Card" />
                         @if (Model.isIdentityApproved == 0)
                         {
                             <input id="backImageButton" name="backImage" class="form-control" type="file" accept="image/*" />

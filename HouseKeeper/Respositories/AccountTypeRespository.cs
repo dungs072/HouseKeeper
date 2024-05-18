@@ -1,5 +1,6 @@
 ﻿using HouseKeeper.DBContext;
 using HouseKeeper.Enum;
+using HouseKeeper.IServices;
 using HouseKeeper.Models.DB;
 using HouseKeeper.Models.Views;
 using HouseKeeper.Models.Views.OutPage;
@@ -17,10 +18,12 @@ namespace HouseKeeper.Respositories
     public class AccountTypeRespository : IAccountTypeRespository
     {
         private readonly HouseKeeperDBContext dBContext;
-        public AccountTypeRespository(HouseKeeperDBContext dBContext)
+        private readonly IPasswordService passwordService;
+        public AccountTypeRespository(HouseKeeperDBContext dBContext, IPasswordService passwordService)
         {
            
             this.dBContext = dBContext;
+            this.passwordService = passwordService;
         }
         public async Task<List<LOAITK>> GetAccounts()
         {
