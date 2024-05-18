@@ -17,7 +17,8 @@ namespace HouseKeeper.Models.Views.OutPage
         public string Gender { get; set; }
         public DateTime BirthDate { get; set; }
         public string CitizenNumber { get; set; }
-
+        public string FrontImage { get; set; }
+        public string BackImage { get; set; }
         public List<TINHTHANHPHO> Cities { get; set; }
 
         public List<HUYEN> Districts { get; set; }

@@ -20,6 +20,7 @@ namespace HouseKeeper.Respositories
         Task<TINHTHANHPHO> GetCity(int id);
         Task<LOAICONGVIEC> GetJob(int id);
         Task<NGUOITHUE> GetEmployer(int id);
+        Task<List<NGUOITHUE>> GetEmployersWithIdentityStatus(string q, int identiyStatus);
         Task<TINTUYENDUNG> GetRecruitment(int id);
         Task<TRANGTHAITIN> GetRecruitmentStatus(int id);
         Task<GOITIN> GetPricePacket(int id);
@@ -41,5 +42,7 @@ namespace HouseKeeper.Respositories
         Task<NGUOIGIUPVIEC> GetDetailCandidate(int employeeId);
         Task<bool> HasRightPassword(string password, int userId);
         Task<bool> ChangePassword(string password, int userId);
+        Task<List<TRANGTHAIDANHTINH>> GetIdentityStatus();
+        
     }
 }

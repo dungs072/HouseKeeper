@@ -1,5 +1,6 @@
 ﻿using HouseKeeper.DBContext;
 using HouseKeeper.Enum;
+using HouseKeeper.IServices;
 using HouseKeeper.Models.DB;
 using HouseKeeper.Models.Views.OutPage;
 using Microsoft.Data.SqlClient;
@@ -11,10 +12,12 @@ namespace HouseKeeper.Respositories
     public class AccountTypeRespository : IAccountTypeRespository
     {
         private readonly HouseKeeperDBContext dBContext;
-        public AccountTypeRespository(HouseKeeperDBContext dBContext)
+        private readonly IPasswordService passwordService;
+        public AccountTypeRespository(HouseKeeperDBContext dBContext, IPasswordService passwordService)
         {
            
             this.dBContext = dBContext;
+            this.passwordService = passwordService;
         }
         public async Task<List<LOAITK>> GetAccounts()
         {
@@ -28,7 +31,7 @@ namespace HouseKeeper.Respositories
             var accounts = await dBContext.Accounts.Where(a => a.PhoneNumber == model.LoginName || a.Gmail == model.LoginName).ToListAsync();
             if(accounts.Count>0)
             {
-                if (accounts[0].Password.Trim()==model.Password)
+                if (accounts[0].Password.Trim() == passwordService.HashPassword(model.Password) || accounts[0].Password.Trim() == model.Password)
                 {
                     return accounts[0].AccountID;
                 }

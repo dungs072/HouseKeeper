@@ -2,7 +2,6 @@
 using HouseKeeper.IServices;
 using HouseKeeper.Models.DB;
 using HouseKeeper.Models.Views;
-using HouseKeeper.Models.Views.Admin;
 using HouseKeeper.Models.Views.Staff;
 using HouseKeeper.Respositories;
 using Humanizer.Localisation.TimeToClockNotation;
@@ -10,15 +9,21 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json;
+using System.Net;
+using System.Net.Mail;
 
 namespace HouseKeeper.Controllers
 {
     public class StaffController : Controller
     {
         private readonly IStaffRespository staffRespository;
-        public StaffController(IStaffRespository staffRespository)
+        private readonly IEmployerRespository employerRespository;
+        private readonly IEmployeeRespository employeeRespository;
+        public StaffController(IStaffRespository staffRespository, IEmployerRespository employerRespository, IEmployeeRespository employeeRespository)
         {
             this.staffRespository = staffRespository;
+            this.employerRespository = employerRespository;
+            this.employeeRespository = employeeRespository;
         }
 
         // Controller get index page for staff
@@ -236,6 +241,138 @@ namespace HouseKeeper.Controllers
             TempData["Success"] = "Change password successfully!";
             return RedirectToAction("ChangePassword");
         }
+
+        // show list employers
+        public async Task<IActionResult> ShowListEmployers(string q = "", int identityStatus=0) {
+            EmployersModerationViewModel model = new EmployersModerationViewModel();
+            model.Employers = await employerRespository.GetEmployersWithIdentityStatus(q, identityStatus);
+            model.IdentityStatus = await employerRespository.GetIdentityStatus();
+            model.QueryInput = q;
+            model.currentIdentityStatus = identityStatus;
+            return View("ListEmployers", model);
+        }
+
+        public async Task<IActionResult> ShowEmployerDetail(int employerId)
+        {
+            EmployerDetailViewModel model = new EmployerDetailViewModel();
+            model.Employer = await employerRespository.GetEmployer(employerId);
+            return View("EmployerDetail", model);
+        }
+
+        public async Task<IActionResult> ApproveEmployer(int employerId)
+        {
+            bool result = await staffRespository.ApproveEmployer(employerId);
+            if(result)
+            {
+                TempData["Success"] = "Approve employer successfully!";
+                return RedirectToAction("ShowListEmployers");
+            }
+            else
+            {
+                TempData["Error"] = "Approve employer failed!";
+                return RedirectToAction("ShowEmployerDetail", employerId);
+            }
+            
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DisapproveEmployer(EmployerDetailViewModel model)
+        {
+            bool result = await staffRespository.DisapproveEmployer(model);
+            if (result)
+            {
+                TempData["Success"] = "Approve employer successfully!";
+                return RedirectToAction("ShowListEmployers");
+            }
+            else
+            {
+                TempData["Error"] = "Approve employer failed!";
+                return RedirectToAction("ShowEmployerDetail", model.Employer.EmployerId);
+            }
+        }
+
+        // show list employers
+        public async Task<IActionResult> ShowListEmployees(string q = "", int identityStatus = 0)
+        {
+            EmployeesModerationViewModel model = new EmployeesModerationViewModel();
+            model.Employees = await employeeRespository.GetEmployeesWithIdentityStatus(q, identityStatus);
+            model.IdentityStatus = await employeeRespository.GetIdentityStatus();
+            model.QueryInput = q;
+            model.currentIdentityStatus = identityStatus;
+            return View("ListEmployees", model);
+        }
+
+        public async Task<IActionResult> ShowEmployeeDetail(int employeeId)
+        {
+            EmployeeDetailViewModel model = new EmployeeDetailViewModel();
+            model.Employee = await employeeRespository.GetEmployee(employeeId);
+            return View("EmployeeDetail", model);
+        }
+
+        public async Task<IActionResult> ApproveEmployee(int employeeId)
+        {
+            bool result = await staffRespository.ApproveEmployee(employeeId);
+            if (result)
+            {
+                TempData["Success"] = "Approve employee successfully!";
+                return RedirectToAction("ShowListEmployees");
+            }
+            else
+            {
+                TempData["Error"] = "Approve employee failed!";
+                return RedirectToAction("ShowEmployeeDetail", employeeId);
+            }
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DisapproveEmployee(EmployeeDetailViewModel model)
+        {
+            bool result = await staffRespository.DisapproveEmployee(model);
+            if (result)
+            {
+                TempData["Success"] = "Approve employee successfully!";
+                return RedirectToAction("ShowListEmployees");
+            }
+            else
+            {
+                TempData["Error"] = "Approve employee failed!";
+                return RedirectToAction("ShowEmployeeDetail", model.Employee.EmployeeId);
+            }
+        }
+
+
+        // send email
+        public async Task<IActionResult> SendEmail()
+        {
+            try
+            {
+                MailMessage mail = new MailMessage();
+
+                mail.Subject = "Test send email";
+                mail.Body = "<p>Dear {},</p>\r\n<p>You recruitment (with ID: 134) approved successfully</p>\r\n<p>Your recruitment will be displayed on the Website.</p>\r\n<p>Let me know if you need more any information.</p>\r\n<p>Thanks,</p>\r\n<p><b>Sender</b></p>\r\n<p>Website Staff</p>\r\n<p>Email: {} </p>\r\n<p>Cell: {} </p>";
+                mail.IsBodyHtml = true;
+                mail.From = new MailAddress("noreply@housekeeper.com", "HouseKeeper");
+                mail.To.Add(new MailAddress("studywithhuy2002@gmail.com", "Huy02"));
+                mail.Priority = MailPriority.High;
+
+                SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
+                smtp.Credentials = new NetworkCredential("dhuynguyen2002@gmail.com", "yzmg wesw pptc xdae\r\n");
+                smtp.EnableSsl = true;
+                smtp.Send(mail);
+                TempData["Success"] = "Send email successfully!";
+                return RedirectToAction("Index");
+
+
+            }
+            catch (Exception e)
+            {
+                TempData["Error"] = "Send email failed!";
+                return RedirectToAction("Index");
+            }
+        }
+
+
 
     }
 }

@@ -22,6 +22,7 @@ builder.Services.AddScoped<IEmployeeRespository, EmployeeRespository>();
 builder.Services.AddScoped<IAdminRespository, AdminRespository>();
 builder.Services.AddScoped<IStaffRespository, StaffRespository>();
 builder.Services.AddScoped<IFirebaseService, FirebaseService>();
+builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.Configure<FirebaseConfig>(configuration.GetSection("AppConfigs").GetSection("FirebaseConfigs"));
 builder.Services.Configure<StripeSetting>(configuration.GetSection("StripeSettings"));
 builder.Services.AddHttpContextAccessor();

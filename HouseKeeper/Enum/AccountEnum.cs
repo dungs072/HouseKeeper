@@ -24,7 +24,11 @@
             Success = 1,
             PhoneDuplicated = 2,
             GmailDuplicated = 3,
-            ServerError = 4
+            ServerError = 4,
+            CitizenNumberDuplicated = 5,
+            FrontImageError = 6,
+            BackImageError = 7,
+            AvatarImageError = 8
         }
     }
 }

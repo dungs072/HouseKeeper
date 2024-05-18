@@ -162,7 +162,7 @@
 
                     <div class="nice-form-group">
                         <label>Back Identity Image</label>
-                        <img id="backImage" width="70%" height="360" src="@Model.Employer.Identity.FrontImage" alt="Front Id Card" />
+                        <img id="backImage" width="70%" height="360" src="@Model.Employer.Identity.BackImage" alt="Back Id Card" />
                         @if (Model.isIdentityApproved == 0)
                         {
                             <input id="backImageButton" name="backImage" class="form-control" type="file" accept="image/*" />

@@ -4,6 +4,7 @@ using HouseKeeper.IServices;
 using HouseKeeper.Models.DB;
 using HouseKeeper.Models.Views.Employee;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Linq;
 
 namespace HouseKeeper.Respositories
@@ -12,13 +13,15 @@ namespace HouseKeeper.Respositories
     {
         private readonly HouseKeeperDBContext dBContext;
         private readonly IFirebaseService _firebaseService;
+        private readonly IPasswordService _passwordService;
         private string[] status = new string[] { "Pending approval", "Reject approval",
                                                     "Displayed", "Hidden", "Expired" };
-        public EmployeeRespository(HouseKeeperDBContext dBContext, IFirebaseService firebaseService)
+        public EmployeeRespository(HouseKeeperDBContext dBContext, IFirebaseService firebaseService, IPasswordService passwordService)
         {
 
             this.dBContext = dBContext;
             _firebaseService = firebaseService;
+            _passwordService = passwordService;
         }
         public async Task<List<TINTUYENDUNG>> GetRecruitments(int page, string searchKey, int? cityId, int? districtId)
         {
@@ -138,6 +141,42 @@ namespace HouseKeeper.Respositories
             }
             return jobs;
         }
+
+        public async Task<List<NGUOIGIUPVIEC>> GetEmployeesWithIdentityStatus(string q, int status)
+        {
+            // 1 1
+            if (!q.IsNullOrEmpty() && status != 0)
+            {
+                return await dBContext.Employees.Where(a => a.IdentityState.IdentityStateId == (int)status
+                                                        && (a.FirstName.Contains(q)
+                                                            || a.LastName.Contains(q)
+                                                            || a.Identity.CitizenNumber.Contains(q)
+                                                            || a.Account.PhoneNumber.Contains(q)
+                                                            || (a.Account.Gmail != null && a.Account.Gmail.Contains(q)))
+                                                            ).ToListAsync();
+
+            }
+            // 1 0
+            if (!q.IsNullOrEmpty() && status == 0)
+            {
+                return await dBContext.Employees.Where(a => a.FirstName.Contains(q)
+                                                            || a.LastName.Contains(q)
+                                                            || a.Identity.CitizenNumber.Contains(q)
+                                                            || a.Account.PhoneNumber.Contains(q)
+                                                            || (a.Account.Gmail != null && a.Account.Gmail.Contains(q))
+                                                            ).ToListAsync();
+            }
+
+            // 0 1
+            if (q.IsNullOrEmpty() && status != 0)
+            {
+                return await dBContext.Employees.Where(a => a.IdentityState.IdentityStateId == (int)status).ToListAsync();
+            }
+
+            // 0 0
+            return await dBContext.Employees.ToListAsync();
+        }
+
         public async Task<List<HUYEN>> GetWorkplacesForEmployee(int employeeId)
         {
             var workPlaces = await dBContext.Districts.ToListAsync();
@@ -302,18 +341,18 @@ namespace HouseKeeper.Respositories
         }
         public async Task<bool> HasRightPassword(string password, int userId)
         {
-            var employer = await dBContext.Employees.FindAsync(userId);
-            if (employer == null) { return false; }
-            return employer.Account.Password.Trim() == password.Trim();
+            var employee = await dBContext.Employees.FindAsync(userId);
+            if (employee == null) { return false; }
+            return (employee.Account.Password.Trim() == _passwordService.HashPassword(password.Trim())) || (employee.Account.Password.Trim() == password.Trim());
         }
 
         public async Task<bool> ChangePassword(string password, int userId)
         {
             try
             {
-                var employer = await dBContext.Employees.FindAsync(userId);
-                var account = employer.Account;
-                account.Password = password;
+                var employee = await dBContext.Employees.FindAsync(userId);
+                var account = employee.Account;
+                account.Password = _passwordService.HashPassword(password);
                 dBContext.Accounts.Update(account);
                 dBContext.SaveChanges();
                 return true;
@@ -323,6 +362,11 @@ namespace HouseKeeper.Respositories
                 return false;
             }
 
+        }
+
+        public async Task<List<TRANGTHAIDANHTINH>> GetIdentityStatus()
+        {
+            return await dBContext.IdentityStates.ToListAsync();
         }
     }
 }

@@ -11,9 +11,11 @@ namespace HouseKeeper.Respositories
     public class StaffRespository : IStaffRespository
     {
         private readonly DBContext.HouseKeeperDBContext dBContext;
-        public StaffRespository(DBContext.HouseKeeperDBContext dBContext)
+        private readonly IPasswordService passwordService;
+        public StaffRespository(DBContext.HouseKeeperDBContext dBContext, IPasswordService passwordService)
         {
             this.dBContext = dBContext;
+            this.passwordService = passwordService;
         }
 
         // Get all recruitment is pending approval
@@ -206,7 +208,7 @@ namespace HouseKeeper.Respositories
         {
             var staff = await dBContext.Staffs.FindAsync(userId);
             if (staff == null) { return false; }
-            return staff.Account.Password.Trim() == password.Trim();
+            return (staff.Account.Password.Trim() == passwordService.HashPassword(password.Trim())) || (staff.Account.Password.Trim() == password.Trim());
         }
 
         public async Task<bool> ChangePassword(string password, int userId)
@@ -215,7 +217,7 @@ namespace HouseKeeper.Respositories
             {
                 var staff = await dBContext.Staffs.FindAsync(userId);
                 var account = staff.Account;
-                account.Password = password;
+                account.Password = passwordService.HashPassword(password);
                 dBContext.Accounts.Update(account);
                 dBContext.SaveChanges();
                 return true;
@@ -225,6 +227,89 @@ namespace HouseKeeper.Respositories
                 return false;
             }
 
+        }
+        public async Task<List<NGUOITHUE>> GetEmployers(string queryInput)
+        {
+            if (!string.IsNullOrEmpty(queryInput))
+            {
+                return await dBContext.Employers.Where(
+                    s => s.FirstName.Contains(queryInput)
+                    || s.LastName.Contains(queryInput)
+                    || s.Identity.CitizenNumber.Contains(queryInput)
+                    || (s.Account.Gmail != null && s.Account.Gmail.Contains(queryInput))
+                    || s.Account.PhoneNumber.Contains(queryInput)
+                    ).ToListAsync();
+            }
+            return await dBContext.Employers.ToListAsync();
+        }
+
+        public async Task<bool> ApproveEmployer(int employerId)
+        {
+            try
+            {
+                var employer = await dBContext.Employers.FindAsync(employerId);
+                employer.IdentityState = await dBContext.IdentityStates.FindAsync((int)IdentityEnum.IdentiyStatus.Approve);
+                dBContext.Employers.Update(employer);
+                await dBContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> DisapproveEmployer(EmployerDetailViewModel model)
+        {
+            try
+            {
+                // send email to employer
+
+
+                var employer = await dBContext.Employers.FindAsync(model.Employer.EmployerId);
+                employer.IdentityState = await dBContext.IdentityStates.FindAsync((int)IdentityEnum.IdentiyStatus.Disapprove);
+                dBContext.Employers.Update(employer);
+                await dBContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> ApproveEmployee(int employeeId)
+        {
+            try
+            {
+                var employee = await dBContext.Employees.FindAsync(employeeId);
+                employee.IdentityState = await dBContext.IdentityStates.FindAsync((int)IdentityEnum.IdentiyStatus.Approve);
+                dBContext.Employees.Update(employee);
+                await dBContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> DisapproveEmployee(EmployeeDetailViewModel model)
+        {
+            try
+            {
+                // send email to employee
+
+                var employee = await dBContext.Employees.FindAsync(model.Employee.EmployeeId);
+                employee.IdentityState = await dBContext.IdentityStates.FindAsync((int)IdentityEnum.IdentiyStatus.Disapprove);
+                dBContext.Employees.Update(employee);
+                await dBContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
     }
 }
