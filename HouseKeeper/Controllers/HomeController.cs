@@ -3,6 +3,7 @@ using HouseKeeper.Enum;
 using HouseKeeper.IServices;
 using HouseKeeper.Models;
 using HouseKeeper.Models.DB;
+using HouseKeeper.Models.Views;
 using HouseKeeper.Models.Views.Employee;
 using HouseKeeper.Models.Views.OutPage;
 using HouseKeeper.Respositories;
@@ -224,7 +225,25 @@ namespace HouseKeeper.Controllers
         }
         public IActionResult ForgetPassword()
         {
-            return View();
+            ForgetPasswordViewModel model = new ForgetPasswordViewModel();
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ForgetPassword(ForgetPasswordViewModel model)
+        {
+            string gmail = Request.Form["email"];
+            model.Gmail = gmail;
+            var result = await accountTypeRespository.HandleForgetPassword(model);
+            if(result)
+            {
+                TempData["Success"] = "We send you the random password to your email. Please check carefully.";
+                return RedirectToAction("Login");
+            }
+            else
+            {
+                TempData["Error"] = "Gmail is not exist or registered.";
+                return View(model);
+            }
         }
         public IActionResult Privacy()
         {
@@ -236,6 +255,8 @@ namespace HouseKeeper.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+       
 
 
     }

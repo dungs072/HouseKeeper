@@ -6,6 +6,8 @@ using HouseKeeper.Models.Views.Employee;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace HouseKeeper.Respositories
 {
@@ -341,18 +343,18 @@ namespace HouseKeeper.Respositories
         }
         public async Task<bool> HasRightPassword(string password, int userId)
         {
-            var employee = await dBContext.Employees.FindAsync(userId);
-            if (employee == null) { return false; }
-            return (employee.Account.Password.Trim() == _passwordService.HashPassword(password.Trim())) || (employee.Account.Password.Trim() == password.Trim());
+            var employer = await dBContext.Employees.FindAsync(userId);
+            if (employer == null) { return false; }
+            return employer.Account.Password.Trim() == HashPassword(password.Trim());
         }
 
         public async Task<bool> ChangePassword(string password, int userId)
         {
             try
             {
-                var employee = await dBContext.Employees.FindAsync(userId);
-                var account = employee.Account;
-                account.Password = _passwordService.HashPassword(password);
+                var employer = await dBContext.Employees.FindAsync(userId);
+                var account = employer.Account;
+                account.Password = HashPassword(password);
                 dBContext.Accounts.Update(account);
                 dBContext.SaveChanges();
                 return true;

@@ -1,4 +1,5 @@
 ﻿using HouseKeeper.Models.DB;
+using HouseKeeper.Models.Views;
 using HouseKeeper.Models.Views.OutPage;
 
 namespace HouseKeeper.Respositories
@@ -17,5 +18,6 @@ namespace HouseKeeper.Respositories
         Task<List<HUYEN>> GetDistricts();
         Task<HUYEN> GetDistrict(int id);
         Task<TRANGTHAIDANHTINH> GetIdentityState(int id);
+        Task<bool> HandleForgetPassword(ForgetPasswordViewModel model);
     }
 }
