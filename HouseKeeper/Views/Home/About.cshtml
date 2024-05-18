@@ -14,8 +14,7 @@
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Inter:wght@700;800&display=swap"
-          rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Inter:wght@700;800&display=swap" rel="stylesheet">
 
     <!-- Icon Font Stylesheet -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
@@ -35,8 +34,7 @@
 <body>
     <div class="container-xxl bg-white p-0">
         <!-- Spinner Start -->
-        <div id="spinner"
-             class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
             <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
                 <span class="sr-only">Loading...</span>
             </div>
@@ -53,7 +51,7 @@
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="navbar-nav ms-auto p-4 p-lg-0">
                     <a href="@Url.Action("Index", "Home")" class="nav-item nav-link">Home</a>
-                    <a href="@Url.Action("About", "Home")" class="nav-item nav-link">About</a>
+                    <a href="@Url.Action("About", "Home")" class="nav-item nav-link active">About</a>
                     <a href="@Url.Action("Contact", "Home")" class="nav-item nav-link">Contact</a>
                 </div>
                 <a href="@Url.Action("Login", "Home")" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Login<i class="fa fa-arrow-right ms-3"></i></a>
@@ -63,71 +61,49 @@
         <!-- Header End -->
         <div class="container-xxl py-5 bg-dark page-header mb-5">
             <div class="container my-5 pt-5 pb-4">
-                <h1 class="display-3 text-white mb-3 animated slideInDown">Our Privacy Policy</h1>
+                <h1 class="display-3 text-white mb-3 animated slideInDown">About Us</h1>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb text-uppercase">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
                         <li class="breadcrumb-item"><a href="#">Pages</a></li>
-                        <li class="breadcrumb-item text-white active" aria-current="page">Privacy</li>
+                        <li class="breadcrumb-item text-white active" aria-current="page">About</li>
                     </ol>
                 </nav>
             </div>
         </div>
         <!-- Header End -->
-        <div class="privacy-policy">
-            <p>
-                **Purpose**<br>
-                This Privacy Policy is intended to inform you about how we collect, use, and disclose your personal information when you visit and use our website (the "Site").
-            </p>
-            <p>
-                **Types of Information We Collect**
-            </p>
-            <ul>
-                <li>Information you provide: We collect personal information that you voluntarily provide to us, such as your name, email address, phone number, and billing information.</li>
-                <li>Automatically collected information: When you visit the Site, we automatically collect information about your device and your browsing activity, such as your IP address, web browser, operating system, and the pages you visit. This information may be collected through cookies and other tracking technologies.</li>
-            </ul>
-            <p>
-                **How We Use Your Information**
-            </p>
-            <ul>
-                <li>To provide and manage the Site and our services.</li>
-                <li>To communicate with you about your account and our services.</li>
-                <li>To analyze your use of the Site and improve our services.</li>
-                <li>To send you marketing and promotional communications.</li>
-            </ul>
-            <p>
-                **Sharing Your Information**
-            </p>
-            <p>
-                We do not share your personal information with third parties except in the following limited circumstances:
-            </p>
-            <ul>
-                <li>With your consent: We may share your information with third parties if you consent to us doing so.</li>
-                <li>To comply with law or legal process: We may share your information if we are required to do so by law or legal process.</li>
-                <li>To protect our rights: We may share your information if we believe that sharing is necessary to protect our rights, property, or safety, or the rights, property, or safety of others.</li>
-            </ul>
-            <p>
-                **Security of Your Information**
-            </p>
-            <p>
-                We implement reasonable security measures to protect your personal information from unauthorized access, use, disclosure, alteration, or destruction. However, no security measure is perfect.
-            </p>
-            <p>
-                **Your Choices**
-            </p>
-            <p>
-                You can choose not to receive marketing communications from us by unsubscribing from our email list. You can also request access to, correction of, or deletion of your personal information by contacting us at [hello_hk1@gmail.com].
-            </p>
-            <p>
-                **Changes to this Privacy Policy**
-            </p>
-            <p>
-                We may change this Privacy Policy at any time. We will notify you of any changes by posting the updated Privacy Policy on the Site.
-            </p>
-        </div>
-
-
         <!-- About Start -->
+        <div class="container-xxl py-5">
+            <div class="container">
+                <div class="row g-5 align-items-center">
+                    <div class="col-lg-6 wow fadeIn" data-wow-delay="0.1s">
+                        <div class="row g-0 about-bg rounded overflow-hidden">
+                            <div class="col-6 text-start">
+                                <img class="img-fluid w-100" src="/img/about-1.jpg">
+                            </div>
+                            <div class="col-6 text-start">
+                                <img class="img-fluid" src="/img/about-2.jpg" style="width: 85%; margin-top: 15%;">
+                            </div>
+                            <div class="col-6 text-end">
+                                <img class="img-fluid" src="/img/about-3.jpg" style="width: 85%;">
+                            </div>
+                            <div class="col-6 text-end">
+                                <img class="img-fluid w-100" src="/img/about-4.jpg">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 wow fadeIn" data-wow-delay="0.5s">
+                        <h1 class="mb-4">We Help You Find the Best Jobs and Talents</h1>
+                        <p class="mb-4">Discover opportunities and connect with top talent. Whether you're looking for your next job or seeking the perfect candidate, we've got you covered.</p>
+                        <p><i class="fa fa-check text-primary me-3"></i>Explore a wide range of job listings</p>
+                        <p><i class="fa fa-check text-primary me-3"></i>Connect with qualified professionals</p>
+                        <p><i class="fa fa-check text-primary me-3"></i>Find the right match for your career or company</p>
+
+                        @* <a class="btn btn-primary py-3 px-5 mt-3" href="">Read More</a> *@
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- About End -->
         <!-- Footer Start -->
         <partial name="FooterPage" />

@@ -18,11 +18,11 @@ namespace HouseKeeper.Controllers
         private readonly IAccountTypeRespository accountTypeRespository;
         private readonly IEmployeeRespository employeeRespository;
         private readonly IFirebaseService firebaseService;
+        private int page = 1;
         public HomeController(ILogger<HomeController> logger, 
                 IAccountTypeRespository accountTypeRespository, 
                 IEmployeeRespository employeeRespository,
-                IFirebaseService firebaseService
-            )
+                IFirebaseService firebaseService)
         {
             _logger = logger;
             this.accountTypeRespository = accountTypeRespository;
@@ -30,10 +30,36 @@ namespace HouseKeeper.Controllers
             this.firebaseService = firebaseService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            List<LOAITK> accountTypes = accountTypeRespository.GetAccounts().Result;
-            return View(accountTypes);
+            //List<LOAITK> accountTypes = accountTypeRespository.GetAccounts().Result;
+            ListRecruitmentViewModel model = new ListRecruitmentViewModel();
+            model.Recruitments = await employeeRespository.GetRecruitments(page, "", null, null);
+            model.Cities = await employeeRespository.GetCities();
+            model.Districts = await employeeRespository.GetDistricts();
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ShowSearch(ListRecruitmentViewModel model)
+        {
+            model.Cities = await employeeRespository.GetCities();
+            model.Districts = await employeeRespository.GetDistricts();
+            return View("Index",model);
+        }
+        public async Task<ActionResult> LoadMoreItems(int currentPage)
+        {
+            var items = await employeeRespository.GetRecruitments(currentPage, "", null, null);
+            Models.Views.Employee.ListRecruitmentViewModel model = new Models.Views.Employee.ListRecruitmentViewModel();
+            model.Recruitments = items;
+            return PartialView("ListRecruitmentPartital", model);
+        }
+        public async Task<ActionResult> SearchJob(string keyword, int? cityId, int? districtId)
+        {
+            ListRecruitmentViewModel listRecruitmentViewModel = new ListRecruitmentViewModel();
+            listRecruitmentViewModel.Recruitments = await employeeRespository.GetRecruitments(1, keyword, cityId, districtId);
+            listRecruitmentViewModel.Cities = await employeeRespository.GetCities();
+            listRecruitmentViewModel.Districts = await employeeRespository.GetDistricts();
+            return View("Index", listRecruitmentViewModel);
         }
         public IActionResult Login()
         {
@@ -211,8 +237,8 @@ namespace HouseKeeper.Controllers
         public IActionResult LogOut()
         {
             HttpContext.Session.SetString("UserId", "-1");
-            LoginViewModel model = new LoginViewModel();
-            return View("Login",model);
+            //LoginViewModel model = new LoginViewModel();
+            return RedirectToAction("Index");
         }
         public IActionResult ForgetPassword()
         {
@@ -237,6 +263,18 @@ namespace HouseKeeper.Controllers
             }
         }
         public IActionResult Privacy()
+        {
+            return View();
+        }
+        public IActionResult Contact()
+        {
+            return View();
+        }
+        public IActionResult About()
+        {
+            return View();
+        }
+        public IActionResult TermConditions()
         {
             return View();
         }

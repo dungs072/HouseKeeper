@@ -19,5 +19,6 @@ namespace HouseKeeper.Respositories
         Task<HUYEN> GetDistrict(int id);
         Task<TRANGTHAIDANHTINH> GetIdentityState(int id);
         Task<bool> HandleForgetPassword(ForgetPasswordViewModel model);
+        Task<bool> SendMessage(ContactViewModel model);
     }
 }

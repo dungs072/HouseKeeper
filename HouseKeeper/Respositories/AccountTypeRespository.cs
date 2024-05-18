@@ -225,7 +225,17 @@ namespace HouseKeeper.Respositories
             }
 
         }
-
+        public async Task<bool> SendMessage(ContactViewModel model)
+        {
+            try
+            {
+                HandleSendingDataToEmail(model.Gmail, model.Subject + " - "+model.Name, model.Message);
+                return true;
+            }catch(Exception ex)
+            {
+                return false;
+            }
+        }
         public void HandleSendingDataToEmail(string toEmail, string subject, string body)
         {
             SmtpClient smtpClient = new SmtpClient("smtp.gmail.com");
