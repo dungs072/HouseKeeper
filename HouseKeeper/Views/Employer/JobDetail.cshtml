@@ -150,7 +150,7 @@
 
                         <div class="mb-5">
                             <h4 class="mb-3">Job description</h4>
-                            <p>@Model.Recruitment.Note</p>
+                            <p id="note">@Model.Recruitment.Note</p>
 
 
                         </div>
@@ -235,6 +235,12 @@
 
     <!-- Template Javascript -->
     <script src="/js/main.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let paragraph = document.getElementById("note");
+            paragraph.innerHTML = paragraph.innerHTML.replace(/\./g, ".<br>");
+        });
+    </script>
 </body>
 
 </html>
