@@ -9,9 +9,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Stripe;
+using Stripe.Checkout;
 using Stripe.BillingPortal;
 using HouseKeeper.Models.Views;
 using HouseKeeper.IServices;
+using HouseKeeper.Models.Views.Money;
 
 namespace HouseKeeper.Controllers
 {
@@ -185,7 +187,15 @@ namespace HouseKeeper.Controllers
                 string temp = JsonConvert.SerializeObject(model);
                 HttpContext.Session.SetString("PriceTagViewModel", temp);
                 TempData["Success"] = "Please finish your payment";
-                return View("CheckOut", model);
+                int amount = (int)pricePacket.Price + (int)model.Recruitment.BidPrice;
+                List<BillViewModel> bills = new List<BillViewModel>
+                {
+                    new BillViewModel {ProductName = "Packet "+pricePacket.PricePacketName,Amount=(int)pricePacket.Price},
+                    new BillViewModel {ProductName = "Bid",Amount=(int)model.Recruitment.BidPrice},
+                };
+                HandlePaidBill(bills,"CheckOut");
+                return new StatusCodeResult(303);
+                //return View("CheckOut", model);
             }
             TempData["Error"] = "Server error!";
             return RedirectToAction("Index", "Home");
@@ -209,13 +219,6 @@ namespace HouseKeeper.Controllers
                 int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
                 model.Recruitment.Employer = await employerRespository.GetEmployer(employerId);
                 var pricePacket = await employerRespository.GetPricePacket(model.PricePacketId);
-                int amount = (int)pricePacket.Price + (int)model.Recruitment.BidPrice;
-                var result = HandlePaidBill(amount, model.Recruitment.Employer.EmployerId);
-                if (!result)
-                {
-                    TempData["Error"] = "Fail to paid by credit card";
-                    return View("CheckOut", model);
-                }
                 var state = await employerRespository.CreateRecruitment(model.Recruitment, selectedJobs, model.PricePacketId);
                 if(state)
                 {
@@ -231,58 +234,46 @@ namespace HouseKeeper.Controllers
             TempData["Error"] = "Server error!";
             return RedirectToAction("Index", "Home");
         }
-        private bool HandlePaidBill(int amount, int customerId)
+        private bool HandlePaidBill(List<BillViewModel> billModels, string checkOutUrl)
         {
             StripeConfiguration.ApiKey = _stripeSettings.SecretKey;
-            var service = new PaymentIntentService();
-            var options = new PaymentIntentCreateOptions
+            var domain = "http://localhost:5178/";
+
+            var options = new Stripe.Checkout.SessionCreateOptions
             {
-                Amount = amount,
-                Currency = "vnd",
-                Description = "Customer with id " + customerId.ToString() + " has paid",
-                PaymentMethodTypes = new List<string> { "card" },
-                CaptureMethod = "manual",
-                Customer = "cus_Q6mvpowkYb0Rql",
+                SuccessUrl = domain + $"Employer/{checkOutUrl}",
+                CancelUrl = domain+$"Employer/IndexEmployer",
+                LineItems = new List<SessionLineItemOptions>(),
+                Mode = "payment",
+                CustomerEmail = "dungoc1235@gmail.com",
             };
-
-            var paymentIntent = service.Create(options);
-            switch (paymentIntent.Status)
+            foreach(var item in billModels)
             {
-                case "requires_action":
-                case "requires_source_action":
-                    // Payment requires authentication
-                    Console.WriteLine("Payment requires authentication. Handle 3D Secure flow.");
-                    return false;
-                case "succeeded":
-                    // Payment succeeded
-                    Console.WriteLine("Payment succeeded!");
-                    return true;
-                case "requires_capture":
-                    // Payment failed or needs action
-                    Console.WriteLine("Payment failed or needs action. Handle accordingly.");
-                    return false;
-                default:
-                    Console.WriteLine($"Unknown PaymentIntent status: {paymentIntent.Status}");
-                    return true;
+                var sessionListItem = new SessionLineItemOptions
+                {
+                    PriceData = new SessionLineItemPriceDataOptions
+                    {
+                        UnitAmount = item.Amount,
+                        Currency = "vnd",
+                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name = item.ProductName,
+                        }
+                    },
+                    Quantity = 1
+                };
+                options.LineItems.Add(sessionListItem);
             }
-        }
-        private void HandleRefund(int amount)
-        {
-            //StripeConfiguration.ApiKey = _stripeSettings.SecretKey;
-            //string chargeId = "cus_Q6mvpowkYb0Rql";
+         
 
-            //var refundOptions = new RefundCreateOptions
-            //{
-            //    Amount = amount,
-            //    Currency = "vnd",
-            //    Customer = "cus_Q6mvpowkYb0Rql",
-            //};
+            var service = new Stripe.Checkout.SessionService();
+            Stripe.Checkout.Session session = service.Create(options);
 
-            //var refundService = new RefundService();
-            //Refund refund = refundService.Create(refundOptions);
-            
-            //Console.WriteLine("Refund processed successfully!");
+            Response.Headers.Add("Location", session.Url);
+
+            return true;
         }
+       
         public async Task<IActionResult> ListRecruitment()
         {
             int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
@@ -294,9 +285,9 @@ namespace HouseKeeper.Controllers
         public async Task<IActionResult> DeleteRecruitment(int recruitmentId)
         {
             var amount = await employerRespository.GetAmountMoneyForRecruitment(recruitmentId);
-            HandleRefund(amount);
-            var result = await employerRespository.DeleteSpecificRecruitment(recruitmentId);  
-            if (result>0)
+            //HandleRefund(amount);
+            var result = await employerRespository.DeleteSpecificRecruitment(recruitmentId);
+            if (result > 0)
             {
                 TempData["Success"] = "Your money will be back to your payment account in 3 to 5 days!";
                 return RedirectToAction("ListRecruitment");
@@ -306,7 +297,18 @@ namespace HouseKeeper.Controllers
                 TempData["Error"] = "Server error!";
                 return RedirectToAction("ListRecruitment");
             }
+            //return RedirectToAction("ListRecruitment");
         }
+        //private void HandleRefund(int amount)
+        //{
+        //    StripeConfiguration.ApiKey = _stripeSettings.SecretKey;
+        //    var options = new RefundCreateOptions
+        //    {
+        //        Amount = amount
+        //    };
+        //    var service = new RefundService();
+        //    service.Create(options);
+        //}
 
         public async Task<IActionResult> EditRecruitment(int recruitmentId)
         {
@@ -482,19 +484,57 @@ namespace HouseKeeper.Controllers
             TempData["Success"] = "Please check out!";
             var value1 = Request.Form["bidAmount"].ToString();
             model.Price = decimal.Parse(value1.Replace(".", string.Empty));
+            List<BillViewModel> bills = new List<BillViewModel>
+                {
+                    new BillViewModel {ProductName = "Bid",Amount=(int)model.Price},
+                };
+            HandlePaidBill(bills, "AddBidPriceCheckOut", model.RecruitmentId, model.Price);
+            return new StatusCodeResult(303);
+            //return View("AddCheckOut", model);
+        }
+        private bool HandlePaidBill(List<BillViewModel> billModels, string checkOutUrl, int recruitmentId, decimal bidPrice)
+        {
+            StripeConfiguration.ApiKey = _stripeSettings.SecretKey;
+            var domain = "http://localhost:5178/";
 
-            return View("AddCheckOut", model);
+            var options = new Stripe.Checkout.SessionCreateOptions
+            {
+                SuccessUrl = domain + $"Employer/{checkOutUrl}?recruitmentId={recruitmentId}&bidPrice={bidPrice}",
+                CancelUrl = domain + $"Employer/IndexEmployer",
+                LineItems = new List<SessionLineItemOptions>(),
+                Mode = "payment",
+                CustomerEmail = "dungoc1235@gmail.com",
+            };
+            foreach (var item in billModels)
+            {
+                var sessionListItem = new SessionLineItemOptions
+                {
+                    PriceData = new SessionLineItemPriceDataOptions
+                    {
+                        UnitAmount = item.Amount,
+                        Currency = "vnd",
+                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name = item.ProductName,
+                        }
+                    },
+                    Quantity = 1
+                };
+                options.LineItems.Add(sessionListItem);
+            }
+
+
+            var service = new Stripe.Checkout.SessionService();
+            Stripe.Checkout.Session session = service.Create(options);
+
+            Response.Headers.Add("Location", session.Url);
+
+            return true;
         }
 
         public async Task<ActionResult> AddBidPriceCheckOut(int recruitmentId, decimal bidPrice)
         {
             int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
-            bool result0 = HandlePaidBill((int)bidPrice, employerId);
-            if (!result0)
-            {
-                TempData["Error"] = "Fail to paid by credit card";
-                return RedirectToAction("ShowBidPrice", recruitmentId);
-            }
             var result = await employerRespository.AddBidPrice(recruitmentId,bidPrice);
         
             if (result)
@@ -524,21 +564,57 @@ namespace HouseKeeper.Controllers
             model.PricePacket = await employerRespository.GetPricePacket(pricePacketId);
             model.PricePacketId = pricePacketId;
             model.RecruitmentId = recruitmentId;
+            List<BillViewModel> bills = new List<BillViewModel>
+                {
+                    new BillViewModel {ProductName = "Packet "+ model.PricePacket.PricePacketName,Amount=(int)model.PricePacket.Price},
+                };
+            HandlePaidBill(bills, "AddPricePacketCheckOut", recruitmentId, pricePacketId);
+            return new StatusCodeResult(303);
+            // return View("AddPricePacketCheckOut", model);
+        }
+        private bool HandlePaidBill(List<BillViewModel> billModels, string checkOutUrl, int recruitmentId, int pricePacketId)
+        {
+            StripeConfiguration.ApiKey = _stripeSettings.SecretKey;
+            var domain = "http://localhost:5178/";
 
-            return View("AddPricePacketCheckOut", model);
+            var options = new Stripe.Checkout.SessionCreateOptions
+            {
+                SuccessUrl = domain + $"Employer/{checkOutUrl}?recruitmentId={recruitmentId}&pricePacketId={pricePacketId}",
+                CancelUrl = domain + $"Employer/IndexEmployer",
+                LineItems = new List<SessionLineItemOptions>(),
+                Mode = "payment",
+                CustomerEmail = "dungoc1235@gmail.com",
+            };
+            foreach (var item in billModels)
+            {
+                var sessionListItem = new SessionLineItemOptions
+                {
+                    PriceData = new SessionLineItemPriceDataOptions
+                    {
+                        UnitAmount = item.Amount,
+                        Currency = "vnd",
+                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name = item.ProductName,
+                        }
+                    },
+                    Quantity = 1
+                };
+                options.LineItems.Add(sessionListItem);
+            }
+
+
+            var service = new Stripe.Checkout.SessionService();
+            Stripe.Checkout.Session session = service.Create(options);
+
+            Response.Headers.Add("Location", session.Url);
+
+            return true;
         }
 
         public async Task<ActionResult> AddPricePacketCheckOut(int recruitmentId, int pricePacketId)
         {
             int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
-            var pricePacket = await employerRespository.GetPricePacket(pricePacketId);
-            bool result0 = HandlePaidBill((int)pricePacket.Price, employerId);
-            if (!result0)
-            {
-                TempData["Error"] = "Fail to paid by credit card";
-                return RedirectToAction("ShowPricePacket", recruitmentId);
-            }
-
             var result = await employerRespository.ExtendDeadLine(recruitmentId,pricePacketId);
             if (result)
             {

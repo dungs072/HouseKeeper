@@ -108,6 +108,14 @@
             }
         }
     </script>
+    <script>
+        function enforceMinValue(input) {
+            let value = parseInt(input.value.replace(/\./g, ''));
+            if (value < 30000) {
+                input.value = '30000';
+            }
+        }
+    </script>
     <partial name="HeaderInclude" />
 </head>
 <body>
@@ -119,7 +127,7 @@
         <form class="bid-form" asp-action="AddBidPrice" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="bidAmount">Add Bid Amount (VND):</label>
-                <input type="text" min="0" class="form-control" id="bidAmount" name="bidAmount" placeholder="Enter amount in VND" oninput="formatCurrency(this)" required>
+                <input type="text" min="0" class="form-control" id="bidAmount" name="bidAmount" placeholder="Enter amount in VND" oninput="enforceMinValue(this);formatCurrency(this)" required>
                 <input asp-for="RecruitmentId" type="number" id="recruitmentId" placeholder="Enter your bid amount" required>
             </div>
             <input type="submit" value="Next">
