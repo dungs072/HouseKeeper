@@ -11,6 +11,17 @@ namespace HouseKeeper.Respositories
         Task<bool> AddJobType(string jobName);
         Task<bool> EditJobType(int jobId, string jobName);
         Task<bool> DeleteJobType(int jobId);
+        // City&Districts
+        Task<List<TINHTHANHPHO>> GetCities();
+        Task<bool> AddCity(string cityName);
+        Task<bool> EditCity(int cityId, string cityName);
+        Task<bool> DeleteCity(int cityId);
+        
+
+        Task<List<HUYEN>> GetDistricts(int cityId);
+        Task<bool> AddDistrict(string districtName, int cityId);
+        Task<bool> EditDistrict(int districtId, string districtName);
+        Task<bool> DeleteDistrict(int districtId);
         // PaidType
         Task<List<HINHTHUCTRALUONG>> GetPaidTypes();
         Task<bool> AddPaidType(string paidTypeName);

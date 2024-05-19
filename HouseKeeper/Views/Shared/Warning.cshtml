@@ -61,6 +61,19 @@
                     var url = '/Employee/DeleteDistrict?districtId=' + districtId;
                     window.location.href = url;
                 }
+                if (stringArray[0] == 'DeleteCity') {
+                    var cityId = parseInt(stringArray[1], 10);
+
+                    var url = '/Admin/DeleteCity?cityId=' + cityId;
+                    window.location.href = url;
+                }
+                if (stringArray[0] == 'DeleteDistrict') {
+                    var districtId = parseInt(stringArray[1], 10);
+                    var cityId = parseInt(stringArray[2], 10);
+
+                    var url = '/Admin/DeleteDistrict?districtId=' + districtId + '&cityId=' + cityId;
+                    window.location.href = url;
+                }
 
             });
         });

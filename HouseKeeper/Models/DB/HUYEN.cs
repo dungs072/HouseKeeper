@@ -14,5 +14,10 @@ namespace HouseKeeper.Models.DB
         public string DistrictName { get; set; }
         [ForeignKey("ID_TINH_TP")]
         public virtual TINHTHANHPHO City { get; set; }
+
+        public virtual ICollection<TINTUYENDUNG> Recruitments { get; set; }
+        public virtual ICollection<NGUOITHUE> Employers { get; set; }
+        public virtual ICollection<NGUOIGIUPVIEC> Employees { get; set; }
+        public virtual ICollection<CHITIETNOICOTHELAMVIEC> WorkableDetails { get; set; }
     }
 }

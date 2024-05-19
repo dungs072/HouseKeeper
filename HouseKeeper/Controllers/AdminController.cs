@@ -23,6 +23,104 @@ namespace HouseKeeper.Controllers
         {
             return RedirectToAction("DrawChart");
         }
+        #region City&District
+
+        public async Task<IActionResult> ShowCities()
+        {
+            CityViewModel model = new CityViewModel();
+            model.Cities = await adminRespository.GetCities();
+            return View("City",model);
+        }
+        public async Task<IActionResult> AddCity(string cityName)
+        {
+            var result = await adminRespository.AddCity(cityName);
+            if (result)
+            {
+                TempData["Success"] = "Add city successfully!";
+            }
+            else
+            {
+                TempData["Error"] = "Server error! City name is duplicate!!";
+            }
+            return RedirectToAction("ShowCities");
+        }
+        public async Task<IActionResult> EditCity(int cityId, string cityName)
+        {
+            var result = await adminRespository.EditCity(cityId, cityName);
+            if (result)
+            {
+                TempData["Success"] = "Edit city successfully!";
+            }
+            else
+            {
+                TempData["Error"] = "Server error! City name is duplicate!!";
+            }
+            return RedirectToAction("ShowCities");
+        }
+        public async Task<IActionResult> DeleteCity(int cityId)
+        {
+            var result = await adminRespository.DeleteCity(cityId);
+            if (result)
+            {
+                TempData["Success"] = "Delete city successfully!";
+            }
+            else
+            {
+                TempData["Error"] = "Server error!";
+            }
+            return RedirectToAction("ShowCities");
+        }
+
+
+        public async Task<IActionResult> ShowDistricts(int cityId)
+        {
+            DistrictModel model = new DistrictModel();
+            model.Districts = await adminRespository.GetDistricts(cityId);
+            model.CityId = cityId;
+            return View("District", model);
+        }
+
+        public async Task<IActionResult> AddDistrict(string districtName, int cityId)
+        {
+            var result = await adminRespository.AddDistrict(districtName,cityId);
+            if (result)
+            {
+                TempData["Success"] = "Add district successfully!";
+            }
+            else
+            {
+                TempData["Error"] = "Server error! District name is duplicate!!";
+            }
+            return RedirectToAction("ShowDistricts", new { cityId = cityId });
+        }
+        public async Task<IActionResult> EditDistrict(int districtId, string districtName, int cityId)
+        {
+            var result = await adminRespository.EditDistrict(districtId, districtName);
+            if (result)
+            {
+                TempData["Success"] = "Edit district successfully!";
+            }
+            else
+            {
+                TempData["Error"] = "Server error! District name is duplicate!!";
+            }
+            return RedirectToAction("ShowDistricts",new {cityId = cityId });
+        }
+        public async Task<IActionResult> DeleteDistrict(int districtId, int cityId)
+        {
+            var result = await adminRespository.DeleteDistrict(districtId);
+            if (result)
+            {
+                TempData["Success"] = "Delete district successfully!";
+            }
+            else
+            {
+                TempData["Error"] = "Server error!";
+            }
+            return RedirectToAction("ShowDistricts", new { cityId = cityId });
+        }
+
+        #endregion
         #region JobType
         public async Task<IActionResult> ShowJobType()
         {

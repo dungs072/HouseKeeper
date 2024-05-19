@@ -1,5 +1,5 @@
 ﻿@using HouseKeeper.Models.Views.Admin;
-@model PricePacketViewModel;
+@model DistrictModel;
 <!DOCTYPE html>
 <html lang="en">
 
@@ -40,29 +40,25 @@
     <script>
         $(document).ready(function () {
             // Handle OK button click
-            $('#confirmEditJobType').on('click', function () {
-                dataToPass = $('#confirmEditJobType').val();
-                var pricePacketName = $('#pricePacketNameEdit').val();
-                var numberDays = $('#numberDaysEdit').val();
-                var price = $('#priceEdit').val();
-                var priceWithoutDot = price.replace(/\./g, '');
-                var priceInteger = parseInt(priceWithoutDot);
+            $('#confirmEditDistrict').on('click', function () {
+                dataToPass = $('#confirmEditDistrict').val();
+                var jobName = $('#districtName').val();
                 var stringArray = dataToPass.split(':');
-                if (stringArray[0] == 'EditJobType') {
+                if (stringArray[0] == 'EditDistrict') {
 
-                    var pricePacketId = parseInt(stringArray[1], 10);
-                    var url = '/Admin/EditPricePacket?pricePacketId=' + pricePacketId + '&pricePacketName=' + pricePacketName + '&numberDay=' + numberDays + '&price=' + priceInteger;
+                    var jobTypeId = parseInt(stringArray[1], 10);
+                    var cityId = parseInt(stringArray[3], 10);
+                    var url = '/Admin/EditDistrict?districtId=' + jobTypeId + '&districtName=' + jobName + '&cityId=' + cityId;
                     window.location.href = url;
                 }
             });
-            $('#confirmAddJobType').on('click', function () {
-                var pricePacketName = $('#pricePacketName').val();
-                var numberDays = $('#numberDays').val();
-                var price = $('#price').val();
-                var priceWithoutDot = price.replace(/\./g, '');
-                var priceInteger = parseInt(priceWithoutDot);
-                var days = parseInt(numberDays);
-                var url = '/Admin/AddPricePacket?pricePacketName=' + pricePacketName + '&numberDay=' + days + '&price=' + priceInteger;
+            $('#confirmAddDistrict').on('click', function () {
+                var dataToPass = $('#newDistrict').val();
+                var stringArray = dataToPass.split(':');
+                var jobName = stringArray[0];
+                var temp = $('#addDistrictBtn').val();
+                var temps = temp.split(':');
+                var url = '/Admin/AddDistrict?districtName=' + jobName + '&cityId=' + temps[1];
                 window.location.href = url;
             });
         });
@@ -70,44 +66,17 @@
     <script>
         $(document).ready(function () {
             var dataToPass = "";
-            
+
             $('.editButton').on('click', function () {
                 dataToPass = $(this).val();
                 var temp = dataToPass.split(':');
-                var confirmEditButton = $(document).find('#confirmEditJobType');
-                var pricePacketNameEdit = $(document).find('#pricePacketNameEdit');
-                var numberDaysEdit = $(document).find('#numberDaysEdit');
-                var priceEdit = $(document).find('#priceEdit');
+                var confirmEditButton = $(document).find('#confirmEditDistrict');
+                var jobNameButton = $(document).find('#districtName');
                 confirmEditButton.val(dataToPass);
-                pricePacketNameEdit.val(temp[2]);
-                numberDaysEdit.val(temp[4]);
-                let value = temp[3].replace(/[^\d]/g, '').replace(/^0+/, '');
-
-                // Check if the input is not empty
-                if (value !== '') {
-                    // Format the number with periods for thousands separator
-                    value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-                    priceEdit.val(value);
-                }
-                
+                jobNameButton.val(temp[2]);
 
             });
         });
-    </script>
-    <script>
-        function formatCurrency(input) {
-            // Remove non-numeric characters and leading zeros
-            let value = input.value.replace(/[^\d]/g, '').replace(/^0+/, '');
-
-            // Check if the input is not empty
-            if (value !== '') {
-                // Format the number with periods for thousands separator
-                value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-
-                // Update the input value
-                input.value = value;
-            }
-        }
     </script>
 </head>
 
@@ -158,8 +127,8 @@
                         <a href="#" class="nav-link dropdown-toggle active" data-bs-toggle="dropdown">Other</a>
                         <div class="dropdown-menu rounded-0 m-0">
                             <a href="/Admin/ShowRejection" class="dropdown-item">Rejection</a>
-                            <a href="/Admin/ShowPricePackets" class="dropdown-item active">Price Packet</a>
-                            <a href="/Admin/ShowCities" class="dropdown-item">City/District</a>
+                            <a href="/Admin/ShowPricePackets" class="dropdown-item">Price Packet</a>
+                            <a href="/Admin/ShowCities" class="dropdown-item active">City/District</a>
                         </div>
                     </div>
                     <div class="nav-item dropdown">
@@ -176,35 +145,33 @@
         <!-- Jobs Start -->
         <div class="container-xxl py-5">
             <div class="container">
-                <h1 class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">Price Packets</h1>
+                <h1 class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">District</h1>
                 <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.3s">
                     <div class="tab-content">
                         <div id="tab-1" class="tab-pane fade show p-0 active">
-                            @foreach(var item in Model.PricePackets)
+                            @foreach (var item in Model.Districts)
                             {
                                 <div class="job-item p-4 mb-4">
                                     <div class="row g-4">
                                         <div class="col-sm-12 col-md-8 d-flex align-items-center">
                                             <img class="flex-shrink-0 img-fluid border rounded" src="/img/com-logo-1.jpg" alt="" style="width: 80px; height: 80px;">
                                             <div class="text-start ps-4">
-                                                <h5 class="mb-3">@item.PricePacketName</h5>
-                                                <span class="text-truncate me-3"><i class="far fa-money-bill-alt text-primary me-2"></i>Price: @string.Format("{0:0,0} VND", @item.Price)</span>
-                                                <span class="text-truncate me-0"><i class="fa fa-hourglass-half text-primary me-2"></i>Number days: @item.NumberDays</span>
+                                                <h5 class="mb-3">@item.DistrictName</h5>
                                             </div>
                                         </div>
                                         <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
                                             <div class="d-flex mb-3">
-                                                <button class="btn btn-primary editButton btn_function" data-toggle="modal" data-target="#editJobTypeModal" value="EditJobType:@item.PricePacketId:@item.PricePacketName:@Convert.ToInt32(item.Price):@item.NumberDays">Edit</button>
-                                                @if(item.PricePacketDetails.Count==0)
+                                                <button class="btn btn-primary editButton btn_function" data-toggle="modal" data-target="#editDistrictModal" value="EditDistrict:@item.DistrictId:@item.DistrictName:@Model.CityId">Edit</button>
+                                                @if (item.Recruitments.Count == 0&&item.WorkableDetails.Count==0&&item.Employees.Count==0&&item.Employers.Count==0)
                                                 {
-                                                    <button class="btn btn-danger deleteButton btn_function" data-toggle="modal" data-target="#deleteWarningModal" value="DeletePricePacket:@item.PricePacketId"><i class="fas fa-trash-alt"></i></button>
+                                                    <button class="btn btn-danger deleteButton btn_function" data-toggle="modal" data-target="#deleteWarningModal" value="DeleteDistrict:@item.DistrictId:@Model.CityId"><i class="fas fa-trash-alt"></i></button>
                                                 }
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             }
-                            <button class="btn btn-primary addButton py-3 px-5" data-toggle="modal" data-target="#addJobTypeModal" value="AddJobType">Add more Price Packet</button>
+                            <button class="btn btn-primary addButton py-3 px-5" data-toggle="modal" data-target="#addDistrictModal"id="addDistrictBtn" value="AddDistrict:@Model.CityId">Add more District</button>
                         </div>
 
                     </div>
@@ -228,56 +195,48 @@
     <script src="/js/main.js"></script>
 
     <!-- Edit Modal -->
-    <div class="modal fade" id="editJobTypeModal" tabindex="-1" role="dialog" aria-labelledby="editJobTypeModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editDistrictModal" tabindex="-1" role="dialog" aria-labelledby="editDistrictModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editJobTypeModalLabel">Edit Price Packet Name</h5>
+                    <h5 class="modal-title" id="editDistrictModalLabel">Edit District Name</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="jobTypeName">New Price Packet Name:</label>
-                        <input type="text" class="form-control" id="pricePacketNameEdit" placeholder="Enter New Name">
-                        <label for="jobTypeName">Number days:</label>
-                        <input type="number" class="form-control" id="numberDaysEdit" placeholder="Enter New Number Days">
-                        <label for="price">Enter New Price (VND)</label>
-                        <input type="text" min="0" class="form-control" id="priceEdit" placeholder="Enter amount in VND" oninput="formatCurrency(this)">
+                        <label for="districtName">New District Name:</label>
+                        <input type="text" class="form-control" id="districtName" placeholder="Enter New Name">
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-success" id="confirmEditJobType">Save Changes</button>
+                    <button type="button" class="btn btn-success" id="confirmEditDistrict">Save Changes</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Add Modal -->
-    <div class="modal fade" id="addJobTypeModal" tabindex="-1" role="dialog" aria-labelledby="addJobTypeModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addDistrictModal" tabindex="-1" role="dialog" aria-labelledby="addDistrictModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addJobTypeModalLabel">Add Price Packet</h5>
+                    <h5 class="modal-title" id="addDistrictModalLabel">Add New District</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="jobTypeName">New Price Packet Name:</label>
-                        <input type="text" class="form-control" id="pricePacketName" placeholder="Enter New Name">
-                        <label for="jobTypeName">Number days:</label>
-                        <input type="number" class="form-control" id="numberDays" placeholder="Enter New Number Days">
-                        <label for="price">Enter New Price (VND)</label>
-                        <input type="text" min="0" class="form-control" id="price" placeholder="Enter amount in VND" oninput="formatCurrency(this)">
+                        <label for="newDistrict">New District Name:</label>
+                        <input type="text" class="form-control" id="newDistrict" placeholder="Enter New Name">
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-success" id="confirmAddJobType">Add Price packet</button>
+                    <button type="button" class="btn btn-success" id="confirmAddDistrict">Add District</button>
                 </div>
             </div>
         </div>
@@ -285,3 +244,4 @@
 </body>
 
 </html>
+

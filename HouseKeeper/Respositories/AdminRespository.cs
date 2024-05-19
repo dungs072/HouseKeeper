@@ -76,6 +76,110 @@ namespace HouseKeeper.Respositories
             }
         }
         #endregion
+        #region City&District
+        public async Task<List<TINHTHANHPHO>> GetCities()
+        {
+            return await dBContext.Cities.ToListAsync();
+        }
+
+        public async Task<bool> AddCity(string cityName)
+        {
+            try
+            {
+                TINHTHANHPHO city = new TINHTHANHPHO();
+                city.CityName = cityName;
+                await dBContext.Cities.AddAsync(city);
+                dBContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+        public async Task<bool> EditCity(int cityId, string cityName)
+        {
+            try
+            {
+                var city = await dBContext.Cities.FindAsync(cityId);
+                city.CityName = cityName;
+                dBContext.Cities.Update(city);
+                dBContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
+        public async Task<bool> DeleteCity(int cityId)
+        {
+            try
+            {
+                var city = await dBContext.Cities.FindAsync(cityId);
+                dBContext.Cities.Remove(city);
+                dBContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public async Task<List<HUYEN>> GetDistricts(int cityId)
+        {
+            return await dBContext.Districts.Where(a => a.City.CityId == cityId).ToListAsync();
+        }
+        public async Task<bool> AddDistrict(string districtName, int cityId)
+        {
+            try
+            {
+                TINHTHANHPHO city = await dBContext.Cities.FindAsync(cityId);
+                HUYEN district = new HUYEN();
+                district.DistrictName = districtName;
+                district.City = city;
+                await dBContext.Districts.AddAsync(district);
+                dBContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+        public async Task<bool> EditDistrict(int districtId, string districtName)
+        {
+            try
+            {
+                var district = await dBContext.Districts.FindAsync(districtId);
+                district.DistrictName = districtName;
+                dBContext.Districts.Update(district);
+                dBContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
+        public async Task<bool> DeleteDistrict(int districtId)
+        {
+            try
+            {
+                var district = await dBContext.Districts.FindAsync(districtId);
+                dBContext.Districts.Remove(district);
+                dBContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+        #endregion
 
         #region Paid Type
         public async Task<List<HINHTHUCTRALUONG>> GetPaidTypes()
