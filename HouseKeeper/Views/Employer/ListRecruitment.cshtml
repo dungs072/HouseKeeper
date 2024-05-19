@@ -53,7 +53,7 @@
         <!-- Spinner End -->
         <!-- Navbar Start -->
         <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
-            <a href="index.html" class="navbar-brand d-flex align-items-center text-center py-0 px-4 px-lg-5">
+            <a href="index.html" class="navbar-brand d-flex align-items-center text-center py-0 px-2 px-lg-3">
                 <h1 class="m-0 text-primary">HouseKeeper</h1>
             </a>
             <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -65,7 +65,16 @@
                     <a href="@Url.Action("ListRecruitment", "Employer")" class="nav-item nav-link active">Recruitments</a>
                     <a href="@Url.Action("ShowSuitableCandidates", "Employer")" class="nav-item nav-link">Suitable candidates</a>
                     <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Personal</a>
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Personal
+                            @if (Model.Account.AvatarUrl != null)
+                            {
+                                <img src="@Model.Account.AvatarUrl" alt="Avatar" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;">
+                            }
+                            else
+                            {
+                                <img src="/images/Avatar.png" alt="Avatar" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;">
+                            }
+                        </a>
                         <div class="dropdown-menu rounded-0 m-0">
                             <a href="@Url.Action("Profile", "Employer")" class="dropdown-item">Your infor</a>
                             <a href="@Url.Action("ChangePassword", "Employer")" class="dropdown-item">Change password</a>
@@ -119,7 +128,7 @@
                                 <div class="job-item p-4 mb-4">
                                     <div class="row g-4">
                                         <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                                            <img class="flex-shrink-0 img-fluid border rounded" src="/img/com-logo-1.jpg" alt="" style="width: 80px; height: 80px;">
+                                            <img class="flex-shrink-0 img-fluid border rounded" src="/Icons/Online.png" alt="" style="width: 80px; height: 80px;">
                                             <div class="text-start ps-4">
                                                 <h5 class="mb-3">Ranked: @item.Ranked</h5>
                                                 <h5 class="mb-3">Bid Price: @string.Format("{0:0,0} VND", @item.BidPrice)</h5>
@@ -162,7 +171,7 @@
                                 <div class="job-item p-4 mb-4">
                                     <div class="row g-4">
                                         <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                                            <img class="flex-shrink-0 img-fluid border rounded" src="/img/com-logo-1.jpg" alt="" style="width: 80px; height: 80px;">
+                                            <img class="flex-shrink-0 img-fluid border rounded" src="/Icons/Pending.png" alt="" style="width: 80px; height: 80px;">
                                             <div class="text-start ps-4">
                                                 <h5 class="mb-3">@item.HouseWorkName</h5>
                                                 <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@item.District.DistrictName / @item.District.City.CityName</span>
@@ -197,7 +206,7 @@
                                 <div class="job-item p-4 mb-4">
                                     <div class="row g-4">
                                         <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                                            <img class="flex-shrink-0 img-fluid border rounded" src="/img/com-logo-1.jpg" alt="" style="width: 80px; height: 80px;">
+                                            <img class="flex-shrink-0 img-fluid border rounded" src="/Icons/Disapprove.png" alt="" style="width: 80px; height: 80px;">
                                             <div class="text-start ps-4">
                                                 <h5 class="mb-3">@item.HouseWorkName</h5>
                                                 <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@item.District.DistrictName / @item.District.City.CityName</span>
@@ -230,7 +239,7 @@
                                 <div class="job-item p-4 mb-4">
                                     <div class="row g-4">
                                         <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                                            <img class="flex-shrink-0 img-fluid border rounded" src="/img/com-logo-1.jpg" alt="" style="width: 80px; height: 80px;">
+                                            <img class="flex-shrink-0 img-fluid border rounded" src="/Icons/Hidden.png" alt="" style="width: 80px; height: 80px;">
                                             <div class="text-start ps-4">
                                                 <h5 class="mb-3">@item.HouseWorkName</h5>
                                                 <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@item.District.DistrictName / @item.District.City.CityName</span>
@@ -263,7 +272,7 @@
                                 <div class="job-item p-4 mb-4">
                                     <div class="row g-4">
                                         <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                                            <img class="flex-shrink-0 img-fluid border rounded" src="/img/com-logo-1.jpg" alt="" style="width: 80px; height: 80px;">
+                                            <img class="flex-shrink-0 img-fluid border rounded" src="/Icons/Outdated.png" alt="" style="width: 80px; height: 80px;">
                                             <div class="text-start ps-4">
                                                 <h5 class="mb-3">Bid price: @string.Format("{0:0,0} VND", @item.BidPrice)</h5>
                                                 <h5 class="mb-3">@item.HouseWorkName</h5>

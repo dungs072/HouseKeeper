@@ -4,6 +4,7 @@ namespace HouseKeeper.Models.Views.Employee
 {
     public class JobProposalViewModel
     {
-        public List<TINTUYENDUNG> recruitments { get; set; }    
+        public List<TINTUYENDUNG> recruitments { get; set; }
+        public TAIKHOAN Account { get; set; }
     }
 }

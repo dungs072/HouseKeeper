@@ -205,7 +205,16 @@
                         </div>
 
                         <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle active" data-bs-toggle="dropdown">Personal</a>
+                            <a href="#" class="nav-link dropdown-toggle active" data-bs-toggle="dropdown">Personal
+                                @if (Model.Employee.Account.AvatarUrl != null)
+                                {
+                                    <img src="@Model.Employee.Account.AvatarUrl" alt="Avatar" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;">
+                                }
+                                else
+                                {
+                                    <img src="/images/Avatar.png" alt="Avatar" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;">
+                                }
+                            </a>
                             <div class="dropdown-menu rounded-0 m-0">
                                 <a href="@Url.Action("Profile","Employee")" class="dropdown-item active">Your infor</a>
                                 <a href="@Url.Action("ChangePassword", "Employee")" class="dropdown-item">Change password</a>
@@ -233,7 +242,9 @@
                         </div>
 
                         <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle active" data-bs-toggle="dropdown">Personal</a>
+                            <a href="#" class="nav-link dropdown-toggle active" data-bs-toggle="dropdown">Personal
+                                <img src="/images/Avatar.png" alt="Avatar" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;">
+                            </a>
                             <div class="dropdown-menu rounded-0 m-0">
                                 <a href="@Url.Action("Profile","Employee")" class="dropdown-item active">Your infor</a>
                                 <a href="@Url.Action("ChangePassword", "Employee")" class="dropdown-item disabled">Change password</a>
@@ -241,7 +252,7 @@
                             </div>
                         </div>
                     </div>
-                    <a href="" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block disabled">Search A Job<i class="fa fa-arrow-right ms-3"></i></a>
+                    <a href="@Url.Action("DisplayList", "Employee",1)" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block disabled">Search A Job<i class="fa fa-arrow-right ms-3"></i></a>
                 </div>
             }
 

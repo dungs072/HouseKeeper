@@ -155,7 +155,7 @@
         <!-- Spinner End -->
         <!-- Navbar Start -->
         <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
-            <a href="index.html" class="navbar-brand d-flex align-items-center text-center py-0 px-4 px-lg-5">
+            <a href="index.html" class="navbar-brand d-flex align-items-center text-center py-0 px-2 px-lg-3">
                 <h1 class="m-0 text-primary">HouseKeeper</h1>
             </a>
             <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -167,7 +167,16 @@
                     <a href="@Url.Action("ListRecruitment", "Employer")" class="nav-item nav-link">Recruitments</a>
                     <a href="@Url.Action("ShowSuitableCandidates", "Employer")" class="nav-item nav-link active">Suitable candidates</a>
                     <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Personal</a>
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Personal
+                            @if (Model.Account.AvatarUrl != null)
+                            {
+                                <img src="@Model.Account.AvatarUrl" alt="Avatar" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;">
+                            }
+                            else
+                            {
+                                <img src="/images/Avatar.png" alt="Avatar" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;">
+                            }
+                        </a>
                         <div class="dropdown-menu rounded-0 m-0">
                             <a href="@Url.Action("Profile", "Employer")" class="dropdown-item">Your infor</a>
                             <a href="@Url.Action("ChangePassword", "Employer")" class="dropdown-item">Change password</a>
@@ -186,12 +195,19 @@
                     <div class="col-lg-4">
                         <div class="card shadow-sm">
                             <div class="card-header bg-transparent text-center">
-                                <img class="profile_img" src="https://source.unsplash.com/600x300/?student" alt="student dp">
+                                @if(Model.Employee.Account.AvatarUrl!=null)
+                                {
+                                    <img class="profile_img" src="@Model.Employee.Account.AvatarUrl" alt="student dp">
+                                }
+                                else
+                                {
+                                    <img class="profile_img" src="~/images/Avatar.png" alt="student dp">
+                                }
+
                                 <h3>@Model.Employee.LastName @Model.Employee.FirstName</h3>
                             </div>
                             <div class="card-body">
-                                <p class="mb-0"><strong class="pr-1">City: </strong>@Model.Employee.District.City.CityName</p>
-                                <p class="mb-0"><strong class="pr-1">District: </strong>@Model.Employee.District.DistrictName</p>
+                                <p class="mb-0"><strong class="pr-1">Address: </strong>@Model.Employee.Address, @Model.Employee.District.DistrictName, @Model.Employee.District.City.CityName</p>
                             </div>
                         </div>
                     </div>

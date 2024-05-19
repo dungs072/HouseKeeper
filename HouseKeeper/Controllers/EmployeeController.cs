@@ -6,6 +6,7 @@ using HouseKeeper.Enum;
 using static HouseKeeper.Enum.AccountEnum;
 using HouseKeeper.Models.Views;
 using HouseKeeper.IServices;
+using System.Runtime.InteropServices;
 
 
 namespace HouseKeeper.Controllers
@@ -50,6 +51,7 @@ namespace HouseKeeper.Controllers
             model.Recruitment = await employeeRespository.GetRecruitment(recruitmentId);
             var applyDetail = await employeeRespository.GetApplyDetail(recruitmentId, employeeId);
             model.ApplyDetail = applyDetail;
+            model.Account = await employeeRespository.GetAccount(employeeId);
             return View(model);
         }
         public async Task<ActionResult> ApplyJob(int recruitmentId)
@@ -102,6 +104,7 @@ namespace HouseKeeper.Controllers
             int.TryParse(HttpContext.Session.GetString("UserId"), out int employeeId);
             ListAppliedRecruitmentViewModel model = new ListAppliedRecruitmentViewModel();
             model.ApplyDetails = await employeeRespository.GetApplyRecruitmentList(employeeId);
+            model.Account = await employeeRespository.GetAccount(employeeId);
             return View("ListAppliedRecruitment", model);
         }
         public async Task<IActionResult> Profile()
@@ -209,16 +212,21 @@ namespace HouseKeeper.Controllers
             int.TryParse(HttpContext.Session.GetString("UserId"), out int employeeId);
             JobProposalViewModel model = new JobProposalViewModel();
             model = await employeeRespository.GetJobProposals(employeeId);
+            model.Account = await employeeRespository.GetAccount(employeeId);
             return View("JobProposal", model);
         }
         public async Task<IActionResult> ChangePassword()
         {
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employeeId);
             ChangePasswordViewModel model = new ChangePasswordViewModel();
+            model.Account = await employeeRespository.GetAccount(employeeId);
             return View(model);
         }
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employeeId);
+            model.Account = await employeeRespository.GetAccount(employeeId);
             if (model.NewPassword != model.ConfirmPassword)
             {
                 TempData["Error"] = "New password and conform password are not match!";

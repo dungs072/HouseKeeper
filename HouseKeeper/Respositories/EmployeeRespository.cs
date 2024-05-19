@@ -6,6 +6,7 @@ using HouseKeeper.Models.Views.Employee;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -369,6 +370,11 @@ namespace HouseKeeper.Respositories
         public async Task<List<TRANGTHAIDANHTINH>> GetIdentityStatus()
         {
             return await dBContext.IdentityStates.ToListAsync();
+        }
+        public async Task<TAIKHOAN> GetAccount(int employeeId)
+        {
+            var employee = await GetEmployee(employeeId);
+            return employee.Account;
         }
     }
 }

@@ -557,5 +557,10 @@ namespace HouseKeeper.Respositories
         {
             return await dBContext.IdentityStates.ToListAsync();
         }
+        public async Task<TAIKHOAN> GetAccount(int employerId)
+        {
+            var employer = await GetEmployer(employerId);
+            return employer.Account;
+        }
     }
 }

@@ -70,7 +70,7 @@
         <!-- Spinner End -->
         <!-- Navbar Start -->
         <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
-            <a href="index.html" class="navbar-brand d-flex align-items-center text-center py-0 px-4 px-lg-5">
+            <a href="index.html" class="navbar-brand d-flex align-items-center text-center py-0 px-2 px-lg-3">
                 <h1 class="m-0 text-primary">HouseKeeper</h1>
             </a>
             <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -80,8 +80,19 @@
                 <div class="navbar-nav ms-auto p-4 p-lg-0">
                     <a href="@Url.Action("IndexEmployer", "Home")" class="nav-item nav-link">Home</a>
                     <a href="@Url.Action("ListRecruitment", "Employer")" class="nav-item nav-link active">Recruitments</a>
+                    <a href="@Url.Action("ShowSuitableCandidates", "Employer")" class="nav-item nav-link">Suitable candidates</a>
                     <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Personal</a>
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                            Personal
+                            @if (Model.Account.AvatarUrl != null)
+                            {
+                                <img src="@Model.Account.AvatarUrl" alt="Avatar" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;">
+                            }
+                            else
+                            {
+                                <img src="/images/Avatar.png" alt="Avatar" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;">
+                            }
+                        </a>
                         <div class="dropdown-menu rounded-0 m-0">
                             <a href="@Url.Action("Profile", "Employer")" class="dropdown-item">Your infor</a>
                             <a href="@Url.Action("ChangePassword", "Employer")" class="dropdown-item">Change password</a>
@@ -113,7 +124,14 @@
                 <div class="row gy-5 gx-4">
                     <div class="col-lg-8">
                         <div class="d-flex align-items-center mb-5">
-                            <img class="flex-shrink-0 img-fluid border rounded" src="img/com-logo-2.jpg" alt="" style="width: 80px; height: 80px;">
+                            @if (Model.Account.AvatarUrl != null)
+                            {
+                                <img class="flex-shrink-0 img-fluid border rounded" src="@Model.Account.AvatarUrl" alt="" style="width: 80px; height: 80px;">
+                            }
+                            else
+                            {
+                                <img class="flex-shrink-0 img-fluid border rounded" src="/images/Avatar.png" alt="" style="width: 80px; height: 80px;">
+                            }
                             <div class="text-start ps-4">
                                 <h3 class="mb-3">@Model.Recruitment.HouseWorkName</h3>
                                 <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@Model.Recruitment.Address, @Model.Recruitment.District.DistrictName, @Model.Recruitment.District.City.CityName</span>

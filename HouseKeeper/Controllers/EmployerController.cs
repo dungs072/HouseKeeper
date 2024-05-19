@@ -287,6 +287,7 @@ namespace HouseKeeper.Controllers
         {
             int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
             ListRecruitmentViewModel model = await employerRespository.GetEmployerRecruitments(employerId);
+            model.Account = await employerRespository.GetAccount(employerId);
             return View(model);
         }
 
@@ -420,6 +421,8 @@ namespace HouseKeeper.Controllers
         {
             Models.Views.Employee.JobDetailViewModel model = new Models.Views.Employee.JobDetailViewModel();
             model.Recruitment = await employerRespository.GetRecruitment(recruitmentId);
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
+            model.Account = await employerRespository.GetAccount(employerId);
             return View(model);
         }
 
@@ -638,6 +641,7 @@ namespace HouseKeeper.Controllers
         {
             int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
             ListCandidatesViewModel model = await employerRespository.GetSuitableCandidates(employerId);
+            model.Account = await employerRespository.GetAccount(employerId);
             return View("EmployeeProposer", model);
         }
         public async Task<IActionResult> ShowDetailCandidateProfile(int employeeId)
@@ -646,23 +650,28 @@ namespace HouseKeeper.Controllers
             model.Employee = await employeeRespository.GetEmployee(employeeId);
             model.Districts = await employeeRespository.GetWorkplacesForEmployee(employeeId);
             model.Jobs = await employeeRespository.GetJobsForEmployee(employeeId);
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
+            model.Account = await employerRespository.GetAccount(employerId);
             return View("CandidateProfile", model);
         }
 
         public async Task<IActionResult> ChangePassword()
         {
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
             ChangePasswordViewModel model = new ChangePasswordViewModel();
+            model.Account = await employerRespository.GetAccount(employerId);
             return View(model);
         }
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
-            if(model.NewPassword!=model.ConfirmPassword)
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
+            model.Account = await employerRespository.GetAccount(employerId);
+            if (model.NewPassword!=model.ConfirmPassword)
             {
                 TempData["Error"] = "New password and conform password are not match!";
                 return View(model);
             }
-            int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
             var result = await employerRespository.HasRightPassword(model.CurrentPassword, employerId);
             if(!result)
             {

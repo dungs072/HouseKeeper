@@ -43,6 +43,8 @@ namespace HouseKeeper.Respositories
         Task<bool> HasRightPassword(string password, int userId);
         Task<bool> ChangePassword(string password, int userId);
         Task<List<TRANGTHAIDANHTINH>> GetIdentityStatus();
-        
+        Task<TAIKHOAN> GetAccount(int employerId);
+
+
     }
 }
