@@ -201,7 +201,7 @@ namespace HouseKeeper.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public async Task<IActionResult> CheckOut()
+        public async Task<IActionResult> CheckOut(string chargeId)
         {
             string priceTagViewModelJson = HttpContext.Session.GetString("PriceTagViewModel");
             if (!string.IsNullOrEmpty(priceTagViewModelJson))
