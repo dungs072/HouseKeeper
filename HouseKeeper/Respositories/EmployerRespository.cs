@@ -452,7 +452,15 @@ namespace HouseKeeper.Respositories
                 {
                     return false;
                 }
-
+                if (model.Employer.Account.Gmail != null)
+                {
+                    var e = await dBContext.Accounts.FirstOrDefaultAsync(a => a.AccountID != employer.Account.AccountID && a.Gmail == model.Employer.Account.Gmail);
+                    if (e != null)
+                    {
+                        return false;
+                    }
+                }
+             
                 employer.FirstName = model.Employer.FirstName;
                 employer.LastName = model.Employer.LastName;
                 employer.District = await dBContext.Districts.FindAsync(model.Employer.District.DistrictId);

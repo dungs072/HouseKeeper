@@ -92,8 +92,15 @@ namespace HouseKeeper.Respositories
             using var transaction = await dBContext.Database.BeginTransactionAsync();
             try
             {
-                var hashPassword = HashPassword(account.Password);
-                account.Password = hashPassword;
+                if(account.Gmail!=null)
+                {
+                    var e = await dBContext.Accounts.FirstOrDefaultAsync(a => a.Gmail == account.Gmail);
+                    if (e != null)
+                    {
+                        return (int)AccountEnum.CreateAccountResult.GmailDuplicated;
+                    }
+                }
+                
                 await dBContext.Accounts.AddAsync(account);
                 await dBContext.Employers.AddAsync(employer);
                 await dBContext.Identity.AddAsync(identity);
@@ -123,6 +130,11 @@ namespace HouseKeeper.Respositories
             using var transaction = await dBContext.Database.BeginTransactionAsync();
             try
             {
+                var e = await dBContext.Employees.FirstOrDefaultAsync(a => a.Account.Gmail == account.Gmail);
+                if (e != null)
+                {
+                    return (int)AccountEnum.CreateAccountResult.GmailDuplicated;
+                }
                 var hashPassword = HashPassword(account.Password);
                 account.Password = hashPassword;
                 await dBContext.Accounts.AddAsync(account);

@@ -195,6 +195,7 @@ namespace HouseKeeper.Controllers
         {
             int.TryParse(HttpContext.Session.GetString("UserId"), out int employeeId);
             model.Employee.EmployeeId = employeeId;
+
             var result = await employeeRespository.EditEmployeeProfile(model, employeeId, avatarImage, frontImage, backImage, accountType);
             if (result)
             {
@@ -204,7 +205,7 @@ namespace HouseKeeper.Controllers
             else
             {
                 TempData["Error"] = "Server error!!!. Edit profile failed";
-                return RedirectToAction("Profile");
+                return RedirectToAction("EditProfile");
             }
         }
         public async Task<IActionResult> ShowProposalJob()

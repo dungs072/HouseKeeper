@@ -167,10 +167,17 @@
             <div class="plan">
                 <h2>@price.PricePacketName</h2>
                 <div class="price">@string.Format("{0:#,##0} đ", price.Price)</div>
-                <ul class="features">
-                    <li><i class="fa fa-check-circle-o"></i>@price.NumberDays days</li>
-                    <li><i class="fa fa-check-circle-o"></i> Continuous Support</li>
-                </ul>
+                <div>
+                    <i class="fa fa-check-circle-o"></i>@price.NumberDays days
+                </div>
+                <div>
+                    <img src="/images/Receipt.png" alt="Image description" class="feature-image">
+
+                </div>
+                <div>
+                    <i class="fa fa-check-circle-o"></i> Continuous Support
+                </div>
+
                 <a href="@Url.Action("BidPrice", "Employer",new{pricePacketId=price.PricePacketId})" class="button-link">Choose now</a>
             </div>
         }

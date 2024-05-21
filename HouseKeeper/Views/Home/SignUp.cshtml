@@ -110,20 +110,25 @@
                 <form form asp-action="HandleSignUp" method="post" enctype="multipart/form-data" class="pt-3">
 
                     <div class="form-floating">
-                        <input asp-for="LastName" type="text" class="form-control" id="lastName" placeholder="Last Name" value=@Model.LastName required>
+                        <input asp-for="LastName" type="text" class="form-control" id="lastName" placeholder="Last Name"
+                               pattern="[A-Za-z ]+" title="Last name contains letters and spaces only" value=@Model.LastName maxlength="50" required>
                         <label for="name">Last Name</label>
                     </div>
                     <div class="form-floating">
-                        <input asp-for="FirstName" type="text" class="form-control" id="firstName" placeholder="First Name" value=@Model.FirstName required>
+                        <input asp-for="FirstName" type="text" class="form-control" id="firstName" placeholder="First Name" 
+                               pattern="[A-Za-z]+" title="First name contains letters only" value=@Model.FirstName  maxlength="20" required>
                         <label for="name">First Name</label>
                     </div>
                     <div class="form-floating">
-                        <input asp-for="PhoneNumber" type="tel" class="form-control" id="phone" placeholder="123-456-7890" pattern="[0-9]{10}" value ="@Model.PhoneNumber" required>
+                        <input asp-for="PhoneNumber" type="text" class="form-control" id="phone" placeholder="023-456-7890"
+                               pattern="[0][35789][0-9]{8}" title="Please use Vietnamese phone number format" value="@Model.PhoneNumber" minLength="10"
+                                maxlength="10" required>
                         <label for="phone">Phone Number</label>
                     </div>
 
                     <div class="form-floating">
-                        <input asp-for="Gmail" type="email" class="form-control" id="email" placeholder="info@example.com" value=@Model.Gmail>
+                        <input asp-for="Gmail" type="email" class="form-control" id="email" placeholder="info@example.com" value=@Model.Gmail maxlength="64"
+                               pattern="[a-z0-9._%+\-]+@@[a-z0-9.\-]+\.[a-z]{2,}$" title="Please enter the right format of gmail">
                         <label for="email">Email Address (not required)</label>
                     </div>
 
@@ -158,7 +163,8 @@
 
 
                     <div class="form-floating">
-                        <input asp-for="CitizenNumber" type="text" class="form-control" id="citizenNumber" placeholder="Citizen Number" value=@Model.CitizenNumber required>
+                        <input asp-for="CitizenNumber" type="text" class="form-control" id="citizenNumber" placeholder="Citizen Number"
+                               pattern="[0][0-9]{11}" title="Please enter the right citizen number format in VietNam" value=@Model.CitizenNumber minLength="12" maxlength="12" required>
                         <label for="citizenNumber">Citizen Number</label>
                     </div>
 
@@ -176,12 +182,12 @@
 
                     <div class="form-floating">
                         <span class="password-show-toggle js-password-show-toggle"><span class="uil"></span></span>
-                        <input asp-for="Password" type="password" class="form-control" id="password" placeholder="Password" value="@Model.Password" required>
+                        <input asp-for="Password" type="password" class="form-control" id="password" placeholder="Password" minValue ="3" maxlength="40" value="@Model.Password" required>
                         <label for="password">Password</label>
                     </div>
                     <div class="form-floating">
                         <span class="password-show-toggle js-confirm-password-show-toggle"><span class="uil"></span></span>
-                        <input asp-for="ConfirmedPassword" type="password" class="form-control" id="confirm_password" placeholder="Confirm Password" value=@Model.ConfirmedPassword required>
+                        <input asp-for="ConfirmedPassword" type="password" class="form-control" id="confirm_password" placeholder="Confirm Password" minValue="3" maxlength="40" value=@Model.ConfirmedPassword required>
                         <label for="confirm_password">Confirm Password</label>
                     </div>
 

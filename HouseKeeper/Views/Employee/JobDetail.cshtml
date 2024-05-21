@@ -140,7 +140,7 @@
                         </div>
 
                         <div class="mb-5">
-                            <h4 class="mb-3">Job description</h4>
+                            <h4 class="mb-3">Job Description</h4>
                             <p id="note">@Model.Recruitment.Note</p>
                         </div>
 
@@ -149,7 +149,15 @@
                             @if(Model.ApplyDetail!=null)
                             {
                                 <small class="text-truncate">Please wait until recruiter contacts you</small>
-                                <button class="btn btn-danger cancelButton btn_function" data-toggle="modal" data-target="#cancelWarningModal" value="CancelApply:@Model.Recruitment.RecruitmentId:@Model.ApplyDetail.ApplyDetailId:none">Cancel apply</button>
+                                @if (Model.Recruitment.Status.StatusName != "Displayed")
+                                {
+                                    <button class="btn btn-danger cancelButton btn_function disabled" data-toggle="modal" data-target="#cancelWarningModal" value="CancelApply:@Model.Recruitment.RecruitmentId:@Model.ApplyDetail.ApplyDetailId:none">Cancel apply</button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-danger cancelButton btn_function" data-toggle="modal" data-target="#cancelWarningModal" value="CancelApply:@Model.Recruitment.RecruitmentId:@Model.ApplyDetail.ApplyDetailId:none">Cancel apply</button>
+                                }
+                                
                                 
                             }
                             else

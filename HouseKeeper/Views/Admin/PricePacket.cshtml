@@ -134,7 +134,6 @@
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Statistics</a>
                         <div class="dropdown-menu rounded-0 m-0">
-                            <a href="/Admin/ShowJobType" class="dropdown-item">Users</a>
                             <a href="/Admin/DrawChart" class="dropdown-item">Revenue</a>
                         </div>
                     </div>
@@ -185,7 +184,7 @@
                                 <div class="job-item p-4 mb-4">
                                     <div class="row g-4">
                                         <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                                            <img class="flex-shrink-0 img-fluid border rounded" src="/img/com-logo-1.jpg" alt="" style="width: 80px; height: 80px;">
+                                            <img class="flex-shrink-0 img-fluid border rounded" src="/Admin/PricePacket.png" alt="" style="width: 80px; height: 80px;">
                                             <div class="text-start ps-4">
                                                 <h5 class="mb-3">@item.PricePacketName</h5>
                                                 <span class="text-truncate me-3"><i class="far fa-money-bill-alt text-primary me-2"></i>Price: @string.Format("{0:0,0} VND", @item.Price)</span>
@@ -240,9 +239,10 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="jobTypeName">New Price Packet Name:</label>
-                        <input type="text" class="form-control" id="pricePacketNameEdit" placeholder="Enter New Name">
+                        <input type="text" class="form-control" id="pricePacketNameEdit" placeholder="Enter New Name"
+                               pattern="[A-Za-z ]+" title="Price packet name contains letters and spaces only" maxlength="50">
                         <label for="jobTypeName">Number days:</label>
-                        <input type="number" class="form-control" id="numberDaysEdit" placeholder="Enter New Number Days">
+                        <input type="number" class="form-control" id="numberDaysEdit" placeholder="Enter New Number Days" min="10">
                         <label for="price">Enter New Price (VND)</label>
                         <input type="text" min="0" class="form-control" id="priceEdit" placeholder="Enter amount in VND" oninput="formatCurrency(this)">
                     </div>
@@ -268,9 +268,10 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="jobTypeName">New Price Packet Name:</label>
-                        <input type="text" class="form-control" id="pricePacketName" placeholder="Enter New Name">
+                        <input type="text" class="form-control" id="pricePacketName" placeholder="Enter New Name"
+                               pattern="[A-Za-z ]+" title="Price packet name contains letters and spaces only" maxlength="50">
                         <label for="jobTypeName">Number days:</label>
-                        <input type="number" class="form-control" id="numberDays" placeholder="Enter New Number Days">
+                        <input type="number" class="form-control" id="numberDays" placeholder="Enter New Number Days" min="10">
                         <label for="price">Enter New Price (VND)</label>
                         <input type="text" min="0" class="form-control" id="price" placeholder="Enter amount in VND" oninput="formatCurrency(this)">
                     </div>

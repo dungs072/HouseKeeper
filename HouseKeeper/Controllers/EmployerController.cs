@@ -33,7 +33,10 @@ namespace HouseKeeper.Controllers
             this._stripeSettings = stripeSetting.Value;
         }
 
-        public IActionResult Index() { return View(); }
+        public IActionResult Index() 
+        {
+            return RedirectToAction("IndexEmployer", "Home");
+        }
 
         public async Task<IActionResult> Recruitment()
         {
@@ -242,7 +245,7 @@ namespace HouseKeeper.Controllers
             var options = new Stripe.Checkout.SessionCreateOptions
             {
                 SuccessUrl = domain + $"Employer/{checkOutUrl}",
-                CancelUrl = domain+$"Employer/IndexEmployer",
+                CancelUrl = domain + $"Home/IndexEmployer",
                 LineItems = new List<SessionLineItemOptions>(),
                 Mode = "payment",
                 CustomerEmail = "dungoc1235@gmail.com",
@@ -500,7 +503,7 @@ namespace HouseKeeper.Controllers
             var options = new Stripe.Checkout.SessionCreateOptions
             {
                 SuccessUrl = domain + $"Employer/{checkOutUrl}?recruitmentId={recruitmentId}&bidPrice={bidPrice}",
-                CancelUrl = domain + $"Employer/IndexEmployer",
+                CancelUrl = domain + $"Home/IndexEmployer",
                 LineItems = new List<SessionLineItemOptions>(),
                 Mode = "payment",
                 CustomerEmail = "dungoc1235@gmail.com",
@@ -580,7 +583,7 @@ namespace HouseKeeper.Controllers
             var options = new Stripe.Checkout.SessionCreateOptions
             {
                 SuccessUrl = domain + $"Employer/{checkOutUrl}?recruitmentId={recruitmentId}&pricePacketId={pricePacketId}",
-                CancelUrl = domain + $"Employer/IndexEmployer",
+                CancelUrl = domain + $"Home/IndexEmployer",
                 LineItems = new List<SessionLineItemOptions>(),
                 Mode = "payment",
                 CustomerEmail = "dungoc1235@gmail.com",
