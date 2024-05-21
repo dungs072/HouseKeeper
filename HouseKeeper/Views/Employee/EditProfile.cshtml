@@ -99,7 +99,7 @@
                 </h1>
                 <form asp-action="EditProfile" method="post" enctype="multipart/form-data" class="pt-1">
                     <div class="nice-form-group">
-                        <label>Avater</label>
+                        <label>Avatar</label>
                         <img id="avatarImage" width="225" height="225" src=@Model.Employee.Account.AvatarUrl alt="Avatar" />
                         <input id="avatarImageButton" name="avatarImage" class="form-control" type="file" accept="image/*" />
                     </div>
@@ -235,32 +235,57 @@
         });
     </script>
     <script>
-        function changePreviewImageEvent(imageType) {
-            var buttonId = '#' + imageType + "ImageButton";
-            var imagePreviewId = '#' + imageType + "Image";
-            console.log(buttonId);
-            console.log(imagePreviewId);
-            button = $(buttonId);
-            imagePreview = $(imagePreviewId);
-            button.on({
-                'change': function () {
-                    file = this.files[0];
-                    console.log(file);
+        // Get references to both select elements
+        var frontImage = document.getElementById('frontImage');
+        var frontImageButton = document.getElementById('frontImageButton');
 
-                    if (file) {
-                        let reader = new FileReader();
-                        reader.onload = function (event) {
-                            imagePreview.attr("src", event.target.result);
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                }
-            });
-        }
-        changePreviewImageEvent('front');
-        changePreviewImageEvent('back');
-        changePreviewImageEvent('avatar');
+        // Add event listener to front image button
+        frontImageButton.addEventListener('change', function () {
+            var file = this.files[0];
+            var reader = new FileReader();
 
+            reader.onload = function (e) {
+                frontImage.src = e.target.result;
+            };
+
+            reader.readAsDataURL(file);
+        });
+    </script>
+    <script>
+        // Get references to both select elements
+        var backImage = document.getElementById('backImage');
+        var backImageButton = document.getElementById('backImageButton');
+
+        // Add event listener to back image button
+        backImageButton.addEventListener('change', function () {
+            var file = this.files[0];
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                backImage.src = e.target.result;
+            };
+
+            reader.readAsDataURL(file);
+        });
+    </script>
+    <script>
+        // Get references to both select elements
+        var avatarImage = document.getElementById('avatarImage');
+        var avatarImageButton = document.getElementById('avatarImageButton');
+
+        // Add event listener to avatar image button
+        avatarImageButton.addEventListener('change', function () {
+            var file = this.files[0];
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                avatarImage.src = e.target.result;
+            };
+
+            reader.readAsDataURL(file);
+        });
+    </script>
+    <script>
         // set default value for city and district via Model
         $(document).ready(function () {
             var cityId = @Model.Employee.District.City.CityId;
