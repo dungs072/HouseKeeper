@@ -256,6 +256,8 @@
                                                     }
                                                     <span class="text-truncate me-3"><i class="far fa-money-bill-alt text-primary me-2"></i>@string.Format("{0:0,0} VND", @item.MinSalary) - @string.Format("{0:0,0} VND", @item.MaxSalary)</span>
                                                     <span class="text-truncate me-0"><i class="fa fa-hourglass-half text-primary me-2"></i>@item.SalaryForm.SalaryFormName</span>
+                                                   
+                                                    
                                                 </div>
                                             </div>
                                             <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
@@ -272,6 +274,10 @@
 
                                                 </div>
                                                 <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Deadline: @item.RecruitDeadlineDate.ToString("dd/MM/yyyy")</small>
+                                                @if (item.ApplyDetails.FirstOrDefault(a => a.Employee == Model.Employee) != null)
+                                                {
+                                                    <small class="text-truncate text-primary"><i class="text-primary me-2"></i><strong>Applied</strong></small>
+                                                }
                                             </div>
                                         </div>
                                     </div>

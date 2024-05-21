@@ -102,22 +102,29 @@
 
                     <div class="nice-form-group">
                         <label>First Name</label>
-                        <input asp-for="@Model.Employer.FirstName" type="text" placeholder="First Name" value=@Model.Employer.FirstName required/>
+                        <input asp-for="@Model.Employer.FirstName" type="text" placeholder="First Name"
+                               pattern="[A-Za-z]+" title="First name contains letters only" maxlength="20"
+                               value=@Model.Employer.FirstName required />
                     </div>
                     
                     <div class="nice-form-group">
                         <label>Last Name</label>
-                        <input asp-for="@Model.Employer.LastName" type="text" placeholder="Last Name" value=@Model.Employer.LastName required />
+                        <input asp-for="@Model.Employer.LastName" type="text" placeholder="Last Name" 
+                                pattern="[A-Za-z ]+" title="Last name contains letters and spaces only" maxlength="50"
+                                value=@Model.Employer.LastName required />
                     </div>
 
                     <div class="nice-form-group">
                         <label>Gmail</label>
-                        <input asp-for="@Model.Employer.Account.Gmail" type="email" placeholder="Gmail" value=@Model.Employer.Account.Gmail />
+                        <input asp-for="@Model.Employer.Account.Gmail" type="email" placeholder="Gmail" value=@Model.Employer.Account.Gmail/>
                     </div>
 
                     <div class="nice-form-group">
                         <label>Phone Number</label>
-                        <input asp-for="@Model.Employer.Account.PhoneNumber" type="text" placeholder="Phone Number" value=@Model.Employer.Account.PhoneNumber required />
+                        <input asp-for="@Model.Employer.Account.PhoneNumber" type="text" placeholder="Phone Number"
+                               pattern="[0][35789][0-9]{8}" title="Please use Vietnamese phone number format" minLength="10"
+                               maxlength="10"
+                                value=@Model.Employer.Account.PhoneNumber required />
                     </div>
 
                     <div class="nice-form-group">
@@ -148,7 +155,9 @@
 
                     <div class="nice-form-group">
                         <label>Identity Number</label>
-                        <input id="citizenNumberInput" asp-for="@Model.Employer.Identity.CitizenNumber" type="text" placeholder="Type Address" value=@Model.Employer.Identity.CitizenNumber required />
+                        <input id="citizenNumberInput" asp-for="@Model.Employer.Identity.CitizenNumber" type="text" placeholder="Type Address"
+                               pattern="[0][0-9]{11}" title="Please enter the right citizen number format in VietNam"  minLength="12" maxlength="12"
+                            value=@Model.Employer.Identity.CitizenNumber required />
                     </div>
 
                     <div class="nice-form-group">
@@ -274,7 +283,7 @@
             var districtId = @Model.Employer.District.DistrictId;
             var indentityApproved = (@Model.isIdentityApproved == 1 ? true : false);
             if (indentityApproved) {
-                $('#citizenNumberInput').prop('disabled', true);
+                $('#citizenNumberInput').prop('readonly', true);
             }
             $('#citySelect').val(cityId);
             citySelect.dispatchEvent(new Event('change'));

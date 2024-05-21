@@ -78,6 +78,8 @@ namespace HouseKeeper.Controllers
         {
             int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
             NGUOITHUE employer = await accountTypeRespository.GetEmployer(employerId);
+            TempData["Error"] = null;
+            TempData["Success"] = null;
             return View(employer);
         }
         [HttpPost]

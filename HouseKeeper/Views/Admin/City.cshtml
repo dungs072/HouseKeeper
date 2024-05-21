@@ -98,7 +98,6 @@
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Statistics</a>
                         <div class="dropdown-menu rounded-0 m-0">
-                            <a href="/Admin/ShowJobType" class="dropdown-item">Users</a>
                             <a href="/Admin/DrawChart" class="dropdown-item">Revenue</a>
                         </div>
                     </div>
@@ -149,7 +148,7 @@
                                 <div class="job-item p-4 mb-4">
                                     <div class="row g-4">
                                         <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                                            <img class="flex-shrink-0 img-fluid border rounded" src="/img/com-logo-1.jpg" alt="" style="width: 80px; height: 80px;">
+                                            <img class="flex-shrink-0 img-fluid border rounded" src="/Admin/City.png" alt="" style="width: 80px; height: 80px;">
                                             <div class="text-start ps-4">
                                                 <h5 class="mb-3">@item.CityName</h5>
                                             </div>
@@ -203,7 +202,8 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="cityName">New City Name:</label>
-                        <input type="text" class="form-control" id="cityName" placeholder="Enter New Name">
+                        <input type="text" class="form-control" id="cityName" placeholder="Enter New Name"
+                               pattern="[A-Za-z ]+" title="City name contains letters and spaces only" maxlength="60">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -227,7 +227,8 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="newCityName">New City Name:</label>
-                        <input type="text" class="form-control" id="newCityName" placeholder="Enter New Name">
+                        <input type="text" class="form-control" id="newCityName" placeholder="Enter New Name"
+                               pattern="[A-Za-z ]+" title="City name contains letters and spaces only" maxlength="60">
                     </div>
                 </div>
                 <div class="modal-footer">

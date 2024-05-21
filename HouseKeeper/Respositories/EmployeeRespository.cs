@@ -260,10 +260,20 @@ namespace HouseKeeper.Respositories
             try
             {
                 var employee = await dBContext.Employees.FindAsync(employeeId);
+
                 if (employee == null)
                 {
                     return false;
                 }
+                if(model.Employee.Account.Gmail!=null)
+                {
+                    var e = await dBContext.Accounts.FirstOrDefaultAsync(a => a.AccountID != employee.Account.AccountID && a.Gmail == model.Employee.Account.Gmail);
+                    if (e != null)
+                    {
+                        return false;
+                    }
+                }
+               
 
                 employee.FirstName = model.Employee.FirstName;
                 employee.LastName = model.Employee.LastName;
@@ -335,6 +345,13 @@ namespace HouseKeeper.Respositories
                     }
                 }
                 if(!flag)
+                {
+                    jobProposalViewModel.recruitments.RemoveAt(i);
+                }
+            }
+            for (int i = jobProposalViewModel.recruitments.Count - 1; i >= 0; i--)
+            {
+                if (jobProposalViewModel.recruitments[i].ApplyDetails.FirstOrDefault(a=>a.Employee.EmployeeId==employeeId)!=null)
                 {
                     jobProposalViewModel.recruitments.RemoveAt(i);
                 }
