@@ -8,31 +8,59 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Stripe;
 using System.Drawing;
+using System.Security.Claims;
 
 namespace HouseKeeper.Controllers
 {
     public class AdminController : Controller
     {
+        private readonly ITokenService tokenService;
         private readonly IAdminRespository adminRespository;
         private readonly AccountEnum.AccountType staffAccountType = AccountEnum.AccountType.Staff;
-        public AdminController(IAdminRespository adminRespository)
+        public AdminController(IAdminRespository adminRespository, ITokenService tokenService)
         {
             this.adminRespository = adminRespository;
+            this.tokenService = tokenService;
+        }
+        private bool CheckCurrentToken()
+        {
+            string token = Request.Cookies["AuthToken"];
+            string role = Request.Cookies["Role"];
+            if (token == null) { return false; }
+            if(role == null) { return false; }
+            if (role != "Admin") { return false; }
+            ClaimsPrincipal principal = tokenService.ValidateToken(token);
+            return principal != null;
         }
         public IActionResult Index()
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             return RedirectToAction("DrawChart");
         }
         #region City&District
 
         public async Task<IActionResult> ShowCities()
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             CityViewModel model = new CityViewModel();
             model.Cities = await adminRespository.GetCities();
             return View("City",model);
         }
         public async Task<IActionResult> AddCity(string cityName)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var result = await adminRespository.AddCity(cityName.Trim());
             if (result)
             {
@@ -46,6 +74,11 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> EditCity(int cityId, string cityName)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var result = await adminRespository.EditCity(cityId, cityName.Trim());
             if (result)
             {
@@ -59,6 +92,11 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> DeleteCity(int cityId)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var result = await adminRespository.DeleteCity(cityId);
             if (result)
             {
@@ -74,6 +112,11 @@ namespace HouseKeeper.Controllers
 
         public async Task<IActionResult> ShowDistricts(int cityId)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             DistrictModel model = new DistrictModel();
             model.Districts = await adminRespository.GetDistricts(cityId);
             model.CityId = cityId;
@@ -82,6 +125,11 @@ namespace HouseKeeper.Controllers
 
         public async Task<IActionResult> AddDistrict(string districtName, int cityId)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var result = await adminRespository.AddDistrict(districtName.Trim(),cityId);
             if (result)
             {
@@ -95,6 +143,11 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> EditDistrict(int districtId, string districtName, int cityId)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var result = await adminRespository.EditDistrict(districtId, districtName.Trim());
             if (result)
             {
@@ -108,6 +161,11 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> DeleteDistrict(int districtId, int cityId)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var result = await adminRespository.DeleteDistrict(districtId);
             if (result)
             {
@@ -124,12 +182,22 @@ namespace HouseKeeper.Controllers
         #region JobType
         public async Task<IActionResult> ShowJobType()
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             JobTypeViewModel model = new JobTypeViewModel();
             model.JobTypes = await adminRespository.GetJobTypes();
             return View("JobType", model);
         }
         public async Task<IActionResult> AddJobType(string jobName)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var result = await adminRespository.AddJobType(jobName.Trim());
             if (result)
             {
@@ -143,6 +211,11 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> EditJobType(int jobId,string jobName)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var result = await adminRespository.EditJobType(jobId, jobName.Trim());
             if(result)
             {
@@ -156,6 +229,11 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> DeleteJobType(int jobId)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var result = await adminRespository.DeleteJobType(jobId);
             if(result)
             {
@@ -172,12 +250,22 @@ namespace HouseKeeper.Controllers
         #region PaidType
         public async Task<IActionResult> ShowPaidType()
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             PaidTypeViewModel model = new PaidTypeViewModel();
             model.PaidTypes = await adminRespository.GetPaidTypes();
             return View("PaidType", model);
         }
         public async Task<IActionResult> AddPaidType(string paidTypeName)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var result = await adminRespository.AddPaidType(paidTypeName.Trim());
             if (result)
             {
@@ -191,6 +279,11 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> EditPaidType(int paidTypeId, string paidTypeName)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var result = await adminRespository.EditPaidType(paidTypeId, paidTypeName.Trim());
             if (result)
             {
@@ -204,6 +297,11 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> DeletePaidType(int paidTypeId)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var result = await adminRespository.DeletePaidType(paidTypeId);
             if (result)
             {
@@ -220,12 +318,22 @@ namespace HouseKeeper.Controllers
         #region Experience
         public async Task<IActionResult> ShowExperience()
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             ExperienceViewModel model = new ExperienceViewModel();
             model.Experiences = await adminRespository.GetExperiences();
             return View("Experience", model);
         }
         public async Task<IActionResult> AddExperience(string experienceName)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var result = await adminRespository.AddExperience(experienceName.Trim());
             if (result)
             {
@@ -239,6 +347,11 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> EditExperience(int experienceId, string experienceName)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var result = await adminRespository.EditExperience(experienceId, experienceName.Trim());
             if (result)
             {
@@ -252,6 +365,11 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> DeleteExperience(int experienceId)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var result = await adminRespository.DeleteExperience(experienceId);
             if (result)
             {
@@ -268,12 +386,22 @@ namespace HouseKeeper.Controllers
         #region Rejection
         public async Task<IActionResult> ShowRejection()
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             RejectionViewModel model = new RejectionViewModel();
             model.Rejections = await adminRespository.GetRejections();
             return View("Rejection", model);
         }
         public async Task<IActionResult> AddRejection(string rejectionName)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var result = await adminRespository.AddRejection(rejectionName.Trim());
             if (result)
             {
@@ -287,6 +415,11 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> EditRejection(int rejectionId, string rejectionName)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var result = await adminRespository.EditRejection(rejectionId, rejectionName.Trim());
             if (result)
             {
@@ -300,6 +433,11 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> DeleteRejection(int rejectionId)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var result = await adminRespository.DeleteRejection(rejectionId);
             if (result)
             {
@@ -316,12 +454,22 @@ namespace HouseKeeper.Controllers
         #region PricePacket
         public async Task<IActionResult> ShowPricePackets()
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             PricePacketViewModel model = new PricePacketViewModel();
             model.PricePackets = await adminRespository.GetPricePackets();
             return View("PricePacket", model);
         }
         public async Task<IActionResult> AddPricePacket(string pricePacketName, int numberDay, decimal price)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var result = await adminRespository.AddPricePacket(pricePacketName.Trim(),price,numberDay);
             if (result)
             {
@@ -335,6 +483,11 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> EditPricePacket(int pricePacketId, string pricePacketName, int numberDay, decimal price)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var result = await adminRespository.EditPricePacket(pricePacketId,pricePacketName.Trim(), price, numberDay);
             if (result)
             {
@@ -348,6 +501,11 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> DeletePricePacket(int pricePacketId)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var result = await adminRespository.DeletePricePacket(pricePacketId);
             if (result)
             {
@@ -364,6 +522,11 @@ namespace HouseKeeper.Controllers
         
 		public ActionResult DrawChart(int selectedYear = 0)
 		{
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             if (selectedYear == 0) selectedYear = DateTime.Now.Year;
 
             // Get data points for price packet revenue, bid revenue, total revenue
@@ -380,12 +543,22 @@ namespace HouseKeeper.Controllers
 
         public async Task<IActionResult> ChangePassword()
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             ChangePasswordViewModel model = new ChangePasswordViewModel();
             return View(model);
         }
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             if (model.NewPassword != model.ConfirmPassword)
             {
                 TempData["Error"] = "New password and conform password are not match!";
@@ -411,6 +584,11 @@ namespace HouseKeeper.Controllers
         // public async Task<IActionResult> ShowStaffs()
         public async Task<IActionResult> ShowStaffs(string q = "")
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             StaffsViewModel model = new StaffsViewModel();
             model.Staffs = await adminRespository.GetStaffs(q);
             model.QueryInput = q;
@@ -420,6 +598,11 @@ namespace HouseKeeper.Controllers
         // add new staff
         public async Task<IActionResult> AddStaff()
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             StaffProfileViewModel model = new StaffProfileViewModel();
             model.Staff = new();
             model.Staff.Account = new();
@@ -433,6 +616,11 @@ namespace HouseKeeper.Controllers
         [HttpPost]
         public async Task<IActionResult> AddStaff(StaffProfileViewModel model, IFormFile frontImage, IFormFile backImage)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var result = await adminRespository.AddStaff(model, frontImage, backImage, staffAccountType);
             if (result == AccountEnum.CreateAccountResult.Success)
             {
@@ -467,6 +655,11 @@ namespace HouseKeeper.Controllers
 
         public async Task<IActionResult> EditStaff(int staffId)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             StaffProfileViewModel model = new StaffProfileViewModel();
             model.Staff = await adminRespository.GetStaffProfile(staffId);
             model.isEdit = true;
@@ -475,6 +668,11 @@ namespace HouseKeeper.Controllers
 
         public async Task<IActionResult> ToggleStaffAccount(int staffId, bool status, string q)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var result = await adminRespository.ToggleStaffAccount(staffId, status);
             return await ShowStaffs(q);
         }
@@ -484,6 +682,11 @@ namespace HouseKeeper.Controllers
         [HttpPost]
         public async Task<IActionResult> EditStaff(StaffProfileViewModel model, IFormFile frontImage, IFormFile backImage)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var result = await adminRespository.EditStaff(model, frontImage, backImage, staffAccountType);
             
             if (result == AccountEnum.CreateAccountResult.Success)
@@ -521,6 +724,11 @@ namespace HouseKeeper.Controllers
         // show employers list
         public async Task<IActionResult> ShowEmployers(string q = "")
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             EmployersViewModel model = new EmployersViewModel();
             model.Employers = await adminRespository.GetEmployers(q);
             model.QueryInput = q;
@@ -529,6 +737,11 @@ namespace HouseKeeper.Controllers
 
         public async Task<IActionResult> ToggleEmployerAccount(int employerId, bool status, string q)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var result = await adminRespository.ToggleEmployerAccount(employerId, status);
             return await ShowEmployers(q);
         }
@@ -536,6 +749,11 @@ namespace HouseKeeper.Controllers
         // show employees list
         public async Task<IActionResult> ShowEmployees(string q = "")
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             EmployeesViewModel model = new EmployeesViewModel();
             model.Employees = await adminRespository.GetEmployees(q);
             model.QueryInput = q;
@@ -544,6 +762,11 @@ namespace HouseKeeper.Controllers
 
         public async Task<IActionResult> ToggleEmployeeAccount(int employeeId, bool status, string q)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var result = await adminRespository.ToggleEmployeeAccount(employeeId, status);
             return await ShowEmployees(q);
         }

@@ -1,4 +1,5 @@
-﻿using HouseKeeper.Configs;
+﻿using Firebase.Auth;
+using HouseKeeper.Configs;
 using HouseKeeper.Enum;
 using HouseKeeper.IServices;
 using HouseKeeper.Models;
@@ -19,19 +20,22 @@ namespace HouseKeeper.Controllers
         private readonly IAccountTypeRespository accountTypeRespository;
         private readonly IEmployeeRespository employeeRespository;
         private readonly IFirebaseService firebaseService;
+        private readonly ITokenService tokenService;
         private int page = 1;
         private readonly IPasswordService passwordService;
         public HomeController(ILogger<HomeController> logger, 
                 IAccountTypeRespository accountTypeRespository, 
                 IEmployeeRespository employeeRespository,
                 IFirebaseService firebaseService,
-                IPasswordService passwordService)
+                IPasswordService passwordService,
+                ITokenService tokenService)
         {
             _logger = logger;
             this.accountTypeRespository = accountTypeRespository;
             this.employeeRespository = employeeRespository;
             this.firebaseService = firebaseService;
             this.passwordService = passwordService;
+            this.tokenService = tokenService;
         }
 
         public async Task<IActionResult> Index()
@@ -98,21 +102,53 @@ namespace HouseKeeper.Controllers
             }
             var loginInfor = await accountTypeRespository.GetEmployerOrEmployee(result);
             HttpContext.Session.SetString("UserId", loginInfor.Id.ToString());
+            string token = tokenService.GenerateToken(loginInfor.Id.ToString());
+            Response.Cookies.Append("AuthToken", token, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                Expires = DateTime.UtcNow.AddMinutes(60)
+            });
             if (loginInfor.ViewIndex == (int)AccountEnum.AccountType.Employer)
             {
                 NGUOITHUE employer = await accountTypeRespository.GetEmployer(loginInfor.Id);
+               
+                Response.Cookies.Append("Role", "Employer", new CookieOptions
+                {
+                    HttpOnly=true,
+                    Secure = true,
+                    Expires = DateTime.UtcNow.AddMinutes(60)
+                });
                 return View("IndexEmployer",employer);
             }
             else if(loginInfor.ViewIndex == (int)AccountEnum.AccountType.Employee)
             {
+                Response.Cookies.Append("Role", "Employee", new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    Expires = DateTime.UtcNow.AddMinutes(60)
+                });
                 return RedirectToAction("DisplayList", "Employee",1);
             }
             else if(loginInfor.ViewIndex == (int)AccountEnum.AccountType.Staff)
             {
+                Response.Cookies.Append("Role", "Staff", new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    Expires = DateTime.UtcNow.AddMinutes(60)
+                });
                 return RedirectToAction("Index","Staff");
             }
             else if(loginInfor.ViewIndex == (int)AccountEnum.AccountType.Admin)
             {
+                Response.Cookies.Append("Role", "Admin", new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    Expires = DateTime.UtcNow.AddMinutes(60)
+                });
                 return RedirectToAction("Index","Admin");
             }
             return View();
@@ -251,6 +287,8 @@ namespace HouseKeeper.Controllers
         public IActionResult LogOut()
         {
             HttpContext.Session.SetString("UserId", "-1");
+            Response.Cookies.Delete("AuthToken");
+            Response.Cookies.Delete("Role");
             //LoginViewModel model = new LoginViewModel();
             return RedirectToAction("Index");
         }

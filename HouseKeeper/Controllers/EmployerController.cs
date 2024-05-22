@@ -14,6 +14,8 @@ using Stripe.BillingPortal;
 using HouseKeeper.Models.Views;
 using HouseKeeper.IServices;
 using HouseKeeper.Models.Views.Money;
+using Stripe.Issuing;
+using System.Security.Claims;
 
 namespace HouseKeeper.Controllers
 {
@@ -24,22 +26,46 @@ namespace HouseKeeper.Controllers
         private AccountEnum.AccountType accountType = AccountEnum.AccountType.Employer;
         private readonly IEmployeeRespository employeeRespository;
         private readonly StripeSetting _stripeSettings;
+        private readonly ITokenService tokenService;
         public string SessionId { get; set; }
+
+       
         public EmployerController(IEmployerRespository employerRespository, IEmployeeRespository employeeRespository, 
-                                    IOptions<StripeSetting> stripeSetting)
+                                    IOptions<StripeSetting> stripeSetting, ITokenService tokenService)
         {
             this.employerRespository = employerRespository;
             this.employeeRespository = employeeRespository;
             this._stripeSettings = stripeSetting.Value;
+            this.tokenService = tokenService;
+        }
+        private bool CheckCurrentToken()
+        {
+            string token = Request.Cookies["AuthToken"];
+            string role = Request.Cookies["Role"];
+            if (token == null) { return false; }
+            if (role == null) { return false; }
+            if (role != "Employer") { return false; }
+            ClaimsPrincipal principal = tokenService.ValidateToken(token);
+            return principal != null;
         }
 
         public IActionResult Index() 
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             return RedirectToAction("IndexEmployer", "Home");
         }
 
         public async Task<IActionResult> Recruitment()
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             CreateRecruitmentsViewModel model = new CreateRecruitmentsViewModel();
             List<HINHTHUCTRALUONG> paidTypes = await employerRespository.GetPaidTypes();
             List<KINHNGHIEM> experiences = await employerRespository.GetExperiences();
@@ -59,6 +85,11 @@ namespace HouseKeeper.Controllers
         [HttpPost]
         public async Task<IActionResult> HandleCreateRecruitment(CreateRecruitmentsViewModel model)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var value0 = Request.Form["SelectedJobs"];
             // string[] selectedJobs = value0.ToString().Split(',');  
             var value1 = Request.Form["isFullTime"];
@@ -116,6 +147,11 @@ namespace HouseKeeper.Controllers
 
         public async Task<IActionResult> PriceTag()
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             string priceTagViewModelJson = HttpContext.Session.GetString("PriceTagViewModel");
             if (!string.IsNullOrEmpty(priceTagViewModelJson))
             {
@@ -135,6 +171,11 @@ namespace HouseKeeper.Controllers
 
         public async Task<IActionResult> BidPrice(int pricePacketId)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             string priceTagViewModelJson = HttpContext.Session.GetString("PriceTagViewModel");
             if (!string.IsNullOrEmpty(priceTagViewModelJson))
             {
@@ -172,6 +213,11 @@ namespace HouseKeeper.Controllers
         [HttpPost]
         public async Task<IActionResult> HandleSendBidPrice(PriceTagViewModel tempModel)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             string priceTagViewModelJson = HttpContext.Session.GetString("PriceTagViewModel");
             if (!string.IsNullOrEmpty(priceTagViewModelJson))
             {
@@ -206,6 +252,11 @@ namespace HouseKeeper.Controllers
 
         public async Task<IActionResult> CheckOut(string chargeId)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             string priceTagViewModelJson = HttpContext.Session.GetString("PriceTagViewModel");
             if (!string.IsNullOrEmpty(priceTagViewModelJson))
             {
@@ -279,6 +330,11 @@ namespace HouseKeeper.Controllers
        
         public async Task<IActionResult> ListRecruitment()
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
             ListRecruitmentViewModel model = await employerRespository.GetEmployerRecruitments(employerId);
             model.Account = await employerRespository.GetAccount(employerId);
@@ -287,6 +343,11 @@ namespace HouseKeeper.Controllers
 
         public async Task<IActionResult> DeleteRecruitment(int recruitmentId)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var amount = await employerRespository.GetAmountMoneyForRecruitment(recruitmentId);
             //HandleRefund(amount);
             var result = await employerRespository.DeleteSpecificRecruitment(recruitmentId);
@@ -315,6 +376,11 @@ namespace HouseKeeper.Controllers
 
         public async Task<IActionResult> EditRecruitment(int recruitmentId)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             EditRecruitmentViewModel model = new EditRecruitmentViewModel();
             TINTUYENDUNG recruitment = await employerRespository.GetRecruitment(recruitmentId);
             List<HINHTHUCTRALUONG> paidTypes = await employerRespository.GetPaidTypes();
@@ -354,6 +420,11 @@ namespace HouseKeeper.Controllers
 
         public async Task<IActionResult> BackToEditRecruitment(EditRecruitmentViewModel model)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             TINTUYENDUNG recruitment = await employerRespository.GetRecruitment(model.RecruitmentId);
             List<HINHTHUCTRALUONG> paidTypes = await employerRespository.GetPaidTypes();
             List<KINHNGHIEM> experiences = await employerRespository.GetExperiences();
@@ -379,6 +450,11 @@ namespace HouseKeeper.Controllers
         [HttpPost]
         public async Task<IActionResult> EditRecruitment(EditRecruitmentViewModel model)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var value0 = Request.Form["SelectedJobs"];
             // string[] selectedJobs = value0.ToString().Split(',');  
             var value1 = Request.Form["isFullTime"];
@@ -424,6 +500,11 @@ namespace HouseKeeper.Controllers
 
         public async Task<ActionResult> JobDetail(int recruitmentId)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             Models.Views.Employee.JobDetailViewModel model = new Models.Views.Employee.JobDetailViewModel();
             model.Recruitment = await employerRespository.GetRecruitment(recruitmentId);
             int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
@@ -433,6 +514,11 @@ namespace HouseKeeper.Controllers
 
         public async Task<ActionResult> HideRecruitment(int recruitmentId)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var result = await employerRespository.HideRecruitment(recruitmentId);
             if (result)
             {
@@ -447,6 +533,11 @@ namespace HouseKeeper.Controllers
 
         public async Task<ActionResult> UnHideRecruitment(int recruitmentId)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var result = await employerRespository.UnHideRecruitment(recruitmentId);
             if (result)
             {
@@ -461,6 +552,11 @@ namespace HouseKeeper.Controllers
 
         public async Task<ActionResult> ShowBidPrice(int recruitmentId)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var model = new BidPriceSettingViewModel();
             var onlineRecruitments = await employerRespository.GetOnlineRecruitments();
             model.OnlineRecruitments = new List<RecruitmentBidViewModel>();
@@ -484,6 +580,11 @@ namespace HouseKeeper.Controllers
 
         public async Task<ActionResult> AddBidPrice(BidPriceSettingViewModel model)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             TempData["Success"] = "Please check out!";
             var value1 = Request.Form["bidAmount"].ToString();
             model.Price = decimal.Parse(value1.Replace(".", string.Empty));
@@ -497,6 +598,7 @@ namespace HouseKeeper.Controllers
         }
         private bool HandlePaidBill(List<BillViewModel> billModels, string checkOutUrl, int recruitmentId, decimal bidPrice)
         {
+
             StripeConfiguration.ApiKey = _stripeSettings.SecretKey;
             var domain = "http://localhost:5178/";
 
@@ -537,6 +639,11 @@ namespace HouseKeeper.Controllers
 
         public async Task<ActionResult> AddBidPriceCheckOut(int recruitmentId, decimal bidPrice)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
             var result = await employerRespository.AddBidPrice(recruitmentId,bidPrice);
         
@@ -553,6 +660,11 @@ namespace HouseKeeper.Controllers
 
         public async Task<ActionResult> ShowPricePacket(int recruitmentId)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             var model = new PricePacketSettingViewModel();
             var priceTags = await employerRespository.GetPriceTags();
             model.RecruitmentId = recruitmentId;
@@ -562,6 +674,11 @@ namespace HouseKeeper.Controllers
 
         public async Task<ActionResult> AddPricePacket(int recruitmentId, int pricePacketId)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             TempData["Success"] = "Please check out!";
             var model = new PricePacketSettingViewModel();
             model.PricePacket = await employerRespository.GetPricePacket(pricePacketId);
@@ -617,6 +734,11 @@ namespace HouseKeeper.Controllers
 
         public async Task<ActionResult> AddPricePacketCheckOut(int recruitmentId, int pricePacketId)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
             var result = await employerRespository.ExtendDeadLine(recruitmentId,pricePacketId);
             if (result)
@@ -632,6 +754,11 @@ namespace HouseKeeper.Controllers
 
         public async Task<IActionResult> EditReasonRecruitment(int recruitmentId)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             EditReasonRecruitmentViewModel model = new EditReasonRecruitmentViewModel();
             TINTUYENDUNG recruitment = await employerRespository.GetRecruitment(recruitmentId);
             List<HINHTHUCTRALUONG> paidTypes = await employerRespository.GetPaidTypes();
@@ -675,12 +802,22 @@ namespace HouseKeeper.Controllers
 
         public async Task<IActionResult> GetDistricts(int cityId)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             List<HUYEN> districts = await employerRespository.GetDistricts(cityId);
             return Json(districts);
         }
 
         public async Task<IActionResult> Profile()
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             EmployerProfileViewModel model = new EmployerProfileViewModel();
             int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
             model.Employer = await employerRespository.GetEmployer(employerId);
@@ -689,6 +826,11 @@ namespace HouseKeeper.Controllers
 
         public async Task<IActionResult> EditProfile()
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             EditEmployerProfileViewModel model = new EditEmployerProfileViewModel();
             int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
             model.Employer = await employerRespository.GetEmployer(employerId);
@@ -702,6 +844,11 @@ namespace HouseKeeper.Controllers
         [HttpPost]
         public async Task<IActionResult> EditProfile(EditEmployerProfileViewModel model, IFormFile avatarImage, IFormFile frontImage, IFormFile backImage)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
             model.Employer.EmployerId = employerId;
             var result = await employerRespository.EditEmployerProfile(model, employerId, avatarImage, frontImage, backImage, accountType);
@@ -718,6 +865,11 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> ShowSuitableCandidates()
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
             ListCandidatesViewModel model = await employerRespository.GetSuitableCandidates(employerId);
             model.Account = await employerRespository.GetAccount(employerId);
@@ -725,6 +877,11 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> ShowDetailCandidateProfile(int employeeId)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             Models.Views.Employee.EmployeeProfileViewModel model = new Models.Views.Employee.EmployeeProfileViewModel();
             model.Employee = await employeeRespository.GetEmployee(employeeId);
             model.Districts = await employeeRespository.GetWorkplacesForEmployee(employeeId);
@@ -736,6 +893,11 @@ namespace HouseKeeper.Controllers
 
         public async Task<IActionResult> ChangePassword()
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
             ChangePasswordViewModel model = new ChangePasswordViewModel();
             model.Account = await employerRespository.GetAccount(employerId);
@@ -744,6 +906,11 @@ namespace HouseKeeper.Controllers
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
+            if (!CheckCurrentToken())
+            {
+                TempData["Error"] = "Error. Please dont intrude to other personality";
+                return RedirectToAction("Login", "Home");
+            }
             int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
             model.Account = await employerRespository.GetAccount(employerId);
             if (model.NewPassword!=model.ConfirmPassword)
