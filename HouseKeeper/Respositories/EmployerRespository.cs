@@ -461,10 +461,13 @@ namespace HouseKeeper.Respositories
                     }
                 }
              
-                employer.FirstName = model.Employer.FirstName;
-                employer.LastName = model.Employer.LastName;
+                employer.FirstName = model.Employer.FirstName.Trim();
+                employer.LastName = model.Employer.LastName.Trim();
                 employer.District = await dBContext.Districts.FindAsync(model.Employer.District.DistrictId);
-                employer.Address = model.Employer.Address;
+                if(model.Employer.Address!=null)
+                {
+                    employer.Address = model.Employer.Address.Trim();
+                }
 
                 employer.Identity.CitizenNumber = model.Employer.Identity.CitizenNumber;
 

@@ -275,12 +275,16 @@ namespace HouseKeeper.Respositories
                 }
                
 
-                employee.FirstName = model.Employee.FirstName;
-                employee.LastName = model.Employee.LastName;
+                employee.FirstName = model.Employee.FirstName.Trim();
+                employee.LastName = model.Employee.LastName.Trim();
                 employee.BirthDate = model.Employee.BirthDate;
                 employee.Gender = model.Employee.Gender;
                 employee.District = await dBContext.Districts.FindAsync(model.Employee.District.DistrictId);
-                employee.Address = model.Employee.Address;
+                if(model.Employee.Address!=null)
+                {
+                    employee.Address = model.Employee.Address.Trim();
+                }
+               
 
                 employee.Identity.CitizenNumber = model.Employee.Identity.CitizenNumber;
 

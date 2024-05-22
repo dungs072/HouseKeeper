@@ -150,10 +150,10 @@ namespace HouseKeeper.Controllers
             bool isEmployee = !isEmployer;
             TAIKHOAN account = new TAIKHOAN();
             account.PhoneNumber = model.PhoneNumber;
-            account.Gmail = model.Gmail;
+            account.Gmail = model.Gmail.Trim();
             account.Password = passwordService.HashPassword(model.Password);
             DANHTINH identity = new DANHTINH();
-            identity.CitizenNumber = model.CitizenNumber;
+            identity.CitizenNumber = model.CitizenNumber.Trim();
 
 
             model.IsEmployer = isEmployer;
@@ -170,9 +170,9 @@ namespace HouseKeeper.Controllers
                 account.AccountType = accountType;
                 account.AvatarUrl = DefaultImageUrlConfig.DefaultAvatarEmployer;
                 NGUOITHUE employer = new NGUOITHUE();
-                employer.Address = model.Address;
-                employer.FirstName = model.FirstName;
-                employer.LastName = model.LastName;
+                employer.Address = model.Address.Trim();
+                employer.FirstName = model.FirstName.Trim();
+                employer.LastName = model.LastName.Trim();
                 employer.District = await accountTypeRespository.GetDistrict(model.DistrictId);
                 employer.Account = account;
                 identity.FrontImage = await firebaseService.UploadImage(frontImage, AccountEnum.AccountType.Employer, ImageEnum.ImageType.Identity);
@@ -215,8 +215,8 @@ namespace HouseKeeper.Controllers
                     employee.BirthDate = model.BirthDate;
                 }
                 //employee.City = city;
-                employee.FirstName = model.FirstName;
-                employee.LastName = model.LastName;
+                employee.FirstName = model.FirstName.Trim();
+                employee.LastName = model.LastName.Trim();
                 employee.Account = account;
                 employee.District = await accountTypeRespository.GetDistrict(model.DistrictId);
                 employee.Gender = model.Gender;
