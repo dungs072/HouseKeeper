@@ -43,7 +43,14 @@
             <div class="row gy-5 gx-4">
                 <div class="col-lg-8">
                     <div class="d-flex align-items-center mb-5">
-                        <img class="flex-shrink-0 img-fluid border rounded" src="img/com-logo-2.jpg" alt="" style="width: 80px; height: 80px;">
+                        @if (Model.Recruitment.Employer.Account.AvatarUrl == null)
+                        {
+                            <img class="flex-shrink-0 img-fluid border rounded" src="/images/Avatar.png" alt="" style="width: 80px; height: 80px;">
+                        }
+                        else
+                        {
+                            <img class="flex-shrink-0 img-fluid border rounded" src="@Model.Recruitment.Employer.Account.AvatarUrl" alt="" style="width: 80px; height: 80px;">
+                        }
                         <div class="text-start ps-4">
                             <h3 class="mb-3">@Model.Recruitment.HouseWorkName</h3>
                             <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@Model.Recruitment.Address, @Model.Recruitment.District.DistrictName, @Model.Recruitment.District.City.CityName</span>
@@ -62,7 +69,7 @@
 
                     <div class="mb-5">
                         <h4 class="mb-3">Job description</h4>
-                        <p>@Model.Recruitment.Note</p>
+                        <p id="note">@Model.Recruitment.Note</p>
                     </div>
 
                     <!-- Button Group -->
@@ -117,14 +124,18 @@
 
                         <p><i class="fa fa-angle-right text-primary me-2"></i>Age range: @Model.Recruitment.Age</p>
                         <p><i class="fa fa-angle-right text-primary me-2"></i>Experience: @Model.Recruitment.Experience.ExperienceName</p>
-                        <p><i class="fa fa-angle-right text-primary me-2"></i>Gender: @Model.Recruitment.Gender</p>
+                        @if(Model.Recruitment.Gender==null)
+                        {
+                            <p><i class="fa fa-angle-right text-primary me-2"></i>Gender: Not require</p>
+                        }
+                        else
+                        {
+                            <p><i class="fa fa-angle-right text-primary me-2"></i>Gender: @Model.Recruitment.Gender</p>
+                        }
                         <p><i class="fa fa-angle-right text-primary me-2"></i>Paid type: @Model.Recruitment.SalaryForm.SalaryFormName</p>
                         <p class="m-0"><i class="fa fa-angle-right text-primary me-2"></i>Deadline: @Model.Recruitment.RecruitDeadlineDate.ToString("dd/MM/yyyy")</p>
                     </div>
-                    <div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
-                        <h4 class="mb-4">Company Detail</h4>
-                        <p class="m-0">Ipsum dolor ipsum accusam stet et et diam dolores, sed rebum sadipscing elitr vero dolores. Lorem dolore elitr justo et no gubergren sadipscing, ipsum et takimata aliquyam et rebum est ipsum lorem diam. Et lorem magna eirmod est et et sanctus et, kasd clita labore.</p>
-                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -259,6 +270,12 @@
             });
         })
     </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                let paragraph = document.getElementById("note");
+                paragraph.innerHTML = paragraph.innerHTML.replace(/\./g, ".<br>");
+            });
+        </script>
 
 </body>
 

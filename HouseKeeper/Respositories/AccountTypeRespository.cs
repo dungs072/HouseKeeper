@@ -135,8 +135,6 @@ namespace HouseKeeper.Respositories
                 {
                     return (int)AccountEnum.CreateEditAccountResult.GmailDuplicated;
                 }
-                var hashPassword = HashPassword(account.Password);
-                account.Password = hashPassword;
                 await dBContext.Accounts.AddAsync(account);
                 await dBContext.Employees.AddAsync(employee);
                 await dBContext.Identity.AddAsync(identity);

@@ -186,7 +186,11 @@ namespace HouseKeeper.Controllers
             bool isEmployee = !isEmployer;
             TAIKHOAN account = new TAIKHOAN();
             account.PhoneNumber = model.PhoneNumber;
-            account.Gmail = model.Gmail.Trim();
+            if(model.Gmail!=null)
+            {
+                account.Gmail = model.Gmail.Trim();
+            }
+            
             account.Password = passwordService.HashPassword(model.Password);
             DANHTINH identity = new DANHTINH();
             identity.CitizenNumber = model.CitizenNumber.Trim();
@@ -260,7 +264,7 @@ namespace HouseKeeper.Controllers
                 identity.BackImage = await firebaseService.UploadImage(backImage, AccountEnum.AccountType.Employee, ImageEnum.ImageType.Identity);
 
                 employee.Identity = identity;
-
+                employee.IdentityState = await accountTypeRespository.GetIdentityState((int)IdentityEnum.IdentiyStatus.Waiting);
                 int result = await accountTypeRespository.CreateEmployeeAccount(account, employee, identity);
                 if (result == (int)AccountEnum.CreateEditAccountResult.Success)
                 {

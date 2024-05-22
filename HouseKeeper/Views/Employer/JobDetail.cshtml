@@ -207,7 +207,15 @@
 
                             <p><i class="fa fa-angle-right text-primary me-2"></i>Age range: @Model.Recruitment.Age</p>
                             <p><i class="fa fa-angle-right text-primary me-2"></i>Experience: @Model.Recruitment.Experience.ExperienceName</p>
-                            <p><i class="fa fa-angle-right text-primary me-2"></i>Gender: @Model.Recruitment.Gender</p>
+                            @if(Model.Recruitment.Gender==null)
+                            {
+                                <p><i class="fa fa-angle-right text-primary me-2"></i>Gender: Not require</p>
+                            }
+                            else
+                            {
+                                <p><i class="fa fa-angle-right text-primary me-2"></i>Gender: @Model.Recruitment.Gender</p>
+                            }
+                            
                             <p><i class="fa fa-angle-right text-primary me-2"></i>Paid type: @Model.Recruitment.SalaryForm.SalaryFormName</p>
                             <p class="m-0"><i class="fa fa-angle-right text-primary me-2"></i>Deadline: @Model.Recruitment.RecruitDeadlineDate.ToString("dd/MM/yyyy")</p>
                         </div>
