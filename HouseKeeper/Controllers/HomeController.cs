@@ -95,12 +95,18 @@ namespace HouseKeeper.Controllers
                 TempData["Error"] = "Your email or phone number is not registered. Account does not exist";
                 return RedirectToAction("ReturnToLogin", model);
             }
+            else if (result == (int)AccountEnum.LoginResult.Locked)
+            {
+                TempData["Error"] = "Your account is locked. Please contact us for more information.";
+                return RedirectToAction("ReturnToLogin", model);
+            }
             else if(result== (int)AccountEnum.LoginResult.WrongPassword)
             {
                 TempData["Error"] = "Your password is wrong.";
                 return RedirectToAction("ReturnToLogin", model);
             }
             var loginInfor = await accountTypeRespository.GetEmployerOrEmployee(result);
+            
             HttpContext.Session.SetString("UserId", loginInfor.Id.ToString());
             string token = tokenService.GenerateToken(loginInfor.Id.ToString());
             Response.Cookies.Append("AuthToken", token, new CookieOptions

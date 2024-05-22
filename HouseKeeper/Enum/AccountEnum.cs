@@ -16,7 +16,8 @@
         {
             UserId = 0,
             PhoneAndGmailNotRegistered = -2,
-            WrongPassword = -3
+            WrongPassword = -3,
+            Locked = -4
         }
 
         public enum CreateEditAccountResult

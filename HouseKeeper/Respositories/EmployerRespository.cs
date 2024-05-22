@@ -159,7 +159,7 @@ namespace HouseKeeper.Respositories
                 packetDetail.Recruitment = recruitment;
                 packetDetail.PricePacket = await GetPricePacket(pricePacketId);
                 packetDetail.BuyDate = DateTime.Now;
-                //packetDetail.HasPaid = true;
+                packetDetail.HasPaid = true;
 
                 recruitment.Status = await GetRecruitmentStatus(1);
                 recruitment.RecruitDeadlineDate = DateTime.Now.AddDays(packetDetail.PricePacket.NumberDays);
@@ -168,7 +168,7 @@ namespace HouseKeeper.Respositories
                 LICHSUDAUGIA bidHistory = new LICHSUDAUGIA();
                 bidHistory.BuyDate = DateTime.Now;
                 bidHistory.IncreasePrice = recruitment.BidPrice;
-                //bidHistory.IsPaid = true;
+                bidHistory.IsPaid = true;
                 bidHistory.Recruitment = recruitment;
                 await dBContext.BidHistories.AddAsync(bidHistory);
                 foreach (var jobId in jobIds)

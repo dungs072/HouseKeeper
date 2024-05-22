@@ -5,6 +5,7 @@ using HouseKeeper.Models.Views;
 using HouseKeeper.Models.Views.Admin;
 using HouseKeeper.Respositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Stripe;
 using System.Drawing;
@@ -61,6 +62,11 @@ namespace HouseKeeper.Controllers
                 TempData["Error"] = "Error. Please dont intrude to other personality";
                 return RedirectToAction("Login", "Home");
             }
+            if(cityName == null || cityName.Trim().Length == 0)
+            {
+                TempData["Error"] = "Server error! City name is blank!!";
+                return RedirectToAction("ShowCities");
+            }
             var result = await adminRespository.AddCity(cityName.Trim());
             if (result)
             {
@@ -78,6 +84,11 @@ namespace HouseKeeper.Controllers
             {
                 TempData["Error"] = "Error. Please dont intrude to other personality";
                 return RedirectToAction("Login", "Home");
+            }
+            if (cityName==null||cityName.Trim().Length == 0)
+            {
+                TempData["Error"] = "Server error! City name is blank!!";
+                return RedirectToAction("ShowCities");
             }
             var result = await adminRespository.EditCity(cityId, cityName.Trim());
             if (result)
@@ -130,6 +141,11 @@ namespace HouseKeeper.Controllers
                 TempData["Error"] = "Error. Please dont intrude to other personality";
                 return RedirectToAction("Login", "Home");
             }
+            if (districtName==null||districtName.Trim().Length == 0)
+            {
+                TempData["Error"] = "Server error! District name is blank!!";
+                return RedirectToAction("ShowDistricts", new { cityId = cityId });
+            }
             var result = await adminRespository.AddDistrict(districtName.Trim(),cityId);
             if (result)
             {
@@ -147,6 +163,11 @@ namespace HouseKeeper.Controllers
             {
                 TempData["Error"] = "Error. Please dont intrude to other personality";
                 return RedirectToAction("Login", "Home");
+            }
+            if (districtName == null || districtName.Trim().Length == 0)
+            {
+                TempData["Error"] = "Server error! District name is blank!!";
+                return RedirectToAction("ShowDistricts", new { cityId = cityId });
             }
             var result = await adminRespository.EditDistrict(districtId, districtName.Trim());
             if (result)
@@ -198,6 +219,11 @@ namespace HouseKeeper.Controllers
                 TempData["Error"] = "Error. Please dont intrude to other personality";
                 return RedirectToAction("Login", "Home");
             }
+            if (jobName==null||jobName.Trim().Length == 0)
+            {
+                TempData["Error"] = "Server error! Job name is blank!!";
+                return RedirectToAction("ShowJobType");
+            }
             var result = await adminRespository.AddJobType(jobName.Trim());
             if (result)
             {
@@ -215,6 +241,11 @@ namespace HouseKeeper.Controllers
             {
                 TempData["Error"] = "Error. Please dont intrude to other personality";
                 return RedirectToAction("Login", "Home");
+            }
+            if (jobName==null||jobName.Trim().Length == 0)
+            {
+                TempData["Error"] = "Server error! Job name is blank!!";
+                return RedirectToAction("ShowJobType");
             }
             var result = await adminRespository.EditJobType(jobId, jobName.Trim());
             if(result)
@@ -266,6 +297,11 @@ namespace HouseKeeper.Controllers
                 TempData["Error"] = "Error. Please dont intrude to other personality";
                 return RedirectToAction("Login", "Home");
             }
+            if (paidTypeName==null||paidTypeName.Trim().Length == 0)
+            {
+                TempData["Error"] = "Server error! Paid Type name is blank!!";
+                return RedirectToAction("ShowPaidType");
+            }
             var result = await adminRespository.AddPaidType(paidTypeName.Trim());
             if (result)
             {
@@ -283,6 +319,11 @@ namespace HouseKeeper.Controllers
             {
                 TempData["Error"] = "Error. Please dont intrude to other personality";
                 return RedirectToAction("Login", "Home");
+            }
+            if (paidTypeName==null||paidTypeName.Trim().Length == 0)
+            {
+                TempData["Error"] = "Server error! Paid Type name is blank!!";
+                return RedirectToAction("ShowPaidType");
             }
             var result = await adminRespository.EditPaidType(paidTypeId, paidTypeName.Trim());
             if (result)
@@ -334,6 +375,11 @@ namespace HouseKeeper.Controllers
                 TempData["Error"] = "Error. Please dont intrude to other personality";
                 return RedirectToAction("Login", "Home");
             }
+            if (experienceName==null||experienceName.Trim().Length == 0)
+            {
+                TempData["Error"] = "Server error! Experience name is blank!!";
+                return RedirectToAction("ShowExperience");
+            }
             var result = await adminRespository.AddExperience(experienceName.Trim());
             if (result)
             {
@@ -351,6 +397,11 @@ namespace HouseKeeper.Controllers
             {
                 TempData["Error"] = "Error. Please dont intrude to other personality";
                 return RedirectToAction("Login", "Home");
+            }
+            if (experienceName==null||experienceName.Trim().Length == 0)
+            {
+                TempData["Error"] = "Server error! Experience name is blank!!";
+                return RedirectToAction("ShowExperience");
             }
             var result = await adminRespository.EditExperience(experienceId, experienceName.Trim());
             if (result)
@@ -402,6 +453,11 @@ namespace HouseKeeper.Controllers
                 TempData["Error"] = "Error. Please dont intrude to other personality";
                 return RedirectToAction("Login", "Home");
             }
+            if (rejectionName==null||rejectionName.Trim().Length == 0)
+            {
+                TempData["Error"] = "Server error! Rejection name is blank!!";
+                return RedirectToAction("ShowRejection");
+            }
             var result = await adminRespository.AddRejection(rejectionName.Trim());
             if (result)
             {
@@ -419,6 +475,11 @@ namespace HouseKeeper.Controllers
             {
                 TempData["Error"] = "Error. Please dont intrude to other personality";
                 return RedirectToAction("Login", "Home");
+            }
+            if (rejectionName==null||rejectionName.Trim().Length == 0)
+            {
+                TempData["Error"] = "Server error! Rejection name is blank!!";
+                return RedirectToAction("ShowRejection");
             }
             var result = await adminRespository.EditRejection(rejectionId, rejectionName.Trim());
             if (result)
@@ -470,6 +531,21 @@ namespace HouseKeeper.Controllers
                 TempData["Error"] = "Error. Please dont intrude to other personality";
                 return RedirectToAction("Login", "Home");
             }
+            if (pricePacketName.IsNullOrEmpty()||pricePacketName.Trim().Length == 0|| numberDay==0||price==Decimal.Zero)
+            {
+                TempData["Error"] = "Server error! Price packet is blank!!";
+                return RedirectToAction("ShowPricePackets");
+            }
+            if (price < 30000)
+            {
+                TempData["Error"] = "Server error! Price must be greater than 30.000 VND!!";
+                return RedirectToAction("ShowPricePackets");
+            }
+            if(numberDay<10)
+            {
+                TempData["Error"] = "Server error! Number days must be greater than 10 days!!";
+                return RedirectToAction("ShowPricePackets");
+            }
             var result = await adminRespository.AddPricePacket(pricePacketName.Trim(),price,numberDay);
             if (result)
             {
@@ -487,6 +563,21 @@ namespace HouseKeeper.Controllers
             {
                 TempData["Error"] = "Error. Please dont intrude to other personality";
                 return RedirectToAction("Login", "Home");
+            }
+            if (pricePacketName.IsNullOrEmpty() || numberDay == 0 || price == Decimal.Zero || pricePacketName.Trim().Length == 0)
+            {
+                TempData["Error"] = "Server error! Price packet is blank!!";
+                return RedirectToAction("ShowPricePackets");
+            }
+            if (price < 30000)
+            {
+                TempData["Error"] = "Server error! Price must greater than 30.000 VND!!";
+                return RedirectToAction("ShowPricePackets");
+            }
+            if (numberDay < 10)
+            {
+                TempData["Error"] = "Server error! Number days must be greater than 10 days!!";
+                return RedirectToAction("ShowPricePackets");
             }
             var result = await adminRespository.EditPricePacket(pricePacketId,pricePacketName.Trim(), price, numberDay);
             if (result)

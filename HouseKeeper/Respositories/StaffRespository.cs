@@ -59,6 +59,7 @@ namespace HouseKeeper.Respositories
                 {
                     recruitment.RecruitDeadlineDate = recruitment.RecruitDeadlineDate.AddDays(pricePacket.PricePacket.NumberDays);
                 }
+                dBContext.Recruitments.Update(recruitment);
                 await dBContext.SaveChangesAsync();
                 transaction.Commit();
                 return StaffEnum.ModerationStatus.OK;

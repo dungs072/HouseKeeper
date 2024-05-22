@@ -38,7 +38,11 @@ namespace HouseKeeper.Respositories
             if(accounts.Count>0)
             {
                 var hashPassword = HashPassword(model.Password);
-                if (accounts[0].Password.Trim()==hashPassword)
+                if (!accounts[0].Status)
+                {
+                    return (int)AccountEnum.LoginResult.Locked;
+                }
+                else if (accounts[0].Password.Trim()==hashPassword)
                 {
                     return accounts[0].AccountID;
                 }
