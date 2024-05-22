@@ -1,4 +1,5 @@
-﻿using HouseKeeper.Enum;
+﻿using HouseKeeper.Configs;
+using HouseKeeper.Enum;
 using HouseKeeper.IServices;
 using HouseKeeper.Models.DB;
 using HouseKeeper.Models.Views;
@@ -64,7 +65,7 @@ namespace HouseKeeper.Controllers
 
             if (status == StaffEnum.ModerationStatus.NotFound)
             {
-                TempData["Error"] = Configs.ModerationConfig.NotFoundNotification;
+                TempData["Error"] = Configs.ModerationConfig.RecruimentNotFoundNotification;
                 return RedirectToAction("ShowRecruitmentAreHandled", model.StaffId);
             }
 
@@ -76,7 +77,7 @@ namespace HouseKeeper.Controllers
 
             if (status == StaffEnum.ModerationStatus.IsHandledByOther)
             {
-                TempData["Error"] = Configs.ModerationConfig.HandledByOtherNotification;
+                TempData["Error"] = Configs.ModerationConfig.RecruitmentHandledByOtherNotification;
                 return RedirectToAction("ShowRecruitmentAreHandled", model.StaffId);
             }
             model.Recruitment = result.Item2;
@@ -146,7 +147,7 @@ namespace HouseKeeper.Controllers
             int staffId = int.Parse(HttpContext.Session.GetString("UserId"));
             if (result == StaffEnum.ModerationStatus.NotFound)
             {
-                TempData["Error"] = Configs.ModerationConfig.NotFoundNotification;
+                TempData["Error"] = Configs.ModerationConfig.RecruimentNotFoundNotification;
                 return RedirectToAction("ShowRecruitmentAreHandled", staffId);
             }
             if (result == StaffEnum.ModerationStatus.ServerError)
@@ -155,7 +156,7 @@ namespace HouseKeeper.Controllers
                 return RedirectToAction("ShowRecruitmentDetail", model.RecruitmentId);
             }
 
-            TempData["Success"] = Configs.ModerationConfig.EditSuccessNotification(model.RecruitmentId);
+            TempData["Success"] = Configs.ModerationConfig.EditRecruitmentSuccessNotification(model.RecruitmentId);
             return RedirectToAction("ShowRecruitmentAreHandled", staffId);
         }
 
@@ -166,7 +167,7 @@ namespace HouseKeeper.Controllers
             var result = await staffRespository.RejectRecruitment(model);
             if (result == StaffEnum.ModerationStatus.NotFound)
             {
-                TempData["Error"] = Configs.ModerationConfig.NotFoundNotification;
+                TempData["Error"] = Configs.ModerationConfig.RecruimentNotFoundNotification;
                 return RedirectToAction("ShowRecruitmentAreHandled", model.StaffId);
             }
             if (result == StaffEnum.ModerationStatus.ServerError)
@@ -174,7 +175,7 @@ namespace HouseKeeper.Controllers
                 TempData["Error"] = Configs.ModerationConfig.ServerErrorNotification;
                 return RedirectToAction("ShowRecruitmentDetail", model.RecruitmentId);
             }
-            TempData["Success"] = Configs.ModerationConfig.RejectSuccessNotification(model.RecruitmentId);
+            TempData["Success"] = Configs.ModerationConfig.RejectRecruitmentSuccessNotification(model.RecruitmentId);
             return RedirectToAction("ShowRecruitmentAreHandled", model.StaffId);
         }
 
@@ -185,7 +186,7 @@ namespace HouseKeeper.Controllers
             int staffId = int.Parse(HttpContext.Session.GetString("UserId"));
             if (result == StaffEnum.ModerationStatus.NotFound)
             {
-                TempData["Error"] = Configs.ModerationConfig.NotFoundNotification;
+                TempData["Error"] = Configs.ModerationConfig.RecruimentNotFoundNotification;
                 return RedirectToAction("ShowRecruitmentAreHandled", staffId);
             }
             if (result == StaffEnum.ModerationStatus.ServerError)
@@ -193,7 +194,7 @@ namespace HouseKeeper.Controllers
                 TempData["Error"] = Configs.ModerationConfig.ServerErrorNotification;
                 return RedirectToAction("ShowRecruitmentDetail", recruitmentId);
             }
-            TempData["Success"] = Configs.ModerationConfig.AcceptSuccessNotification(recruitmentId);
+            TempData["Success"] = Configs.ModerationConfig.ApproveRecruitmentSuccessNotification(recruitmentId);
             return RedirectToAction("ShowRecruitmentAreHandled", staffId);
         }
 
@@ -264,12 +265,12 @@ namespace HouseKeeper.Controllers
             bool result = await staffRespository.ApproveEmployer(employerId);
             if(result)
             {
-                TempData["Success"] = "Approve employer successfully!";
+                TempData["Success"] = ModerationConfig.ApproveEmployerSuccessNotification(employerId);
                 return RedirectToAction("ShowListEmployers");
             }
             else
             {
-                TempData["Error"] = "Approve employer failed!";
+                TempData["Error"] = ModerationConfig.ServerErrorNotification;
                 return RedirectToAction("ShowEmployerDetail", employerId);
             }
             
@@ -281,12 +282,12 @@ namespace HouseKeeper.Controllers
             bool result = await staffRespository.DisapproveEmployer(model);
             if (result)
             {
-                TempData["Success"] = "Approve employer successfully!";
+                TempData["Success"] = ModerationConfig.DisapproveEmployerSuccessNotification(model.Employer.EmployerId);
                 return RedirectToAction("ShowListEmployers");
             }
             else
             {
-                TempData["Error"] = "Approve employer failed!";
+                TempData["Error"] = ModerationConfig.ServerErrorNotification;
                 return RedirectToAction("ShowEmployerDetail", model.Employer.EmployerId);
             }
         }
@@ -314,12 +315,12 @@ namespace HouseKeeper.Controllers
             bool result = await staffRespository.ApproveEmployee(employeeId);
             if (result)
             {
-                TempData["Success"] = "Approve employee successfully!";
+                TempData["Success"] = ModerationConfig.ApproveEmployeeSuccessNotification(employeeId);
                 return RedirectToAction("ShowListEmployees");
             }
             else
             {
-                TempData["Error"] = "Approve employee failed!";
+                TempData["Error"] = ModerationConfig.ServerErrorNotification;
                 return RedirectToAction("ShowEmployeeDetail", employeeId);
             }
 
@@ -331,12 +332,12 @@ namespace HouseKeeper.Controllers
             bool result = await staffRespository.DisapproveEmployee(model);
             if (result)
             {
-                TempData["Success"] = "Approve employee successfully!";
+                TempData["Success"] = ModerationConfig.DisapproveEmployeeSuccessNotification(model.Employee.EmployeeId);
                 return RedirectToAction("ShowListEmployees");
             }
             else
             {
-                TempData["Error"] = "Approve employee failed!";
+                TempData["Error"] = ModerationConfig.ServerErrorNotification;
                 return RedirectToAction("ShowEmployeeDetail", model.Employee.EmployeeId);
             }
         }

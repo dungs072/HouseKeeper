@@ -106,7 +106,7 @@
                     </svg>
                     Edit your profile
                 </h1>
-                <form asp-action="DisapproveEmployee" method="post" enctype="multipart/form-data" class="pt-1">
+                <form id="form" asp-action="DisapproveEmployee" method="post" enctype="multipart/form-data" class="pt-1">
                     <input type="hidden" asp-for="@Model.Employee.EmployeeId" />
                     <div class="nice-form-group">
                         <label>Full Name</label>
@@ -145,19 +145,67 @@
                     @if (Model.Employee.IdentityState.IdentityStateId == 1)
                     {
                         <div class="button-form-group">
-                            <a href="ApproveEmployee?employeeId=@Model.Employee.EmployeeId" type="submit" class="btn btn-success">Approve</a>
+                            <button id="approve-btn" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#approvalConfirmationModal">Approve</button>
                             <div class="nice-form-group">
                                 <label for="disapprovalReasonTextarea" class="form-label">Disapproval Reason</label>
                                 <textarea asp-for="@Model.DisapprovalReason" class="form-control" id="disapprovalReasonTextarea" placeholder="Type Disapproval Reason..." rows="3"></textarea>
                             </div>
-                            <button id="disapprove-btn" type="submit" class="btn btn-danger">Disapprove</button>
+                            <button id="disapprove-btn" type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#disapprovalConfirmationModal">Disapprove</button>
                         </div>
                     }
                 </form>
             </section>
+
+            <!-- Modal Confirmation for Approval -->
+            <div class="modal fade" id="approvalConfirmationModal" tabindex="-1" aria-labelledby="approvalConfirmationModalLabel" aria-hidden="true">
+                <div class="modal-dialog ">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="approvalConfirmationModalLabel">Confirmation</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure to Approve?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancel</button>
+                            <a id="confirmApprove" class="btn btn-danger" href="ApproveEmployee?employeeId=@Model.Employee.EmployeeId">Approve</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Confirmation for Disapproval -->
+            <div class="modal fade" id="disapprovalConfirmationModal" tabindex="-1" aria-labelledby="disapprovalConfirmationModalLabel" aria-hidden="true">
+                <div class="modal-dialog ">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="disapprovalConfirmationModalLabel">Confirmation</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure to Disapprove?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancel</button>
+                            <a id="confirmDisapprove" class="btn btn-danger">Disapprove</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <footer>Easy-Fast-Afordable</footer>
         </main>
     </div>
+
+    <script>
+        $('#confirmApprove').on('click', function () {
+            $('#approve-btn').submit();
+        });
+        $('#confirmDisapprove').on('click', function () {
+            $('#form').submit();
+        });
+    </script>
 </body>
 </html>
 

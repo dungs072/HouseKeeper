@@ -182,21 +182,21 @@ namespace HouseKeeper.Controllers
                 employer.IdentityState = await accountTypeRespository.GetIdentityState((int)IdentityEnum.IdentiyStatus.Waiting);
                 int result = await accountTypeRespository.CreateEmployerAccount(account, employer, identity);
                
-                if (result == (int)AccountEnum.CreateAccountResult.Success)
+                if (result == (int)AccountEnum.CreateEditAccountResult.Success)
                 {
                     TempData["Success"] = "Create new account successfully.";
                 }
-                else if(result == (int)AccountEnum.CreateAccountResult.PhoneDuplicated)
+                else if(result == (int)AccountEnum.CreateEditAccountResult.PhoneDuplicated)
                 {
                     TempData["Error"] = "Phone number is duplicated.";
                     return RedirectToAction("ReturnToSignUp", model);
                 }
-                else if(result == (int)AccountEnum.CreateAccountResult.GmailDuplicated)
+                else if(result == (int)AccountEnum.CreateEditAccountResult.GmailDuplicated)
                 {
                     TempData["Error"] = "Gmail is duplicated.";
                     return RedirectToAction("ReturnToSignUp", model);
                 }
-                else if (result == (int)AccountEnum.CreateAccountResult.ServerError)
+                else if (result == (int)AccountEnum.CreateEditAccountResult.ServerError)
                 {
                     TempData["Error"] = "Server error.";
                     return RedirectToAction("ReturnToSignUp", model);
@@ -226,21 +226,21 @@ namespace HouseKeeper.Controllers
                 employee.Identity = identity;
 
                 int result = await accountTypeRespository.CreateEmployeeAccount(account, employee, identity);
-                if (result == (int)AccountEnum.CreateAccountResult.Success)
+                if (result == (int)AccountEnum.CreateEditAccountResult.Success)
                 {
                     TempData["Success"] = "Create new account successfully.";
                 }
-                else if (result == (int)AccountEnum.CreateAccountResult.PhoneDuplicated)
+                else if (result == (int)AccountEnum.CreateEditAccountResult.PhoneDuplicated)
                 {
                     TempData["Error"] = "Phone number is duplicated.";
                     return RedirectToAction("ReturnToSignUp", model);
                 }
-                else if (result == (int)AccountEnum.CreateAccountResult.GmailDuplicated)
+                else if (result == (int)AccountEnum.CreateEditAccountResult.GmailDuplicated)
                 {
                     TempData["Error"] = "Gmail is duplicated.";
                     return RedirectToAction("ReturnToSignUp", model);
                 }
-                else if (result == (int)AccountEnum.CreateAccountResult.ServerError)
+                else if (result == (int)AccountEnum.CreateEditAccountResult.ServerError)
                 {
                     TempData["Error"] = "Server error.";
                     return RedirectToAction("ReturnToSignUp", model);

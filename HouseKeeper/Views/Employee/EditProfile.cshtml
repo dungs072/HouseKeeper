@@ -100,6 +100,7 @@
                 <form asp-action="EditProfile" method="post" enctype="multipart/form-data" class="pt-1">
                     <div class="nice-form-group">
                         <label>Avatar</label>
+                        <input asp-for="@Model.Employee.Account.AvatarUrl" hidden />
                         <img id="avatarImage" width="225" height="225" src=@Model.Employee.Account.AvatarUrl alt="Avatar" />
                         <input id="avatarImageButton" name="avatarImage" class="form-control" type="file" accept="image/*" />
                     </div>
@@ -109,6 +110,7 @@
                         <input asp-for="@Model.Employee.FirstName" type="text" placeholder="First Name"
                                pattern="[A-Za-z]+" title="First name contains letters only" maxlength="20"
                             value=@Model.Employee.FirstName required />
+                        
                     </div>
 
                     <div class="nice-form-group">
@@ -182,6 +184,7 @@
 
                     <div class="nice-form-group">
                         <label>Front Identity Image</label>
+                        <input asp-for="@Model.Employee.Identity.FrontImage" hidden />
                         <img id="frontImage" width="70%" height="360" src="@Model.Employee.Identity.FrontImage" alt="Front Id Card" />
                         @if (Model.isIdentityApproved == 0)
                         {
@@ -191,6 +194,7 @@
 
                     <div class="nice-form-group">
                         <label>Back Identity Image</label>
+                        <input asp-for="@Model.Employee.Identity.BackImage" hidden />
                         <img id="backImage" width="70%" height="360" src="@Model.Employee.Identity.BackImage" alt="Back Id Card" />
                         @if (Model.isIdentityApproved == 0)
                         {
@@ -310,6 +314,7 @@
 
             $('#districtSelect').val(districtId);
             districtSelect.dispatchEvent(new Event('change'));
+
         });
     </script>
 </body>

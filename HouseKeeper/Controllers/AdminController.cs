@@ -434,30 +434,30 @@ namespace HouseKeeper.Controllers
         public async Task<IActionResult> AddStaff(StaffProfileViewModel model, IFormFile frontImage, IFormFile backImage)
         {
             var result = await adminRespository.AddStaff(model, frontImage, backImage, staffAccountType);
-            if (result == AccountEnum.CreateAccountResult.Success)
+            if (result == AccountEnum.CreateEditAccountResult.Success)
             {
-                TempData["Success"] = CreateAccountConfig.AddStaffSuccess;
+                TempData["Success"] = CreateEditAccountConfig.AddStaffSuccess;
                 return RedirectToAction("ShowStaffs");
             }
             switch (result)
             {
-                case AccountEnum.CreateAccountResult.PhoneDuplicated:
-                    TempData["Error"] = CreateAccountConfig.PhoneDuplicated;
+                case AccountEnum.CreateEditAccountResult.PhoneDuplicated:
+                    TempData["Error"] = CreateEditAccountConfig.PhoneDuplicated;
                     break;
-                case AccountEnum.CreateAccountResult.GmailDuplicated:
-                    TempData["Error"] = CreateAccountConfig.GmailDuplicated;
+                case AccountEnum.CreateEditAccountResult.GmailDuplicated:
+                    TempData["Error"] = CreateEditAccountConfig.GmailDuplicated;
                     break;
-                case AccountEnum.CreateAccountResult.CitizenNumberDuplicated:
-                    TempData["Error"] = CreateAccountConfig.CitizenNumberDuplicated;
+                case AccountEnum.CreateEditAccountResult.CitizenNumberDuplicated:
+                    TempData["Error"] = CreateEditAccountConfig.CitizenNumberDuplicated;
                     break;
-                case AccountEnum.CreateAccountResult.ServerError:
-                    TempData["Error"] = CreateAccountConfig.ServerError;
+                case AccountEnum.CreateEditAccountResult.ServerError:
+                    TempData["Error"] = CreateEditAccountConfig.ServerError;
                     break;
-                case AccountEnum.CreateAccountResult.FrontImageError:
-                    TempData["Error"] = CreateAccountConfig.FrontImageError;
+                case AccountEnum.CreateEditAccountResult.FrontImageError:
+                    TempData["Error"] = CreateEditAccountConfig.FrontImageError;
                     break;
-                case AccountEnum.CreateAccountResult.BackImageError:
-                    TempData["Error"] = CreateAccountConfig.BackImageError;
+                case AccountEnum.CreateEditAccountResult.BackImageError:
+                    TempData["Error"] = CreateEditAccountConfig.BackImageError;
                     break;
             }
             model.Staff.Identity.FrontImage = Configs.DefaultImageUrlConfig.FrontImage;
@@ -486,30 +486,30 @@ namespace HouseKeeper.Controllers
         {
             var result = await adminRespository.EditStaff(model, frontImage, backImage, staffAccountType);
             
-            if (result == AccountEnum.CreateAccountResult.Success)
+            if (result == AccountEnum.CreateEditAccountResult.Success)
             {
-                TempData["Success"] = CreateAccountConfig.EditStaffSuccess;
+                TempData["Success"] = CreateEditAccountConfig.EditStaffSuccess;
                 return RedirectToAction("ShowStaffs");
             }
             switch (result)
             {
-                case AccountEnum.CreateAccountResult.PhoneDuplicated:
-                    TempData["Error"] = CreateAccountConfig.PhoneDuplicated;
+                case AccountEnum.CreateEditAccountResult.PhoneDuplicated:
+                    TempData["Error"] = CreateEditAccountConfig.PhoneDuplicated;
                     break;
-                case AccountEnum.CreateAccountResult.GmailDuplicated:
-                    TempData["Error"] = CreateAccountConfig.GmailDuplicated;
+                case AccountEnum.CreateEditAccountResult.GmailDuplicated:
+                    TempData["Error"] = CreateEditAccountConfig.GmailDuplicated;
                     break;
-                case AccountEnum.CreateAccountResult.CitizenNumberDuplicated:
-                    TempData["Error"] = CreateAccountConfig.CitizenNumberDuplicated;
+                case AccountEnum.CreateEditAccountResult.CitizenNumberDuplicated:
+                    TempData["Error"] = CreateEditAccountConfig.CitizenNumberDuplicated;
                     break;
-                case AccountEnum.CreateAccountResult.ServerError:
-                    TempData["Error"] = CreateAccountConfig.ServerError;
+                case AccountEnum.CreateEditAccountResult.ServerError:
+                    TempData["Error"] = CreateEditAccountConfig.ServerError;
                     break;
-                case AccountEnum.CreateAccountResult.FrontImageError:
-                    TempData["Error"] = CreateAccountConfig.FrontImageError;
+                case AccountEnum.CreateEditAccountResult.FrontImageError:
+                    TempData["Error"] = CreateEditAccountConfig.FrontImageError;
                     break;
-                case AccountEnum.CreateAccountResult.BackImageError:
-                    TempData["Error"] = CreateAccountConfig.BackImageError;
+                case AccountEnum.CreateEditAccountResult.BackImageError:
+                    TempData["Error"] = CreateEditAccountConfig.BackImageError;
                     break;
             }
             model.Staff.Identity.FrontImage = Configs.DefaultImageUrlConfig.FrontImage;

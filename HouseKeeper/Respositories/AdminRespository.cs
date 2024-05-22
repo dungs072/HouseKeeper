@@ -483,36 +483,36 @@ namespace HouseKeeper.Respositories
         }
 
 
-        public async Task<AccountEnum.CreateAccountResult> AddStaff(StaffProfileViewModel model, IFormFile frontImage, IFormFile backImage, AccountEnum.AccountType staffAccountType)
+        public async Task<AccountEnum.CreateEditAccountResult> AddStaff(StaffProfileViewModel model, IFormFile frontImage, IFormFile backImage, AccountEnum.AccountType staffAccountType)
         {
             using var transaction = await dBContext.Database.BeginTransactionAsync();
             try
             {
                 if (await dBContext.Accounts.AnyAsync(a => a.PhoneNumber == model.Staff.Account.PhoneNumber)) 
                 {
-                    return AccountEnum.CreateAccountResult.PhoneDuplicated;
+                    return AccountEnum.CreateEditAccountResult.PhoneDuplicated;
                 }
 
                 if (await dBContext.Accounts.AnyAsync(a => a.Gmail == model.Staff.Account.Gmail))
                 {
-                    return AccountEnum.CreateAccountResult.GmailDuplicated;
+                    return AccountEnum.CreateEditAccountResult.GmailDuplicated;
                 }
 
                 if (await dBContext.Identity.AnyAsync(i => i.CitizenNumber == model.Staff.Identity.CitizenNumber))
                 {
-                    return AccountEnum.CreateAccountResult.CitizenNumberDuplicated;
+                    return AccountEnum.CreateEditAccountResult.CitizenNumberDuplicated;
                 }
 
                 var tempFrontImage = await firebaseService.UploadImage(frontImage, staffAccountType, ImageEnum.ImageType.Identity);
                 if (tempFrontImage == null)
                 {
-                    return AccountEnum.CreateAccountResult.FrontImageError;
+                    return AccountEnum.CreateEditAccountResult.FrontImageError;
                 }
 
                 var tempBackImage = await firebaseService.UploadImage(backImage, staffAccountType, ImageEnum.ImageType.Identity);
                 if (tempBackImage == null)
                 {
-                    return AccountEnum.CreateAccountResult.BackImageError;
+                    return AccountEnum.CreateEditAccountResult.BackImageError;
                 }
 
                 NHANVIEN staff = new();
@@ -539,14 +539,14 @@ namespace HouseKeeper.Respositories
                 await dBContext.Staffs.AddAsync(staff);
                 await dBContext.SaveChangesAsync();
                 transaction.Commit();
-                return AccountEnum.CreateAccountResult.Success;
+                return AccountEnum.CreateEditAccountResult.Success;
             }
             catch (Exception ex)
             {
-                return AccountEnum.CreateAccountResult.ServerError;
+                return AccountEnum.CreateEditAccountResult.ServerError;
             }
         }
-        public async Task<AccountEnum.CreateAccountResult> EditStaff(StaffProfileViewModel model, IFormFile frontImage, IFormFile backImage, AccountEnum.AccountType staffAccountType)
+        public async Task<AccountEnum.CreateEditAccountResult> EditStaff(StaffProfileViewModel model, IFormFile frontImage, IFormFile backImage, AccountEnum.AccountType staffAccountType)
         {
             using var transaction = await dBContext.Database.BeginTransactionAsync();
             try
@@ -560,28 +560,28 @@ namespace HouseKeeper.Respositories
 
                 if (accountWithPhone != null && accountWithPhone.AccountID != staff.Account.AccountID)
                 {
-                    return AccountEnum.CreateAccountResult.PhoneDuplicated;
+                    return AccountEnum.CreateEditAccountResult.PhoneDuplicated;
                 }
 
                 if (accountWithGmail != null && accountWithGmail.AccountID != staff.Account.AccountID)
                 {
-                    return AccountEnum.CreateAccountResult.GmailDuplicated;
+                    return AccountEnum.CreateEditAccountResult.GmailDuplicated;
                 }
 
                 if (identityWithCitizenNumber != null && identityWithCitizenNumber.CitizenId != staff.Identity.CitizenId)
                 {
-                    return AccountEnum.CreateAccountResult.CitizenNumberDuplicated;
+                    return AccountEnum.CreateEditAccountResult.CitizenNumberDuplicated;
                 }
                 var tempFrontImage = await firebaseService.UploadImage(frontImage, staffAccountType, ImageEnum.ImageType.Identity);
                 if (frontImage != null && tempFrontImage == null)
                 {
-                    return AccountEnum.CreateAccountResult.FrontImageError;
+                    return AccountEnum.CreateEditAccountResult.FrontImageError;
                 }
 
                 var tempBackImage = await firebaseService.UploadImage(backImage, staffAccountType, ImageEnum.ImageType.Identity);
                 if (backImage != null && tempBackImage == null)
                 {
-                    return AccountEnum.CreateAccountResult.BackImageError;
+                    return AccountEnum.CreateEditAccountResult.BackImageError;
                 }
 
                 staff.FirstName = model.Staff.FirstName;
@@ -597,11 +597,11 @@ namespace HouseKeeper.Respositories
                 dBContext.Staffs.Update(staff);
                 await dBContext.SaveChangesAsync();
                 transaction.Commit();
-                return AccountEnum.CreateAccountResult.Success;
+                return AccountEnum.CreateEditAccountResult.Success;
             }
             catch (Exception ex)
             {
-                return AccountEnum.CreateAccountResult.ServerError;
+                return AccountEnum.CreateEditAccountResult.ServerError;
             }
 
         }

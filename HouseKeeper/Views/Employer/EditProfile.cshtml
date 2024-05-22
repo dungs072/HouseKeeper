@@ -96,6 +96,7 @@
                 <form asp-action="EditProfile" method="post" enctype="multipart/form-data" class="pt-1">
                     <div class="nice-form-group">
                         <label>Avatar</label>
+                        <input asp-for="@Model.Employer.Account.AvatarUrl" hidden />
                         <img id="avatarImage" width="225" height="225" src=@Model.Employer.Account.AvatarUrl alt="Avatar" />
                         <input id="avatarImageButton" name="avatarImage" class="form-control" type="file" accept="image/*" />
                     </div>
@@ -150,18 +151,19 @@
 
                     <div class="nice-form-group">
                         <label>Addess</label>
-                        <input asp-for="@Model.Employer.Address" type="text" placeholder="Type Address" value=@Model.Employer.Address required />
+                        <input asp-for="@Model.Employer.Address" type="text" placeholder="Address" value=@Model.Employer.Address required />
                     </div>
 
                     <div class="nice-form-group">
-                        <label>Identity Number</label>
-                        <input id="citizenNumberInput" asp-for="@Model.Employer.Identity.CitizenNumber" type="text" placeholder="Type Address"
+                        <label>Citizen Number</label>
+                        <input id="citizenNumberInput" asp-for="@Model.Employer.Identity.CitizenNumber" type="text" placeholder="Citizen Number"
                                pattern="[0][0-9]{11}" title="Please enter the right citizen number format in VietNam"  minLength="12" maxlength="12"
                             value=@Model.Employer.Identity.CitizenNumber required />
                     </div>
 
                     <div class="nice-form-group">
                         <label>Front Identity Image</label>
+                        <input asp-for="@Model.Employer.Identity.FrontImage" hidden />
                         <img id="frontImage" width="70%" height="360" src="@Model.Employer.Identity.FrontImage" alt="Front Id Card" />
                         @if(Model.isIdentityApproved == 0)
                         {
@@ -171,6 +173,7 @@
 
                     <div class="nice-form-group">
                         <label>Back Identity Image</label>
+                        <input asp-for="@Model.Employer.Identity.BackImage" hidden />
                         <img id="backImage" width="70%" height="360" src="@Model.Employer.Identity.BackImage" alt="Back Id Card" />
                         @if (Model.isIdentityApproved == 0)
                         {
@@ -181,9 +184,8 @@
 
                     <div class="mt-2 button-container">
                         <a href="@Url.Action("Profile", "Employer")" class="btn btn-danger">Cancel</a>
-                        <button type="submit" class="btn btn-success">Update</button>
+                        <button type="submit" class="btn btn-success">Edit</button>
                     </div>
-
                 </form>
             </section>
             <footer>Easy-Fast-Afordable</footer>

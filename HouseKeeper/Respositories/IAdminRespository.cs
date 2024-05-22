@@ -50,8 +50,8 @@ namespace HouseKeeper.Respositories
         Task<List<NHANVIEN>> GetStaffs(string queryInput);
         Task<NHANVIEN> GetStaffProfile(int staffId);
         Task<bool> ToggleStaffAccount(int staffId, bool status);
-        Task<AccountEnum.CreateAccountResult> AddStaff(StaffProfileViewModel model, IFormFile frontImage, IFormFile backImage, AccountEnum.AccountType staffAccountType);
-        Task<AccountEnum.CreateAccountResult> EditStaff(StaffProfileViewModel model, IFormFile frontImage, IFormFile backImage, AccountEnum.AccountType staffAccountType);
+        Task<AccountEnum.CreateEditAccountResult> AddStaff(StaffProfileViewModel model, IFormFile frontImage, IFormFile backImage, AccountEnum.AccountType staffAccountType);
+        Task<AccountEnum.CreateEditAccountResult> EditStaff(StaffProfileViewModel model, IFormFile frontImage, IFormFile backImage, AccountEnum.AccountType staffAccountType);
         //Employer
         Task<List<NGUOITHUE>> GetEmployers(string queryInput);
         Task<bool> ToggleEmployerAccount(int employerId, bool status);

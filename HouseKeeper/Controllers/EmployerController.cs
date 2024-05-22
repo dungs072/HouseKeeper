@@ -705,16 +705,39 @@ namespace HouseKeeper.Controllers
             int.TryParse(HttpContext.Session.GetString("UserId"), out int employerId);
             model.Employer.EmployerId = employerId;
             var result = await employerRespository.EditEmployerProfile(model, employerId, avatarImage, frontImage, backImage, accountType);
-            if (result)
+
+            if (result == AccountEnum.CreateEditAccountResult.Success)
             {
-                TempData["Success"] = "Update profile successfully!";
+                TempData["Success"] = CreateEditAccountConfig.EditProfileSuccess;
                 return RedirectToAction("Profile");
             }
-            else
+            switch (result)
             {
-                TempData["Error"] = "Server error!";
-                return RedirectToAction("EditProfile");
+                case AccountEnum.CreateEditAccountResult.PhoneDuplicated:
+                    TempData["Error"] = CreateEditAccountConfig.PhoneDuplicated;
+                    break;
+                case AccountEnum.CreateEditAccountResult.GmailDuplicated:
+                    TempData["Error"] = CreateEditAccountConfig.GmailDuplicated;
+                    break;
+                case AccountEnum.CreateEditAccountResult.CitizenNumberDuplicated:
+                    TempData["Error"] = CreateEditAccountConfig.CitizenNumberDuplicated;
+                    break;
+                case AccountEnum.CreateEditAccountResult.ServerError:
+                    TempData["Error"] = CreateEditAccountConfig.ServerError;
+                    break;
+                case AccountEnum.CreateEditAccountResult.FrontImageError:
+                    TempData["Error"] = CreateEditAccountConfig.FrontImageError;
+                    break;
+                case AccountEnum.CreateEditAccountResult.BackImageError:
+                    TempData["Error"] = CreateEditAccountConfig.BackImageError;
+                    break;
             }
+
+            model.Cities = await employerRespository.GetCities();
+            model.Districts = await employerRespository.GetDistricts();
+            var district = await employerRespository.GetDistrict(model.Employer.District.DistrictId);
+            model.Employer.District.City = await employerRespository.GetCity(district.City.CityId);
+            return View(model);
         }
         public async Task<IActionResult> ShowSuitableCandidates()
         {

@@ -73,9 +73,20 @@ namespace HouseKeeper.Respositories
         {
             return await dBContext.Cities.ToListAsync();
         }
+
+        public async Task<HUYEN> GetDistrict(int districtId)
+        {
+            return await dBContext.Districts.FindAsync(districtId);
+        }
+
         public async Task<List<HUYEN>> GetDistricts()
         {
             return await dBContext.Districts.ToListAsync();
+        }
+
+        public async Task<TINHTHANHPHO> GetCity(int cityId)
+        {
+            return await dBContext.Cities.FindAsync(cityId);
         }
         public async Task<CHITIETAPPLY> GetApplyDetail(int recruitmentId, int employeeId)
         {
@@ -254,7 +265,7 @@ namespace HouseKeeper.Respositories
                 return false;
             }
         }
-        public async Task<bool> EditEmployeeProfile(EditEmployeeProfileViewModel model, int employeeId, IFormFile avatarImage, IFormFile frontImage, IFormFile backImage, AccountEnum.AccountType accountType)
+        public async Task<AccountEnum.CreateEditAccountResult> EditEmployeeProfile(EditEmployeeProfileViewModel model, int employeeId, IFormFile avatarImage, IFormFile frontImage, IFormFile backImage, AccountEnum.AccountType accountType)
         {
             using var transaction = await dBContext.Database.BeginTransactionAsync();
             try
@@ -263,17 +274,27 @@ namespace HouseKeeper.Respositories
 
                 if (employee == null)
                 {
-                    return false;
+                    return AccountEnum.CreateEditAccountResult.NotFound;
                 }
-                if(model.Employee.Account.Gmail!=null)
+                var accountWithPhone = await dBContext.Accounts.FirstOrDefaultAsync(a => a.PhoneNumber == model.Employee.Account.PhoneNumber);
+                var accountWithGmail = await dBContext.Accounts.FirstOrDefaultAsync(a => a.Gmail == model.Employee.Account.Gmail);
+                var identityWithCitizenNumber = await dBContext.Identity.FirstOrDefaultAsync(i => i.CitizenNumber == model.Employee.Identity.CitizenNumber);
+
+                if (accountWithPhone != null && accountWithPhone.AccountID != employee.Account.AccountID)
                 {
-                    var e = await dBContext.Accounts.FirstOrDefaultAsync(a => a.AccountID != employee.Account.AccountID && a.Gmail == model.Employee.Account.Gmail);
-                    if (e != null)
-                    {
-                        return false;
-                    }
+                    return AccountEnum.CreateEditAccountResult.PhoneDuplicated;
                 }
-               
+
+                if (accountWithGmail != null && accountWithGmail.AccountID != employee.Account.AccountID)
+                {
+                    return AccountEnum.CreateEditAccountResult.GmailDuplicated;
+                }
+
+                if (identityWithCitizenNumber != null && identityWithCitizenNumber.CitizenId != employee.Identity.CitizenId)
+                {
+                    return AccountEnum.CreateEditAccountResult.CitizenNumberDuplicated;
+                }
+
 
                 employee.FirstName = model.Employee.FirstName;
                 employee.LastName = model.Employee.LastName;
@@ -303,12 +324,12 @@ namespace HouseKeeper.Respositories
 
                 await dBContext.SaveChangesAsync();
                 transaction.Commit();
-                return true;
+                return AccountEnum.CreateEditAccountResult.Success;
             }
             catch (Exception ex)
             {
                 transaction.Rollback();
-                return false;
+                return AccountEnum.CreateEditAccountResult.ServerError;
             }
         }
         public async Task<JobProposalViewModel> GetJobProposals(int employeeId)

@@ -35,7 +35,7 @@ namespace HouseKeeper.Respositories
         Task<bool> UnHideRecruitment(int recruitmentId);
         Task<bool> AddBidPrice(int recruitmentId, decimal price);
         Task<bool> ExtendDeadLine(int recruitmentId, int pricePacketId);
-        Task<bool> EditEmployerProfile(EditEmployerProfileViewModel model, int employerId, IFormFile avatarImage, IFormFile frontImage, IFormFile backImage, AccountEnum.AccountType accountType);
+        Task<AccountEnum.CreateEditAccountResult> EditEmployerProfile(EditEmployerProfileViewModel model, int employerId, IFormFile avatarImage, IFormFile frontImage, IFormFile backImage, AccountEnum.AccountType accountType);
 
 
         Task<ListCandidatesViewModel> GetSuitableCandidates(int employerId);

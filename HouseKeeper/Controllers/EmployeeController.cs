@@ -7,6 +7,7 @@ using static HouseKeeper.Enum.AccountEnum;
 using HouseKeeper.Models.Views;
 using HouseKeeper.IServices;
 using System.Runtime.InteropServices;
+using HouseKeeper.Configs;
 
 
 namespace HouseKeeper.Controllers
@@ -197,16 +198,38 @@ namespace HouseKeeper.Controllers
             model.Employee.EmployeeId = employeeId;
 
             var result = await employeeRespository.EditEmployeeProfile(model, employeeId, avatarImage, frontImage, backImage, accountType);
-            if (result)
+            if (result == AccountEnum.CreateEditAccountResult.Success)
             {
-                TempData["Success"] = "Edit profile successfully";
+                TempData["Success"] = CreateEditAccountConfig.EditProfileSuccess;
                 return RedirectToAction("Profile");
             }
-            else
+            switch (result)
             {
-                TempData["Error"] = "Server error!!!. Edit profile failed";
-                return RedirectToAction("EditProfile");
+                case AccountEnum.CreateEditAccountResult.PhoneDuplicated:
+                    TempData["Error"] = CreateEditAccountConfig.PhoneDuplicated;
+                    break;
+                case AccountEnum.CreateEditAccountResult.GmailDuplicated:
+                    TempData["Error"] = CreateEditAccountConfig.GmailDuplicated;
+                    break;
+                case AccountEnum.CreateEditAccountResult.CitizenNumberDuplicated:
+                    TempData["Error"] = CreateEditAccountConfig.CitizenNumberDuplicated;
+                    break;
+                case AccountEnum.CreateEditAccountResult.ServerError:
+                    TempData["Error"] = CreateEditAccountConfig.ServerError;
+                    break;
+                case AccountEnum.CreateEditAccountResult.FrontImageError:
+                    TempData["Error"] = CreateEditAccountConfig.FrontImageError;
+                    break;
+                case AccountEnum.CreateEditAccountResult.BackImageError:
+                    TempData["Error"] = CreateEditAccountConfig.BackImageError;
+                    break;
             }
+
+            model.Cities = await employeeRespository.GetCities();
+            model.Districts = await employeeRespository.GetDistricts();
+            var district = await employeeRespository.GetDistrict(model.Employee.District.DistrictId);
+            model.Employee.District.City = await employeeRespository.GetCity(district.City.CityId);
+            return View(model);
         }
         public async Task<IActionResult> ShowProposalJob()
         {

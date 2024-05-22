@@ -1,9 +1,10 @@
 ﻿namespace HouseKeeper.Configs
 {
-    public class CreateAccountConfig
+    public class CreateEditAccountConfig
     {
         public static string AddStaffSuccess = "Add new staff successfully!";
         public static string EditStaffSuccess = "Edit staff successfully!";
+        public static string EditProfileSuccess = "Edit profile successfully!";
         public static string PhoneDuplicated = "Phone number is duplicated!";
         public static string GmailDuplicated = "Gmail is duplicated!";
         public static string CitizenNumberDuplicated = "Citizen number is duplicated!";
