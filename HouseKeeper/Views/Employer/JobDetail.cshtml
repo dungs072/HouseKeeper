@@ -169,6 +169,7 @@
                                             <th>Name</th>
                                             <th>Gmail</th>
                                             <th>Phone number</th>
+                                            <th>Function</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -178,6 +179,9 @@
                                                 <td>@item.Employee.LastName @item.Employee.FirstName</td>
                                                 <td>@item.Employee.Account.Gmail</td>
                                                 <td>@item.Employee.Account.PhoneNumber</td>
+                                                <td>
+                                                    <a class="btn btn-primary btn_function" href="ShowDetailCandidateProfile?employeeId=@item.Employee.EmployeeId">See more</a>
+                                                </td>
                                             </tr>
                                         }
                                     </tbody>

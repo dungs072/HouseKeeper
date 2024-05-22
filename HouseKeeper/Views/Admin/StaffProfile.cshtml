@@ -105,27 +105,28 @@
 
                     <div class="nice-form-group">
                         <label>Last Name</label>
-                        <input asp-for="@Model.Staff.LastName" type="text" placeholder="Last Name" value=@Model.Staff.LastName required />
+                        <input asp-for="@Model.Staff.LastName" type="text" pattern="[A-Za-zÀ-ỹ\s]+"
+                               title="Last name contains letters and spaces only" placeholder="Last Name" maxlength="50" value=@Model.Staff.LastName required />
                     </div>
 
                     <div class="nice-form-group">
                         <label>First Name</label>
-                        <input asp-for="@Model.Staff.FirstName" type="text" placeholder="First Name" value=@Model.Staff.FirstName required />
+                        <input asp-for="@Model.Staff.FirstName" type="text" pattern="[A-Za-zÀ-ỹ]+" title="First name contains letters only" maxlength="20" placeholder="First Name" value=@Model.Staff.FirstName required />
                     </div>
 
                     <div class="nice-form-group">
                         <label>Gmail</label>
-                        <input asp-for="@Model.Staff.Account.Gmail" type="email" placeholder="Gmail" value=@Model.Staff.Account.Gmail required />
+                        <input asp-for="@Model.Staff.Account.Gmail" type="email" pattern="[a-z0-9._%+\-]+@@[a-z0-9.\-]+\.[a-z]{2,}$" placeholder="Gmail" maxlength="64" value=@Model.Staff.Account.Gmail required />
                     </div>
 
                     <div class="nice-form-group">
                         <label>Phone Number</label>
-                        <input asp-for="@Model.Staff.Account.PhoneNumber" type="text" placeholder="Phone Number" value=@Model.Staff.Account.PhoneNumber required />
+                        <input asp-for="@Model.Staff.Account.PhoneNumber" type="text" pattern="[0][35789][0-9]{8}" title="Please use Vietnamese phone number format" minlength="10" maxlength="10" placeholder="Phone Number" value=@Model.Staff.Account.PhoneNumber required />
                     </div>
 
                     <div class="nice-form-group">
                         <label>Citizen Number</label>
-                        <input id="citizenNumberInput" asp-for="@Model.Staff.Identity.CitizenNumber" type="text" placeholder="Citizen Number" value=@Model.Staff.Identity.CitizenNumber required />
+                        <input id="citizenNumberInput" asp-for="@Model.Staff.Identity.CitizenNumber" pattern="[0][0-9]{11}" title="Please enter the right citizen number format in VietNam" minLength="12" maxlength="12" type="text" placeholder="Citizen Number" value=@Model.Staff.Identity.CitizenNumber required />
                     </div>
 
                     <div class="nice-form-group">
@@ -142,30 +143,13 @@
 
                     <div class="mt-2 button-container">
                         <a href="@Url.Action("ShowStaffs", "Admin")" class="btn btn-danger">Cancel</a>
-                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmModal">@(Model.isEdit ? "Update" : "Add")</button>
+                        <button type="submit" class="btn btn-success">@(Model.isEdit ? "Update" : "Add")</button>
                     </div>
 
                 </form>
             </section>
 
-            <!-- Confirmation Modal -->
-            <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
-                <div class="modal-dialog ">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="confirmModalLabel">Confirmation</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Are you sure to Edit?
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancel</button>
-                            <a id="confirmEdit" class="btn btn-danger">Yes</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
 
             <footer>Easy-Fast-Afordable</footer>
         </main>

@@ -156,10 +156,11 @@
                                         </div>
                                         <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
                                             <div class="d-flex mb-3">
-                                                <button class="btn btn-secondary editButton btn_function" data-toggle="modal" data-target="#editCityModal" value="EditCity:@item.CityId:@item.CityName">Edit</button>
+                                                
                                                 <a class="btn btn-primary btn_function" href="ShowDistricts?cityId=@item.CityId">Districts</a>
                                                 @if (item.Districts.Count == 0)
                                                 {
+                                                    <button class="btn btn-secondary editButton btn_function" data-toggle="modal" data-target="#editCityModal" value="EditCity:@item.CityId:@item.CityName">Edit</button>
                                                     <button class="btn btn-danger deleteButton btn_function" data-toggle="modal" data-target="#deleteWarningModal" value="DeleteCity:@item.CityId"><i class="fas fa-trash-alt"></i></button>
                                                 }
                                             </div>

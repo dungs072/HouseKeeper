@@ -155,9 +155,10 @@
                                         </div>
                                         <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
                                             <div class="d-flex mb-3">
-                                                <button class="btn btn-primary editButton btn_function" data-toggle="modal" data-target="#editJobTypeModal" value="EditJobType:@item.RejectionId:@item.RejectionName">Edit</button>
+                                                
                                                 @if(item.RejectionDetails.Count==0)
                                                 {
+                                                    <button class="btn btn-primary editButton btn_function" data-toggle="modal" data-target="#editJobTypeModal" value="EditJobType:@item.RejectionId:@item.RejectionName">Edit</button>
                                                     <button class="btn btn-danger deleteButton btn_function" data-toggle="modal" data-target="#deleteWarningModal" value="DeleteRejection:@item.RejectionId"><i class="fas fa-trash-alt"></i></button>
                                                 }
                                             </div>
@@ -227,7 +228,7 @@
                     <div class="form-group">
                         <label for="newJobTypeName">New Rejection Type Name:</label>
                         <input type="text" class="form-control" id="newJobTypeName" placeholder="Enter New Name"
-                               pattern="[A-Za-z ]+" title="Rejection name contains letters and spaces only" maxlength="100">>
+                               pattern="[A-Za-z ]+" title="Rejection name contains letters and spaces only" maxlength="100">
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -198,6 +198,7 @@ namespace HouseKeeper.Controllers
             }
             
             account.Password = passwordService.HashPassword(model.Password);
+            account.Status = true;
             DANHTINH identity = new DANHTINH();
             identity.CitizenNumber = model.CitizenNumber.Trim();
 
@@ -263,6 +264,7 @@ namespace HouseKeeper.Controllers
                 //employee.City = city;
                 employee.FirstName = model.FirstName.Trim();
                 employee.LastName = model.LastName.Trim();
+                employee.Address = model.Address.Trim();
                 employee.Account = account;
                 employee.District = await accountTypeRespository.GetDistrict(model.DistrictId);
                 employee.Gender = model.Gender;

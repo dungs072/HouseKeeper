@@ -367,7 +367,15 @@
                                             }
                                             <tr>
                                                 <td colspan="2">
-                                                    <button class="btn btn-primary addJobButton" data-toggle="modal" data-target="#addJobModal">Add job you can do</button>
+                                                    @if (Model.Employee.IdentityState!=null&&Model.Employee.IdentityState.IdentityStateId == 2)
+                                                    {
+                                                        <button class="btn btn-primary addJobButton" data-toggle="modal" data-target="#addJobModal">Add job you can do</button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button class="btn btn-primary addJobButton disabled" data-toggle="modal" data-target="#addJobModal">Add job you can do</button>
+                                                    }
+
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -403,7 +411,15 @@
                                             }
                                             <tr>
                                                 <td colspan="2">
-                                                    <button class="btn btn-primary addDistrictButton" data-toggle="modal" data-target="#addDistrictModal">Add places you can do </button>
+                                                    @if (Model.Employee.IdentityState!=null&&Model.Employee.IdentityState.IdentityStateId == 2)
+                                                    {
+                                                        <button class="btn btn-primary addDistrictButton" data-toggle="modal" data-target="#addDistrictModal">Add places you can do </button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button class="btn btn-primary addDistrictButton disabled" data-toggle="modal" data-target="#addDistrictModal">Add places you can do </button>
+                                                    }
+
                                                 </td>
                                                 
                                             </tr>

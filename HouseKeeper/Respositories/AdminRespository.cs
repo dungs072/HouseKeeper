@@ -516,14 +516,18 @@ namespace HouseKeeper.Respositories
                 }
 
                 NHANVIEN staff = new();
-                staff.FirstName = model.Staff.FirstName;
-                staff.LastName = model.Staff.LastName;
+                staff.FirstName = model.Staff.FirstName.Trim();
+                staff.LastName = model.Staff.LastName.Trim();
 
                 staff.Account = new();
                 staff.Account.AvatarUrl = DefaultImageUrlConfig.DefaultAvatarStaff;
 
                 staff.Account.PhoneNumber = model.Staff.Account.PhoneNumber;
-                staff.Account.Gmail = model.Staff.Account.Gmail;
+                if(model.Staff.Account.Gmail!=null)
+                {
+                    staff.Account.Gmail = model.Staff.Account.Gmail.Trim();
+                }
+                
                 staff.Account.Password = passwordService.HashPassword("123");
                 staff.Account.Status = true;
                 staff.Account.AccountType = await dBContext.AccountTypes.FindAsync((int)AccountEnum.AccountType.Staff);

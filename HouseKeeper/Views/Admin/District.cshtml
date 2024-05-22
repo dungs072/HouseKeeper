@@ -160,9 +160,10 @@
                                         </div>
                                         <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
                                             <div class="d-flex mb-3">
-                                                <button class="btn btn-primary editButton btn_function" data-toggle="modal" data-target="#editDistrictModal" value="EditDistrict:@item.DistrictId:@item.DistrictName:@Model.CityId">Edit</button>
+                                                
                                                 @if (item.Recruitments.Count == 0&&item.WorkableDetails.Count==0&&item.Employees.Count==0&&item.Employers.Count==0)
                                                 {
+                                                    <button class="btn btn-primary editButton btn_function" data-toggle="modal" data-target="#editDistrictModal" value="EditDistrict:@item.DistrictId:@item.DistrictName:@Model.CityId">Edit</button>
                                                     <button class="btn btn-danger deleteButton btn_function" data-toggle="modal" data-target="#deleteWarningModal" value="DeleteDistrict:@item.DistrictId:@Model.CityId"><i class="fas fa-trash-alt"></i></button>
                                                 }
                                             </div>
