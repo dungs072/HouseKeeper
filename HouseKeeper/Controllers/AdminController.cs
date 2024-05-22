@@ -33,7 +33,7 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> AddCity(string cityName)
         {
-            var result = await adminRespository.AddCity(cityName);
+            var result = await adminRespository.AddCity(cityName.Trim());
             if (result)
             {
                 TempData["Success"] = "Add city successfully!";
@@ -46,7 +46,7 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> EditCity(int cityId, string cityName)
         {
-            var result = await adminRespository.EditCity(cityId, cityName);
+            var result = await adminRespository.EditCity(cityId, cityName.Trim());
             if (result)
             {
                 TempData["Success"] = "Edit city successfully!";
@@ -82,7 +82,7 @@ namespace HouseKeeper.Controllers
 
         public async Task<IActionResult> AddDistrict(string districtName, int cityId)
         {
-            var result = await adminRespository.AddDistrict(districtName,cityId);
+            var result = await adminRespository.AddDistrict(districtName.Trim(),cityId);
             if (result)
             {
                 TempData["Success"] = "Add district successfully!";
@@ -95,7 +95,7 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> EditDistrict(int districtId, string districtName, int cityId)
         {
-            var result = await adminRespository.EditDistrict(districtId, districtName);
+            var result = await adminRespository.EditDistrict(districtId, districtName.Trim());
             if (result)
             {
                 TempData["Success"] = "Edit district successfully!";
@@ -130,7 +130,7 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> AddJobType(string jobName)
         {
-            var result = await adminRespository.AddJobType(jobName);
+            var result = await adminRespository.AddJobType(jobName.Trim());
             if (result)
             {
                 TempData["Success"] = "Add job type successfully!";
@@ -143,7 +143,7 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> EditJobType(int jobId,string jobName)
         {
-            var result = await adminRespository.EditJobType(jobId, jobName);
+            var result = await adminRespository.EditJobType(jobId, jobName.Trim());
             if(result)
             {
                 TempData["Success"] = "Edit job type successfully!";
@@ -178,7 +178,7 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> AddPaidType(string paidTypeName)
         {
-            var result = await adminRespository.AddPaidType(paidTypeName);
+            var result = await adminRespository.AddPaidType(paidTypeName.Trim());
             if (result)
             {
                 TempData["Success"] = "Add paid type successfully!";
@@ -191,7 +191,7 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> EditPaidType(int paidTypeId, string paidTypeName)
         {
-            var result = await adminRespository.EditPaidType(paidTypeId, paidTypeName);
+            var result = await adminRespository.EditPaidType(paidTypeId, paidTypeName.Trim());
             if (result)
             {
                 TempData["Success"] = "Edit paid type successfully!";
@@ -226,7 +226,7 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> AddExperience(string experienceName)
         {
-            var result = await adminRespository.AddExperience(experienceName);
+            var result = await adminRespository.AddExperience(experienceName.Trim());
             if (result)
             {
                 TempData["Success"] = "Add experience successfully!";
@@ -239,7 +239,7 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> EditExperience(int experienceId, string experienceName)
         {
-            var result = await adminRespository.EditExperience(experienceId, experienceName);
+            var result = await adminRespository.EditExperience(experienceId, experienceName.Trim());
             if (result)
             {
                 TempData["Success"] = "Edit experience successfully!";
@@ -274,7 +274,7 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> AddRejection(string rejectionName)
         {
-            var result = await adminRespository.AddRejection(rejectionName);
+            var result = await adminRespository.AddRejection(rejectionName.Trim());
             if (result)
             {
                 TempData["Success"] = "Add rejection successfully!";
@@ -287,7 +287,7 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> EditRejection(int rejectionId, string rejectionName)
         {
-            var result = await adminRespository.EditRejection(rejectionId, rejectionName);
+            var result = await adminRespository.EditRejection(rejectionId, rejectionName.Trim());
             if (result)
             {
                 TempData["Success"] = "Edit rejection successfully!";
@@ -322,7 +322,7 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> AddPricePacket(string pricePacketName, int numberDay, decimal price)
         {
-            var result = await adminRespository.AddPricePacket(pricePacketName,price,numberDay);
+            var result = await adminRespository.AddPricePacket(pricePacketName.Trim(),price,numberDay);
             if (result)
             {
                 TempData["Success"] = "Add price packet successfully!";
@@ -335,7 +335,7 @@ namespace HouseKeeper.Controllers
         }
         public async Task<IActionResult> EditPricePacket(int pricePacketId, string pricePacketName, int numberDay, decimal price)
         {
-            var result = await adminRespository.EditPricePacket(pricePacketId,pricePacketName, price, numberDay);
+            var result = await adminRespository.EditPricePacket(pricePacketId,pricePacketName.Trim(), price, numberDay);
             if (result)
             {
                 TempData["Success"] = "Edit price packet successfully!";
