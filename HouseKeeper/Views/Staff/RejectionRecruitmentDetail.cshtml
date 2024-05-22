@@ -112,7 +112,7 @@
                                     @if (noteIndex == Model.NoteIndexCanEdit && Model.NoteIndexCanEdit > 0)
                                     {
                                         <p id="edit-notification">Time left to edit notes: <span id="time-left"></span></p>
-                                        <button id="btn-edit" type="submit" class="btn btn-danger w-25 btn_function" data-recruitment-id="@Model.Recruitment.RecruitmentId">
+                                        <button id="btn-edit" type="button" class="btn btn-danger w-25 btn_function" data-recruitment-id="@Model.Recruitment.RecruitmentId" data-bs-toggle="modal" data-bs-target="#confirmModal">
                                             Edit Notes
                                         </button>
 
@@ -157,6 +157,26 @@
             </div>
         </div>
 
+
+        <!-- Confirmation Modal -->
+        <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+            <div class="modal-dialog ">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmModalLabel">Confirmation</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure to Edit Notes?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancel</button>
+                        <a id="confirmEdit" class="btn btn-danger">Yes</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Footer -->
         <partial name="FooterPage" />
 
@@ -190,6 +210,10 @@
                 }
             }, 1000);
         })
+
+        $('#confirmEdit').click(function () {
+            $('#recruitment-form').submit();
+        });
     </script>
 
 </body>

@@ -95,7 +95,8 @@
                 </h1>
                 <form asp-action="EditProfile" method="post" enctype="multipart/form-data" class="pt-1">
                     <div class="nice-form-group">
-                        <label>Avater</label>
+                        <label>Avatar</label>
+                        <input asp-for="@Model.Employer.Account.AvatarUrl" hidden />
                         <img id="avatarImage" width="225" height="225" src=@Model.Employer.Account.AvatarUrl alt="Avatar" />
                         <input id="avatarImageButton" name="avatarImage" class="form-control" type="file" accept="image/*" />
                     </div>
@@ -150,18 +151,19 @@
 
                     <div class="nice-form-group">
                         <label>Addess</label>
-                        <input asp-for="@Model.Employer.Address" type="text" placeholder="Type Address" value=@Model.Employer.Address required />
+                        <input asp-for="@Model.Employer.Address" type="text" placeholder="Address" value=@Model.Employer.Address required />
                     </div>
 
                     <div class="nice-form-group">
-                        <label>Identity Number</label>
-                        <input id="citizenNumberInput" asp-for="@Model.Employer.Identity.CitizenNumber" type="text" placeholder="Type Address"
+                        <label>Citizen Number</label>
+                        <input id="citizenNumberInput" asp-for="@Model.Employer.Identity.CitizenNumber" type="text" placeholder="Citizen Number"
                                pattern="[0][0-9]{11}" title="Please enter the right citizen number format in VietNam"  minLength="12" maxlength="12"
                             value=@Model.Employer.Identity.CitizenNumber required />
                     </div>
 
                     <div class="nice-form-group">
                         <label>Front Identity Image</label>
+                        <input asp-for="@Model.Employer.Identity.FrontImage" hidden />
                         <img id="frontImage" width="70%" height="360" src="@Model.Employer.Identity.FrontImage" alt="Front Id Card" />
                         @if(Model.isIdentityApproved == 0)
                         {
@@ -171,6 +173,7 @@
 
                     <div class="nice-form-group">
                         <label>Back Identity Image</label>
+                        <input asp-for="@Model.Employer.Identity.BackImage" hidden />
                         <img id="backImage" width="70%" height="360" src="@Model.Employer.Identity.BackImage" alt="Back Id Card" />
                         @if (Model.isIdentityApproved == 0)
                         {
@@ -181,9 +184,8 @@
 
                     <div class="mt-2 button-container">
                         <a href="@Url.Action("Profile", "Employer")" class="btn btn-danger">Cancel</a>
-                        <button type="submit" class="btn btn-success">Update</button>
+                        <button type="submit" class="btn btn-success">Edit</button>
                     </div>
-
                 </form>
             </section>
             <footer>Easy-Fast-Afordable</footer>
@@ -223,33 +225,60 @@
             document.getElementById('districtInput').value = selectedDistrictId;
         });
     </script>
+
     <script>
-        function changePreviewImageEvent(imageType) {
-            var buttonId = '#' + imageType + "ImageButton";
-            var imagePreviewId = '#' + imageType + "Image";
-            console.log(buttonId);
-            console.log(imagePreviewId);
-            button = $(buttonId);
-            imagePreview = $(imagePreviewId);
-            button.on({
-                'change': function () {
-                    file = this.files[0];
-                    console.log(file);
+        // Get references to both select elements
+        var frontImage = document.getElementById('frontImage');
+        var frontImageButton = document.getElementById('frontImageButton');
 
-                    if (file) {
-                        let reader = new FileReader();
-                        reader.onload = function (event) {
-                            imagePreview.attr("src", event.target.result);
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                }
-            });
-        }
-        changePreviewImageEvent('front');
-        changePreviewImageEvent('back');
-        changePreviewImageEvent('avatar');
+        // Add event listener to front image button
+        frontImageButton.addEventListener('change', function () {
+            var file = this.files[0];
+            var reader = new FileReader();
 
+            reader.onload = function (e) {
+                frontImage.src = e.target.result;
+            };
+
+            reader.readAsDataURL(file);
+        });
+    </script>
+    <script>
+        // Get references to both select elements
+        var backImage = document.getElementById('backImage');
+        var backImageButton = document.getElementById('backImageButton');
+
+        // Add event listener to back image button
+        backImageButton.addEventListener('change', function () {
+            var file = this.files[0];
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                backImage.src = e.target.result;
+            };
+
+            reader.readAsDataURL(file);
+        });
+    </script>
+    <script>
+        // Get references to both select elements
+        var avatarImage = document.getElementById('avatarImage');
+        var avatarImageButton = document.getElementById('avatarImageButton');
+
+        // Add event listener to avatar image button
+        avatarImageButton.addEventListener('change', function () {
+            var file = this.files[0];
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                avatarImage.src = e.target.result;
+            };
+
+            reader.readAsDataURL(file);
+        });
+    </script>
+
+    <script>
         // set default value for city and district via Model
         $(document).ready(function () {
             var cityId = @Model.Employer.District.City.CityId;

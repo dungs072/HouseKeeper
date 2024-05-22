@@ -19,7 +19,7 @@
             WrongPassword = -3
         }
 
-        public enum CreateAccountResult
+        public enum CreateEditAccountResult
         {
             Success = 1,
             PhoneDuplicated = 2,
@@ -28,7 +28,8 @@
             CitizenNumberDuplicated = 5,
             FrontImageError = 6,
             BackImageError = 7,
-            AvatarImageError = 8
+            AvatarImageError = 8,
+            NotFound = 9
         }
     }
 }

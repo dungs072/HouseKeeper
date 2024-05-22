@@ -441,7 +441,7 @@ namespace HouseKeeper.Respositories
 
         #endregion
         // edit employer profile
-        public async Task<bool> EditEmployerProfile(EditEmployerProfileViewModel model, int employerId, IFormFile avatarImage, IFormFile frontImage, IFormFile backImage, AccountEnum.AccountType accountType)
+        public async Task<AccountEnum.CreateEditAccountResult> EditEmployerProfile(EditEmployerProfileViewModel model, int employerId, IFormFile avatarImage, IFormFile frontImage, IFormFile backImage, AccountEnum.AccountType accountType)
         {
             using var transaction = await dBContext.Database.BeginTransactionAsync();
             try
@@ -450,15 +450,25 @@ namespace HouseKeeper.Respositories
 
                 if (employer == null)
                 {
-                    return false;
+                    return AccountEnum.CreateEditAccountResult.NotFound;
                 }
-                if (model.Employer.Account.Gmail != null)
+                var accountWithPhone = await dBContext.Accounts.FirstOrDefaultAsync(a => a.PhoneNumber == model.Employer.Account.PhoneNumber);
+                var accountWithGmail = await dBContext.Accounts.FirstOrDefaultAsync(a => a.Gmail == model.Employer.Account.Gmail);
+                var identityWithCitizenNumber = await dBContext.Identity.FirstOrDefaultAsync(i => i.CitizenNumber == model.Employer.Identity.CitizenNumber);
+
+                if (accountWithPhone != null && accountWithPhone.AccountID != employer.Account.AccountID)
                 {
-                    var e = await dBContext.Accounts.FirstOrDefaultAsync(a => a.AccountID != employer.Account.AccountID && a.Gmail == model.Employer.Account.Gmail);
-                    if (e != null)
-                    {
-                        return false;
-                    }
+                    return AccountEnum.CreateEditAccountResult.PhoneDuplicated;
+                }
+
+                if (accountWithGmail != null && accountWithGmail.AccountID != employer.Account.AccountID)
+                {
+                    return AccountEnum.CreateEditAccountResult.GmailDuplicated;
+                }
+
+                if (identityWithCitizenNumber != null && identityWithCitizenNumber.CitizenId != employer.Identity.CitizenId)
+                {
+                    return AccountEnum.CreateEditAccountResult.CitizenNumberDuplicated;
                 }
              
                 employer.FirstName = model.Employer.FirstName.Trim();
@@ -490,12 +500,12 @@ namespace HouseKeeper.Respositories
 
                 await dBContext.SaveChangesAsync();
                 transaction.Commit();
-                return true;
+                return AccountEnum.CreateEditAccountResult.Success;
             }
             catch (Exception ex)
             {
                 transaction.Rollback();
-                return false;
+                return AccountEnum.CreateEditAccountResult.ServerError;
             }
         }
         public async Task<ListCandidatesViewModel> GetSuitableCandidates(int employerId)

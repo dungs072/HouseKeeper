@@ -99,7 +99,7 @@
                     </svg>
                     @(Model.isEdit ? "Edit " : "Add New") Staff
                 </h1>
-                <form asp-action="@(Model.isEdit ? "EditStaff" : "AddStaff")" method="post" enctype="multipart/form-data" class="pt-1">
+                <form id="form" asp-action="@(Model.isEdit ? "EditStaff" : "AddStaff")" method="post" enctype="multipart/form-data" class="pt-1">
                     <input type="hidden" asp-for="@Model.Staff.StaffId" />
 
                     <div class="nice-form-group">
@@ -141,11 +141,31 @@
 
                     <div class="mt-2 button-container">
                         <a href="@Url.Action("ShowStaffs", "Admin")" class="btn btn-danger">Cancel</a>
-                        <button type="submit" class="btn btn-success">@(Model.isEdit ? "Update" : "Add")</button>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmModal">@(Model.isEdit ? "Update" : "Add")</button>
                     </div>
 
                 </form>
             </section>
+
+            <!-- Confirmation Modal -->
+            <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+                <div class="modal-dialog ">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmModalLabel">Confirmation</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure to Edit?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancel</button>
+                            <a id="confirmEdit" class="btn btn-danger">Yes</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <footer>Easy-Fast-Afordable</footer>
         </main>
     </div>
@@ -175,6 +195,10 @@
                     reader.readAsDataURL(file);
                 }
             }
+        });
+
+        $('#confirmEdit').on('click', function () {
+            $('#form').submit();
         });
      </script>
 </body>

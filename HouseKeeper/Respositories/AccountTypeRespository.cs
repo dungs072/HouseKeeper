@@ -97,7 +97,7 @@ namespace HouseKeeper.Respositories
                     var e = await dBContext.Accounts.FirstOrDefaultAsync(a => a.Gmail == account.Gmail);
                     if (e != null)
                     {
-                        return (int)AccountEnum.CreateAccountResult.GmailDuplicated;
+                        return (int)AccountEnum.CreateEditAccountResult.GmailDuplicated;
                     }
                 }
                 
@@ -106,7 +106,7 @@ namespace HouseKeeper.Respositories
                 await dBContext.Identity.AddAsync(identity);
                 await dBContext.SaveChangesAsync();
                 transaction.Commit();
-                return (int)AccountEnum.CreateAccountResult.Success;
+                return (int)AccountEnum.CreateEditAccountResult.Success;
             }
             catch (Exception ex)
             {
@@ -115,14 +115,14 @@ namespace HouseKeeper.Respositories
                 {
                     if (ex.InnerException.Message.Contains("UK_SDT"))
                     {
-                        return (int)AccountEnum.CreateAccountResult.PhoneDuplicated;
+                        return (int)AccountEnum.CreateEditAccountResult.PhoneDuplicated;
                     }
                     else if (ex.InnerException.Message.Contains("UK_GMAIL"))
                     {
-                        return (int)AccountEnum.CreateAccountResult.GmailDuplicated;
+                        return (int)AccountEnum.CreateEditAccountResult.GmailDuplicated;
                     }
                 }
-                return (int)AccountEnum.CreateAccountResult.ServerError;
+                return (int)AccountEnum.CreateEditAccountResult.ServerError;
             }
         }
         public async Task<int> CreateEmployeeAccount(TAIKHOAN account, NGUOIGIUPVIEC employee, DANHTINH identity)
@@ -133,7 +133,7 @@ namespace HouseKeeper.Respositories
                 var e = await dBContext.Employees.FirstOrDefaultAsync(a => a.Account.Gmail == account.Gmail);
                 if (e != null)
                 {
-                    return (int)AccountEnum.CreateAccountResult.GmailDuplicated;
+                    return (int)AccountEnum.CreateEditAccountResult.GmailDuplicated;
                 }
                 var hashPassword = HashPassword(account.Password);
                 account.Password = hashPassword;
@@ -142,7 +142,7 @@ namespace HouseKeeper.Respositories
                 await dBContext.Identity.AddAsync(identity);
                 await dBContext.SaveChangesAsync();
                 transaction.Commit();
-                return (int)AccountEnum.CreateAccountResult.Success;
+                return (int)AccountEnum.CreateEditAccountResult.Success;
             }
             catch (Exception ex)
             {
@@ -151,14 +151,14 @@ namespace HouseKeeper.Respositories
                 {
                     if (ex.InnerException.Message.Contains("UK_SDT"))
                     {
-                        return (int)AccountEnum.CreateAccountResult.PhoneDuplicated;
+                        return (int)AccountEnum.CreateEditAccountResult.PhoneDuplicated;
                     }
                     else if (ex.InnerException.Message.Contains("UK_GMAIL"))
                     {
-                        return (int)AccountEnum.CreateAccountResult.GmailDuplicated;
+                        return (int)AccountEnum.CreateEditAccountResult.GmailDuplicated;
                     }
                 }
-                return (int)AccountEnum.CreateAccountResult.ServerError;
+                return (int)AccountEnum.CreateEditAccountResult.ServerError;
             }
         }
 

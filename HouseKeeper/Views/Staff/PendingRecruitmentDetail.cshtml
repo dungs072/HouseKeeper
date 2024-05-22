@@ -68,8 +68,8 @@
                     <!-- Button Group -->
                     <div class="">
                         <h4 class="mb-4">Recruitment Moderation</h4>
-                        <button type="button" class="btn btn-primary w-25 btn_function" data-bs-toggle="modal" data-bs-target="#confirmModal" data-recruitment-id="@Model.Recruitment.RecruitmentId">
-                            Accept
+                        <button type="button" class="btn btn-primary w-25 btn_function" data-bs-toggle="modal" data-bs-target="#approvalConfirmationModal" data-recruitment-id="@Model.Recruitment.RecruitmentId">
+                            Approve
                         </button>
                         <button class="btn btn-info w-25" type="button" data-bs-toggle="modal" data-bs-target="#historyModel" @(Model.RejectionsDetails.Count == 0? "disabled" : "")>Rejection History</button>
                         <form id="recruitment-form" asp-action="RejectRecruitment" method="post" enctype="multipart/form-data">
@@ -94,7 +94,7 @@
                                     rejection_index++;
                             }
                             </ul>
-                            <button id ="btn-reject" type="submit" class="btn btn-danger w-25 btn_function" data-recruitment-id="@Model.Recruitment.RecruitmentId" disabled>
+                            <button id="btn-reject" type="button" class="btn btn-danger w-25 btn_function" data-recruitment-id="@Model.Recruitment.RecruitmentId" data-bs-toggle="modal" data-bs-target="#disapprovalConfirmationModal" disabled>
                                 Reject
                             </button>
                         </form>
@@ -136,24 +136,44 @@
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
 
-    <!-- Modal Confirmation -->
-    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <!-- Modal Confirmation for Approval -->
+    <div class="modal fade" id="approvalConfirmationModal" tabindex="-1" aria-labelledby="approvalConfirmationModalLabel" aria-hidden="true">
         <div class="modal-dialog ">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="confirmModalLabel">Confirmation</h5>
+                    <h5 class="modal-title" id="approvalConfirmationModalLabel">Confirmation</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Are you sure to accept?
+                    Are you sure to Approve?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancel</button>
-                    <a id="confirmAccept" class="btn btn-danger">Accept</a>
+                    <a id="confirmApprove" class="btn btn-danger">Approve</a>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Modal Confirmation for Disapproval -->
+    <div class="modal fade" id="disapprovalConfirmationModal" tabindex="-1" aria-labelledby="disapprovalConfirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="disapprovalConfirmationModalLabel">Confirmation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure to Disapprove?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancel</button>
+                    <a id="confirmDisapprove" class="btn btn-danger">Disapprove</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Rejection History Modal -->
     <div class="modal fade" id="historyModel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="historyModelLabel" aria-hidden="true">
@@ -203,33 +223,29 @@
     <!-- Script -->
     <script>
         $(document).ready(function () {
-            $('#confirmModal').on('shown.bs.modal', function (event) {
+            $('#approvalConfirmationModal').on('shown.bs.modal', function (event) {
 
                 var button = $(event.relatedTarget); // Button that triggered the modal
                 var recruitmentId = button.data('recruitment-id'); // Extract info from data-* attributes
 
                 var modal = $(this);
 
-                modal.find('#confirmAccept').attr('href', 'AcceptRecruitment?recruitmentID=' + recruitmentId);
+                modal.find('#confirmApprove').attr('href', 'AcceptRecruitment?recruitmentID=' + recruitmentId);
             });
 
-            $('#confirmRejectModal').on('shown.bs.modal', function (event) {
+             $('#disapprovalConfirmationModal').on('shown.bs.modal', function (event) {
 
                 var button = $(event.relatedTarget); // Button that triggered the modal
                 var recruitmentId = button.data('recruitment-id'); // Extract info from data-* attributes
 
                 var modal = $(this);
 
-                modal.find('#confirmRejectButton').attr('href', 'RejectRecruitment?recruitmentID=' + recruitmentId);
             });
 
-            $('#confirmRejectButton').on('click', function (event) {
+            $('#approvalConfirmationModa').on('click', function (event) {
                 $('#btn-reject').submit();
             });
 
-            $('#btn-reject').on('submit', '#recruitment-form', function () {
-                return confirm("Are you sure to Reject?");
-            });
 
             $('.check-box').on('click', function (event) {
                 var modal = $(this);
@@ -238,6 +254,9 @@
 
             });
 
+            $('#confirmDisapprove').on('click', function (event) {
+                $('#recruitment-form').submit();
+            });
         })
     </script>
 

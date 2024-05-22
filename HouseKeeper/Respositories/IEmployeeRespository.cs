@@ -9,7 +9,10 @@ namespace HouseKeeper.Respositories
         Task<List<TINTUYENDUNG>> GetRecruitments(int page, string searchKey, int? cityId, int? districtId);
         Task<TINTUYENDUNG> GetRecruitment(int id);
         Task<List<TINHTHANHPHO>> GetCities();
+
+        Task<HUYEN> GetDistrict(int id);
         Task<List<HUYEN>> GetDistricts();
+        Task<TINHTHANHPHO> GetCity(int cityId);
         Task<CHITIETAPPLY> GetApplyDetail(int recruitmentId, int employeeId);
         Task<bool> ApplyJob(int recruitmentId, int employeeId);
         Task<bool> CancelApplyJob(int applyDetailId);
@@ -22,7 +25,7 @@ namespace HouseKeeper.Respositories
         Task<bool> DeleteJob(int jobId, int employeeId);
         Task<bool> AddDistrict(int districtId, int employeeId);
         Task<bool> DeleteDistrict(int districtId, int employeeId);
-        Task<bool> EditEmployeeProfile(EditEmployeeProfileViewModel model, int employeeId, IFormFile avatarImage, IFormFile frontImage, IFormFile backImage, AccountEnum.AccountType accountType);
+        Task<AccountEnum.CreateEditAccountResult> EditEmployeeProfile(EditEmployeeProfileViewModel model, int employeeId, IFormFile avatarImage, IFormFile frontImage, IFormFile backImage, AccountEnum.AccountType accountType);
         Task<JobProposalViewModel> GetJobProposals(int employeeId);
         Task<bool> HasRightPassword(string password, int userId);
         Task<bool> ChangePassword(string password, int userId);
