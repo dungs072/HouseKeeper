@@ -1,16 +1,17 @@
 ﻿@using HouseKeeper.Models.Views.Employer;
-@model EditRecruitmentViewModel;
+@model EditReasonRecruitmentViewModel;
 <!DOCTYPE html>
 <html lang="en">
 <head>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Housekeeper Job</title>
+    <title>Housekeepers Job</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
     <link rel="stylesheet" href="~/css/Input.css">
+    <partial name="LibraryHeaderInclude" />
     <style>
         /* Styling for the multi-select ComboBox */
         .multiselect {
@@ -53,6 +54,51 @@
                 border-radius: 3px;
             }
     </style>
+    <style>
+        .t {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 300px; /* Adjust the width as needed */
+            height: 100vh; /* Make the div take the full height of the viewport */
+            background-color: #f0f0f0; /* Example background color */
+            overflow-y: scroll; /* Add scrollbar if content exceeds height */
+            top: 25px;
+        }
+
+            .t section {
+                padding: 20px;
+            }
+    </style>
+    <style>
+        .t {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 300px; /* Adjust the width as needed */
+            height: 100vh; /* Make the div take the full height of the viewport */
+            background-color: #f0f0f0; /* Example background color */
+            overflow-y: scroll; /* Add scrollbar if content exceeds height */
+            top: 25px;
+        }
+
+            .t section {
+                padding: 20px;
+            }
+    </style>
+    <style>
+        .rounded-panel {
+            background-color: #f0f0f0; /* Background color of the panel */
+            border-radius: 10px; /* Border radius for rounded corners */
+            padding: 10px 15px; /* Padding inside the panel */
+            display: inline-block; /* Display as inline block to fit content */
+            margin-bottom: 10px;
+        }
+
+        .dateHead {
+            margin-top: 10px;
+        }
+    </style>
     <script>
         function formatCurrency(input) {
             // Remove non-numeric characters and leading zeros
@@ -86,7 +132,7 @@
                         <line x1="21" y1="14" x2="3" y2="14" />
                         <line x1="21" y1="18" x2="3" y2="18" />
                     </svg>
-                    Edit your recruitment
+                    Fix your recruitment
                 </h1>
                 <p>Your recruitment form</p>
                 <form asp-action="EditRecruitment" method="post" enctype="multipart/form-data" class="pt-1">
@@ -106,12 +152,12 @@
                     </div>
                     <div class="nice-form-group same-row">
                         <label>Min Salary (VND)</label>
-                        <input type="text" min="1" class="form-control" id="min-salary" name="min-salary" value="@string.Format("{0:0,0}", Model.MinSalary).Replace(",", ".")" placeholder="Enter amount in VND" oninput="formatCurrency(this)" required>
+                        <input type="text" min="1" class="form-control" id="min-salary" name="min-salary" pattern="^[1-9]\d*(\.\d+)*$" value="@string.Format("{0:0,0}", Model.MinSalary).Replace(",", ".")" placeholder="Enter amount in VND" oninput="formatCurrency(this)" required>
                         @*<input asp-for="MinSalary" id="min-salary" type="number" placeholder="1234" min="1" value=@Model.MinSalary /> *@
                     </div>
                     <div class="nice-form-group same-row">
                         <label>Max Salary (VND)</label>
-                        <input type="text" min="0" class="form-control" id="max-salary" name="max-salary" value="@string.Format("{0:0,0}", Model.MaxSalary).Replace(",", ".")" placeholder="Enter amount in VNDdfdfdf" oninput="formatCurrency(this)" required>
+                        <input type="text" min="0" class="form-control" id="max-salary" name="max-salary" pattern="^[1-9]\d*(\.\d+)*$" value="@string.Format("{0:0,0}", Model.MaxSalary).Replace(",", ".")" placeholder="Enter amount in VNDdfdfdf" oninput="formatCurrency(this)" required>
                         @* <input asp-for="MaxSalary" id="max-salary" type="number" placeholder="4321" value=@Model.MaxSalary /> *@
                     </div>
                     <div class="nice-form-group">
@@ -119,7 +165,14 @@
                         <select name="Gender" asp-for="Gender">
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
-                            <option value="Null">Not require</option>
+                            @if (Model.Gender == null)
+                            {
+                                <option value=Null selected>Not require</option>
+                            }
+                            else
+                            {
+                                <option value=Null>Not require</option>
+                            }
                         </select>
                     </div>
                     <div class="nice-form-group">
@@ -197,7 +250,7 @@
                         <input asp-for="Address" type="text" placeholder="..." value=@Model.Address />
                     </div>
                     <div class="nice-form-group">
-                        <label>Take note</label>
+                        <label>Take note (please add {.} or {:} at the end of the sentence to break the line)</label>
                         <textarea asp-for="TakeNotes" rows="5" placeholder="Write something" required></textarea>
                     </div>
                     <div class="mt-2 button-container">
@@ -209,6 +262,33 @@
             </section>
             <footer>Easy-Fast-Afordable</footer>
         </main>
+        <div class="t">
+            <section>
+                <div class="href-target" id="input-types"></div>
+                <h1>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="feather feather-align-justify">
+                        <line x1="21" y1="10" x2="3" y2="10" />
+                        <line x1="21" y1="6" x2="3" y2="6" />
+                        <line x1="21" y1="14" x2="3" y2="14" />
+                        <line x1="21" y1="18" x2="3" y2="18" />
+                    </svg>
+                    Rejection History
+                </h1>
+                @foreach (var keyValue in Model.RejectionDetails)
+                {
+                    <h5 class="dateHead">Date time: @keyValue.Key.ToString("dd/MM/yyyy hh:mm:ss")</h5>
+                    foreach (var rejection in keyValue.Value)
+                    {
+                        <div class="rounded-panel">
+                            <h6>Reason: @rejection.Rejection.RejectionName</h6>
+                            <h6>Note: @rejection.Note</h6>
+                        </div>
+                    }
+                }
+            </section>
+        </div>
     </div>
     <script>
         // JavaScript to handle selection change

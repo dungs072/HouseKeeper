@@ -66,6 +66,8 @@ namespace HouseKeeper.Controllers
             var items = await employeeRespository.GetRecruitments(currentPage, "", null, null);
             Models.Views.Employee.ListRecruitmentViewModel model = new Models.Views.Employee.ListRecruitmentViewModel();
             model.Recruitments = items;
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employeeId);
+            model.Employee = await employeeRespository.GetEmployee(employeeId);
             return PartialView("ListRecruitmentPartital", model);
         }
         public async Task<ActionResult> JobDetail(int recruitmentId)
@@ -113,7 +115,7 @@ namespace HouseKeeper.Controllers
             var result = await employeeRespository.CancelApplyJob(applyDetailId);
             if (result)
             {
-                TempData["Success"] = "Apply to this recruitment successfully";
+                TempData["Success"] = "Cancel to apply to this recruitment successfully";
                 if(isList)
                 {
                     return RedirectToAction("GetAppliedRecruitment");
@@ -122,7 +124,7 @@ namespace HouseKeeper.Controllers
             }
             else
             {
-                TempData["Error"] = "Fail to apply to this recruitment";
+                TempData["Error"] = "Fail to cancel your application to this recruitment";
                 if (isList)
                 {
                     return RedirectToAction("GetAppliedRecruitment");

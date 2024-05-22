@@ -9,7 +9,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
-    <partial name="HeaderInclude" />
+    <partial name="LibraryHeaderInclude" />
     <!-- Favicon -->
     <link href="img/favicon.ico" rel="icon">
 
@@ -38,6 +38,7 @@
             cursor: default; /* Optional: change cursor to default */
         }
     </style>
+    <partial name="HeaderInclude" />
    
 </head>
 
@@ -225,6 +226,7 @@
         document.addEventListener("DOMContentLoaded", function () {
             let paragraph = document.getElementById("note");
             paragraph.innerHTML = paragraph.innerHTML.replace(/\./g, ".<br>");
+            paragraph.innerHTML = paragraph.innerHTML.replace(/\:/g, ":<br>");
         });
     </script>
 </body>

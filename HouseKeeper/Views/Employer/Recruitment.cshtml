@@ -11,6 +11,7 @@
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
     <link rel="stylesheet" href="~/css/Input.css">
+
     <style>
         /* Styling for the multi-select ComboBox */
         .multiselect {
@@ -100,12 +101,12 @@
                     </fieldset>
                     <div class="nice-form-group same-row">
                         <label>Min Salary (VND)</label>
-                        <input type="text" min="1" class="form-control" id="min-salary" name="min-salary" value="@string.Format("{0:0,0}", Model.MinSalary).Replace(",", ".")" placeholder="Enter amount in VND" oninput="formatCurrency(this)" required>
+                        <input type="text" min="1" class="form-control" id="min-salary" name="min-salary" pattern="^[1-9]\d*(\.\d+)*$" value="@string.Format("{0:0,0}", Model.MinSalary).Replace(",", ".")" placeholder="Enter amount in VND" oninput="formatCurrency(this)" required>
                         @*<input asp-for="MinSalary" id="min-salary" type="number" placeholder="1234" min="1" value=@Model.MinSalary /> *@
                     </div>
                     <div class="nice-form-group same-row">
                         <label>Max Salary (VND)</label>
-                        <input type="text" min="0" class="form-control" id="max-salary" name="max-salary" value="@string.Format("{0:0,0}", Model.MaxSalary).Replace(",", ".")" placeholder="Enter amount in VNDdfdfdf" oninput="formatCurrency(this)" required>
+                        <input type="text" min="0" class="form-control" id="max-salary" name="max-salary" pattern="^[1-9]\d*(\.\d+)*$" value="@string.Format("{0:0,0}", Model.MaxSalary).Replace(",", ".")" placeholder="Enter amount in VNDdfdfdf" oninput="formatCurrency(this)" required>
                         @* <input asp-for="MaxSalary" id="max-salary" type="number" placeholder="4321" value=@Model.MaxSalary /> *@
                     </div>
                     <div class="nice-form-group">
@@ -185,7 +186,7 @@
                         <input asp-for="Address" type="text" placeholder="..." value=@Model.Address />
                     </div>
                     <div class="nice-form-group">
-                        <label>Take note (please add period at the end of the sentence to break the line)</label>
+                        <label>Take note (please add {.} or {:} at the end of the sentence to break the line)</label>
                         <textarea asp-for="TakeNotes" rows="5" placeholder="Write something" required ></textarea>
                     </div>
                     <div class="mt-2 button-container">

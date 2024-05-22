@@ -13,9 +13,10 @@
                 {
                     <img class="flex-shrink-0 img-fluid border rounded" src="/images/Avatar.png" alt="" style="width: 80px; height: 80px;">
                 }
+
                 <div class="text-start ps-4">
                     <h5 class="mb-3">@item.HouseWorkName</h5>
-                    <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@item.District.City.CityName</span>
+                    <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@item.Address, @item.District.DistrictName, @item.District.City.CityName</span>
                     @if (item.FullTime)
                     {
                         <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Full Time</span>
@@ -26,14 +27,27 @@
                     }
                     <span class="text-truncate me-3"><i class="far fa-money-bill-alt text-primary me-2"></i>@string.Format("{0:0,0} VND", @item.MinSalary) - @string.Format("{0:0,0} VND", @item.MaxSalary)</span>
                     <span class="text-truncate me-0"><i class="fa fa-hourglass-half text-primary me-2"></i>@item.SalaryForm.SalaryFormName</span>
+
+
                 </div>
             </div>
             <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
                 <div class="d-flex mb-3">
-                    @* <a class="btn btn-light btn-square me-3" href=""><i class="far fa-heart text-primary"></i></a> *@
-                    <a class="btn btn-primary btn_function" href="JobDetail?recruitmentId=@item.RecruitmentId">More Infor</a>
+                    @if (Model.Employee.IdentityState.IdentityStateId == 2)
+                    {
+                        <a class="btn btn-primary btn_function" href="JobDetail?recruitmentId=@item.RecruitmentId">See more</a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-primary btn_function disabled" href="JobDetail?recruitmentId=@item.RecruitmentId">See more</a>
+                    }
+
                 </div>
-                <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Date Line: @item.PostTime</small>
+                <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Deadline: @item.RecruitDeadlineDate.ToString("dd/MM/yyyy")</small>
+                @if (item.ApplyDetails.FirstOrDefault(a => a.Employee == Model.Employee) != null)
+                {
+                    <small class="text-truncate text-primary"><i class="text-primary me-2"></i><strong>Applied</strong></small>
+                }
             </div>
         </div>
     </div>
