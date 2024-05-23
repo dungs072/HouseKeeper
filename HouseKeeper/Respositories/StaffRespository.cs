@@ -2,6 +2,7 @@
 using HouseKeeper.IServices;
 using HouseKeeper.Models.DB;
 using HouseKeeper.Models.Views.Staff;
+using HouseKeeper.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
@@ -14,10 +15,12 @@ namespace HouseKeeper.Respositories
     {
         private readonly DBContext.HouseKeeperDBContext dBContext;
         private readonly IPasswordService passwordService;
-        public StaffRespository(DBContext.HouseKeeperDBContext dBContext, IPasswordService passwordService)
+        private readonly IEmailService emailService;
+        public StaffRespository(DBContext.HouseKeeperDBContext dBContext, IPasswordService passwordService, IEmailService emailService)
         {
             this.dBContext = dBContext;
             this.passwordService = passwordService;
+            this.emailService = emailService;
         }
 
         // Get all recruitment is pending approval
@@ -62,6 +65,7 @@ namespace HouseKeeper.Respositories
                 dBContext.Recruitments.Update(recruitment);
                 await dBContext.SaveChangesAsync();
                 transaction.Commit();
+                emailService.SendEmailForRecruitmentApproval(recruitment);
                 return StaffEnum.ModerationStatus.OK;
             }
             catch (Exception ex)
@@ -107,6 +111,7 @@ namespace HouseKeeper.Respositories
                 dBContext.Recruitments.Update(recruitment);
                 await dBContext.SaveChangesAsync();
                 transaction.Commit();
+                emailService.SendEmailForRecruitmentDisapproval(recruitment);
                 return StaffEnum.ModerationStatus.OK;
             }
             catch (Exception ex)
