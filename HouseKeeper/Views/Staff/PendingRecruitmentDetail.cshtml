@@ -80,12 +80,12 @@
                         <button type="button" class="btn btn-primary w-25 btn_function" data-bs-toggle="modal" data-bs-target="#approvalConfirmationModal" data-recruitment-id="@Model.Recruitment.RecruitmentId">
                             Approve
                         </button>
-                        <button class="btn btn-info w-25" type="button" data-bs-toggle="modal" data-bs-target="#historyModel" @(Model.RejectionsDetails.Count == 0? "disabled" : "")>Rejection History</button>
+                        <button class="btn btn-info w-25" type="button" data-bs-toggle="modal" data-bs-target="#historyModel" @(Model.RejectionsDetails.Count == 0? "disabled" : "")>Disapproval History</button>
                         <form id="recruitment-form" asp-action="RejectRecruitment" method="post" enctype="multipart/form-data">
                             <input asp-for="@Model.RecruitmentId" value="@Model.Recruitment.RecruitmentId" hidden />
                             <input asp-for="@Model.StaffId" value="@Model.StaffId" hidden />
                             <hr /> 
-                            <h5>Reject Recruitment</h5>
+                            <h5>Disapprove Recruitment</h5>
                             <ul class="list-group list-group-light">
                                 @{
                                     int rejection_index = 0;
@@ -104,7 +104,7 @@
                             }
                             </ul>
                             <button id="btn-reject" type="button" class="btn btn-danger w-25 btn_function" data-recruitment-id="@Model.Recruitment.RecruitmentId" data-bs-toggle="modal" data-bs-target="#disapprovalConfirmationModal" disabled>
-                                Reject
+                                Disapprove
                             </button>
                         </form>
                     </div>
@@ -192,7 +192,7 @@
         <div class="modal-dialog modal-dialog-scrollable modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="historyModelLabel">Rejection History</h1>
+                    <h1 class="modal-title fs-5" id="historyModelLabel">Disapproval History</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">

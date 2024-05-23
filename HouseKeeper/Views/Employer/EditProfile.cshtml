@@ -103,17 +103,17 @@
                     </div>
 
                     <div class="nice-form-group">
-                        <label>First Name</label>
-                        <input asp-for="@Model.Employer.FirstName" type="text" placeholder="First Name"
-                               pattern="[A-Za-zÀ-ỹ]+" title="First name contains letters only" maxlength="20"
-                               value=@Model.Employer.FirstName required />
-                    </div>
-                    
-                    <div class="nice-form-group">
                         <label>Last Name</label>
                         <input asp-for="@Model.Employer.LastName" type="text" placeholder="Last Name"
                                pattern="[A-Za-zÀ-ỹ\s]+" title="Last name contains letters and spaces only" maxlength="50"
                                 value=@Model.Employer.LastName required />
+                    </div>
+
+                    <div class="nice-form-group">
+                        <label>First Name</label>
+                        <input asp-for="@Model.Employer.FirstName" type="text" placeholder="First Name"
+                               pattern="[A-Za-zÀ-ỹ]+" title="First name contains letters only" maxlength="20"
+                               value=@Model.Employer.FirstName required />
                     </div>
 
                     <div class="nice-form-group">
