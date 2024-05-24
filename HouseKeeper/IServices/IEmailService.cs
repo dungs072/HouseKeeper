@@ -9,6 +9,8 @@ namespace HouseKeeper.IServices
     {
         bool SendEmailForRecruitmentApproval(TINTUYENDUNG recruitment);
         bool SendEmailForRecruitmentDisapproval(TINTUYENDUNG recruitment);
+        bool SendEmailForIdentityApproval(string receiverEmail, string receiverName, NHANVIEN staff);
+        bool SendEmailForIdentityDisapproval(string receiverEmail, string receiverName, string disapprovalReason, NHANVIEN staff);
         bool SendEmail(string receiverEmail, string subject, string body);
 
     }

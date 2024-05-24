@@ -6,6 +6,7 @@ using HouseKeeper.Models.DB;
 using HouseKeeper.Models.Views.Admin;
 using HouseKeeper.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -24,9 +25,14 @@ namespace HouseKeeper.Respositories
             this.passwordService = passwordService;
         }
         #region Job type
-        public async Task<List<LOAICONGVIEC>> GetJobTypes()
+        public async Task<List<LOAICONGVIEC>> GetJobTypes(string search="")
         {
-            return await dBContext.Jobs.ToListAsync();
+            if(!search.IsNullOrEmpty())
+            {
+                return await dBContext.Jobs.Where(a=>a.JobName.Contains(search))
+                                    .OrderBy(job => job.JobName).ToListAsync();
+            }
+            return await dBContext.Jobs.OrderBy(job => job.JobName).ToListAsync();
         }
         public async Task<bool> AddJobType(string jobName)
         {
@@ -77,9 +83,14 @@ namespace HouseKeeper.Respositories
         }
         #endregion
         #region City&District
-        public async Task<List<TINHTHANHPHO>> GetCities()
+        public async Task<List<TINHTHANHPHO>> GetCities(string search="")
         {
-            return await dBContext.Cities.ToListAsync();
+            if(!search.IsNullOrEmpty())
+            {
+                return await dBContext.Cities.Where(a=>a.CityName.Contains(search))
+                                            .OrderBy(a => a.CityName).ToListAsync();
+            }
+            return await dBContext.Cities.OrderBy(a=>a.CityName).ToListAsync();
         }
 
         public async Task<bool> AddCity(string cityName)
@@ -128,9 +139,14 @@ namespace HouseKeeper.Respositories
             }
         }
 
-        public async Task<List<HUYEN>> GetDistricts(int cityId)
+        public async Task<List<HUYEN>> GetDistricts(int cityId,string search="")
         {
-            return await dBContext.Districts.Where(a => a.City.CityId == cityId).ToListAsync();
+            if(!search.IsNullOrEmpty())
+            {
+                return await dBContext.Districts.Where(a => a.City.CityId == cityId&&a.DistrictName.Contains(search))
+                                                .OrderBy(a => a.DistrictName).ToListAsync();
+            }
+            return await dBContext.Districts.Where(a => a.City.CityId == cityId).OrderBy(a=>a.DistrictName).ToListAsync();
         }
         public async Task<bool> AddDistrict(string districtName, int cityId)
         {
@@ -182,9 +198,14 @@ namespace HouseKeeper.Respositories
         #endregion
 
         #region Paid Type
-        public async Task<List<HINHTHUCTRALUONG>> GetPaidTypes()
+        public async Task<List<HINHTHUCTRALUONG>> GetPaidTypes(string search="")
         {
-            return await dBContext.SalaryForms.ToListAsync();
+            if(!search.IsNullOrEmpty())
+            {
+                return await dBContext.SalaryForms.Where(a=>a.SalaryFormName.Contains(search))
+                                                .OrderBy(a => a.SalaryFormName).ToListAsync();
+            }
+            return await dBContext.SalaryForms.OrderBy(a=>a.SalaryFormName).ToListAsync();
         }
         public async Task<bool> AddPaidType(string paidTypeName)
         {
@@ -236,9 +257,14 @@ namespace HouseKeeper.Respositories
         #endregion
 
         #region Experience
-        public async Task<List<KINHNGHIEM>> GetExperiences()
+        public async Task<List<KINHNGHIEM>> GetExperiences(string search="")
         {
-            return await dBContext.Experiences.ToListAsync();
+            if(!search.IsNullOrEmpty())
+            {
+                return await dBContext.Experiences.Where(a=>a.ExperienceName.Contains(search))
+                                                .OrderBy(a => a.ExperienceName).ToListAsync();
+            }
+            return await dBContext.Experiences.OrderBy(a=>a.ExperienceName).ToListAsync();
         }
         public async Task<bool> AddExperience(string experienceName)
         {
@@ -290,9 +316,14 @@ namespace HouseKeeper.Respositories
         #endregion
 
         #region Rejection
-        public async Task<List<LYDOTUCHOI>> GetRejections()
+        public async Task<List<LYDOTUCHOI>> GetRejections(string search="")
         {
-            return await dBContext.Rejections.ToListAsync();
+            if(!search.IsNullOrEmpty())
+            {
+                return await dBContext.Rejections.Where(a=>a.RejectionName.Contains(search))
+                                                .OrderBy(a => a.RejectionName).ToListAsync();
+            }
+            return await dBContext.Rejections.OrderBy(a=>a.RejectionName).ToListAsync();
         }
         public async Task<bool> AddRejection(string rejectionName)
         {
@@ -344,9 +375,14 @@ namespace HouseKeeper.Respositories
         #endregion
 
         #region PricePacket
-        public async Task<List<GOITIN>> GetPricePackets()
+        public async Task<List<GOITIN>> GetPricePackets(string search="")
         {
-            return await dBContext.PricePackets.ToListAsync();
+            if(!search.IsNullOrEmpty())
+            {
+                return await dBContext.PricePackets.Where(a=>a.PricePacketName.Contains(search))
+                                                    .OrderBy(a => a.PricePacketName).ToListAsync();
+            }
+            return await dBContext.PricePackets.OrderBy(a=>a.PricePacketName).ToListAsync();
         }
         public async Task<bool> AddPricePacket(string pricePacketName, dynamic price, int numberDays)
         {
@@ -471,10 +507,10 @@ namespace HouseKeeper.Respositories
                     || s.Identity.CitizenNumber.Contains(queryInput)
                     || (s.Account.Gmail != null && s.Account.Gmail.Contains(queryInput)) 
                     || s.Account.PhoneNumber.Contains(queryInput)
-                    ).ToListAsync();
+                    ).OrderBy(a => a.FirstName + a.LastName).ToListAsync();
             }
             else
-            return await dBContext.Staffs.ToListAsync();
+            return await dBContext.Staffs.OrderBy(a=>a.FirstName+a.LastName).ToListAsync();
         }
 
         public async Task<NHANVIEN> GetStaffProfile(int staffId)
@@ -636,9 +672,9 @@ namespace HouseKeeper.Respositories
                     || s.Identity.CitizenNumber.Contains(queryInput)
                     || (s.Account.Gmail != null && s.Account.Gmail.Contains(queryInput))
                     || s.Account.PhoneNumber.Contains(queryInput)
-                    ).ToListAsync();
+                    ).OrderBy(a => a.FirstName + a.LastName).ToListAsync();
             }
-            return await dBContext.Employers.ToListAsync();
+            return await dBContext.Employers.OrderBy(a => a.FirstName + a.LastName).ToListAsync();
         }
 
         public async Task<bool> ToggleEmployerAccount(int employerId, bool status)
@@ -667,9 +703,9 @@ namespace HouseKeeper.Respositories
                        || s.Identity.CitizenNumber.Contains(q)
                        || (s.Account.Gmail != null && s.Account.Gmail.Contains(q))
                        || s.Account.PhoneNumber.Contains(q)
-                       ).ToListAsync();
+                       ).OrderBy(a => a.FirstName + a.LastName).ToListAsync();
             }
-            return await dBContext.Employees.ToListAsync();
+            return await dBContext.Employees.OrderBy(a => a.FirstName + a.LastName).ToListAsync();
         }
 
         public async Task<bool> ToggleEmployeeAccount(int employeeId, bool status)

@@ -146,6 +146,14 @@
             <div class="container">
                 <h1 class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">District</h1>
                 <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.3s">
+                    <!-- Search Bar-->
+                    <div class="d-flex">
+                        <input id="input-search" class="form-control me-2" type="search" placeholder="Search district name" aria-label="Search" value="@Model.QueryInput">
+                        <a href="" id="btn-search" class="btn btn-outline-success me-2" type="submit">Search</a>
+                        <button class="btn btn-secondary addButton py-1 px-5" data-toggle="modal" data-target="#addDistrictModal" id="addDistrictBtn" value="AddDistrict:@Model.CityId">Add</button>
+                        <input id="input-search2" class="form-control me-2" type="search" placeholder="Search city name" aria-label="Search" value="@Model.CityId" style="display: none;">
+
+                    </div>
                     <div class="tab-content">
                         <div id="tab-1" class="tab-pane fade show p-0 active">
                             @foreach (var item in Model.Districts)
@@ -171,7 +179,7 @@
                                     </div>
                                 </div>
                             }
-                            <button class="btn btn-primary addButton py-3 px-5" data-toggle="modal" data-target="#addDistrictModal"id="addDistrictBtn" value="AddDistrict:@Model.CityId">Add more District</button>
+                            
                         </div>
 
                     </div>
@@ -243,6 +251,15 @@
             </div>
         </div>
     </div>
+    <script src="/js/main.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#input-search').on('input', function () {
+                console.log($('#input-search').val());
+                $('#btn-search').attr('href', 'ShowQueryDistrict?q=' + $('#input-search').val() + '&cityId=' + $('#input-search2').val());
+            });
+        });
+    </script>
 </body>
 
 </html>

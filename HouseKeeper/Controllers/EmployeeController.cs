@@ -143,6 +143,8 @@ namespace HouseKeeper.Controllers
             listRecruitmentViewModel.Recruitments = await employeeRespository.GetRecruitments(1, keyword, cityId, districtId);
             listRecruitmentViewModel.Cities = await employeeRespository.GetCities();
             listRecruitmentViewModel.Districts = await employeeRespository.GetDistricts();
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employeeId);
+            listRecruitmentViewModel.Employee = await employeeRespository.GetEmployee(employeeId);
             return View("IndexEmployee", listRecruitmentViewModel);
         }
         public async Task<ActionResult> GetAppliedRecruitment()

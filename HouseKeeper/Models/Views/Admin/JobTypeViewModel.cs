@@ -5,5 +5,6 @@ namespace HouseKeeper.Models.Views.Admin
     public class JobTypeViewModel
     {
         public List<LOAICONGVIEC> JobTypes { get; set; }
+        public string QueryInput { get; set; }
     }
 }

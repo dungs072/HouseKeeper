@@ -18,9 +18,9 @@ namespace HouseKeeper.Respositories
         Task<bool> HasRightPassword(string password, int userId);
         Task<bool> ChangePassword(string password, int userId);
         Task<List<NGUOITHUE>> GetEmployers(string q);
-        Task<bool> ApproveEmployer(int employerId);
-        Task<bool> DisapproveEmployer(EmployerDetailViewModel model);
-        Task<bool> ApproveEmployee(int employeeId);
-        Task<bool> DisapproveEmployee(EmployeeDetailViewModel employeeId);
+        Task<bool> ApproveEmployer(int employerId, int staffId);
+        Task<bool> DisapproveEmployer(EmployerDetailViewModel model, int staffId);
+        Task<bool> ApproveEmployee(int employeeId, int staffId);
+        Task<bool> DisapproveEmployee(EmployeeDetailViewModel employeeId, int staffId);
     }
 }

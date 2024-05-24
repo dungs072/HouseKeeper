@@ -338,7 +338,9 @@ namespace HouseKeeper.Controllers
                 TempData["Error"] = "Error. Please dont intrude to other personality";
                 return RedirectToAction("Login", "Home");
             }
-            bool result = await staffRespository.ApproveEmployer(employerId);
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int staffId);
+
+            bool result = await staffRespository.ApproveEmployer(employerId, staffId);
             if(result)
             {
                 TempData["Success"] = ModerationConfig.ApproveEmployerSuccessNotification(employerId);
@@ -360,7 +362,8 @@ namespace HouseKeeper.Controllers
                 TempData["Error"] = "Error. Please dont intrude to other personality";
                 return RedirectToAction("Login", "Home");
             }
-            bool result = await staffRespository.DisapproveEmployer(model);
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int staffId);
+            bool result = await staffRespository.DisapproveEmployer(model, staffId);
             if (result)
             {
                 TempData["Success"] = ModerationConfig.DisapproveEmployerSuccessNotification(model.Employer.EmployerId);
@@ -408,7 +411,8 @@ namespace HouseKeeper.Controllers
                 TempData["Error"] = "Error. Please dont intrude to other personality";
                 return RedirectToAction("Login", "Home");
             }
-            bool result = await staffRespository.ApproveEmployee(employeeId);
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int staffId);
+            bool result = await staffRespository.ApproveEmployee(employeeId, staffId);
             if (result)
             {
                 TempData["Success"] = ModerationConfig.ApproveEmployeeSuccessNotification(employeeId);
@@ -430,7 +434,8 @@ namespace HouseKeeper.Controllers
                 TempData["Error"] = "Error. Please dont intrude to other personality";
                 return RedirectToAction("Login", "Home");
             }
-            bool result = await staffRespository.DisapproveEmployee(model);
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int staffId);
+            bool result = await staffRespository.DisapproveEmployee(model, staffId);
             if (result)
             {
                 TempData["Success"] = ModerationConfig.DisapproveEmployeeSuccessNotification(model.Employee.EmployeeId);
@@ -443,41 +448,6 @@ namespace HouseKeeper.Controllers
             }
         }
 
-
-        // send email
-        public async Task<IActionResult> SendEmail()
-        {
-            if (!CheckCurrentToken())
-            {
-                TempData["Error"] = "Error. Please dont intrude to other personality";
-                return RedirectToAction("Login", "Home");
-            }
-            try
-            {
-                MailMessage mail = new MailMessage();
-
-                mail.Subject = "Test send email";
-                mail.Body = "<p>Dear {},</p>\r\n<p>You recruitment (with ID: 134) approved successfully</p>\r\n<p>Your recruitment will be displayed on the Website.</p>\r\n<p>Let me know if you need more any information.</p>\r\n<p>Thanks,</p>\r\n<p><b>Sender</b></p>\r\n<p>Website Staff</p>\r\n<p>Email: {} </p>\r\n<p>Cell: {} </p>";
-                mail.IsBodyHtml = true;
-                mail.From = new MailAddress("noreply@housekeeper.com", "HouseKeeper");
-                mail.To.Add(new MailAddress("studywithhuy2002@gmail.com", "Huy02"));
-                mail.Priority = MailPriority.High;
-
-                SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
-                smtp.Credentials = new NetworkCredential("dhuynguyen2002@gmail.com", "yzmg wesw pptc xdae\r\n");
-                smtp.EnableSsl = true;
-                smtp.Send(mail);
-                TempData["Success"] = "Send email successfully!";
-                return RedirectToAction("Index");
-
-
-            }
-            catch (Exception e)
-            {
-                TempData["Error"] = "Send email failed!";
-                return RedirectToAction("Index");
-            }
-        }
 
 
 

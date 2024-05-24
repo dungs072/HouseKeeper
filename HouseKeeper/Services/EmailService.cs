@@ -7,8 +7,8 @@ namespace HouseKeeper.Services
 {
     public class EmailService : IEmailService
     {
-        private string _credentialsUsername = "dhuynguyen2002@gmail.com";
-        private string _credentialsPassword = "yzmg wesw pptc xdae\r\n";
+        private string _credentialsUsername = "dungoc1235@gmail.com";
+        private string _credentialsPassword = "kkacjdpsrwwwiuur";
         private string _smtpHost = "smtp.gmail.com";
         private int _smtpPort = 587;
         private string _senderEmail = "noreply@housekeeper.com";
@@ -65,7 +65,7 @@ namespace HouseKeeper.Services
             string receiverEmail = employer.Account.Gmail;
             string recruitmentId = recruitment.RecruitmentId.ToString();
 
-            string subject = "Recruitment Approval";
+            string subject = "Recruitment Disapproval";
             string body = GetSalutation(receiverName) +
 
                 "<p>Your recruitment (with ID: " + recruitmentId + ") was rejected,<br>\r\n" +
@@ -83,12 +83,29 @@ namespace HouseKeeper.Services
             string staffEmail = staff.Account.Gmail;
             string staffPhone = staff.Account.PhoneNumber;
 
-            string subject = "Recruitment Approval";
+            string subject = "Account Approval";
             string body = GetSalutation(receiverName) +
 
-                "<p>Your account has been approved.</p>" +
+                "<p>Your account has been approved.<br>\r\n" +
+                "Let me know if you need more any information.</p>\r\n" +
+            GetClosing(staffName, staffEmail, staffPhone);
+            return SendEmail(receiverEmail, subject, body);
+        }
 
-                GetClosing(staffName, staffEmail, staffPhone);
+        public bool SendEmailForIdentityDisapproval(string receiverEmail, string receiverName, string disapprovalReason, NHANVIEN staff)
+        {
+            string staffName = staff.FirstName + " " + staff.LastName;
+            string staffEmail = staff.Account.Gmail;
+            string staffPhone = staff.Account.PhoneNumber;
+
+            string subject = "Account Disapproval";
+            string body = GetSalutation(receiverName) +
+
+                "<p>Your account has been disapproved because:\"" + disapprovalReason + "\",<br>\r\n" +
+                "Please correct the information in the profile form and edit it again,<br>\r\n" +
+                "Let me know if you need more any information.</p>\r\n" +
+            GetClosing(staffName, staffEmail, staffPhone) + "<br>\r\n";
+                
             return SendEmail(receiverEmail, subject, body);
         }
 

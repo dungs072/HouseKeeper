@@ -5,5 +5,6 @@ namespace HouseKeeper.Models.Views.Admin
     public class RejectionViewModel
     {
         public List<LYDOTUCHOI> Rejections { get; set; }
+        public string QueryInput { get; set; }
     }
 }

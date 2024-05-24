@@ -251,14 +251,16 @@ namespace HouseKeeper.Respositories
             return await dBContext.Employers.ToListAsync();
         }
 
-        public async Task<bool> ApproveEmployer(int employerId)
+        public async Task<bool> ApproveEmployer(int employerId, int staffId)
         {
             try
             {
                 var employer = await dBContext.Employers.FindAsync(employerId);
+                var staff = await dBContext.Staffs.FindAsync(staffId);
                 employer.IdentityState = await dBContext.IdentityStates.FindAsync((int)IdentityEnum.IdentiyStatus.Approve);
                 dBContext.Employers.Update(employer);
                 await dBContext.SaveChangesAsync();
+                emailService.SendEmailForIdentityApproval(employer.Account.Gmail, employer.FirstName, staff);
                 return true;
             }
             catch (Exception ex)
@@ -267,17 +269,17 @@ namespace HouseKeeper.Respositories
             }
         }
 
-        public async Task<bool> DisapproveEmployer(EmployerDetailViewModel model)
+        public async Task<bool> DisapproveEmployer(EmployerDetailViewModel model, int staffId)
         {
             try
             {
-                // send email to employer
-
-
                 var employer = await dBContext.Employers.FindAsync(model.Employer.EmployerId);
+                var staff = await dBContext.Staffs.FindAsync(staffId);
                 employer.IdentityState = await dBContext.IdentityStates.FindAsync((int)IdentityEnum.IdentiyStatus.Disapprove);
                 dBContext.Employers.Update(employer);
                 await dBContext.SaveChangesAsync();
+                emailService.SendEmailForIdentityDisapproval(employer.Account.Gmail, employer.FirstName, model.DisapprovalReason, staff);
+
                 return true;
             }
             catch (Exception ex)
@@ -286,14 +288,17 @@ namespace HouseKeeper.Respositories
             }
         }
 
-        public async Task<bool> ApproveEmployee(int employeeId)
+        public async Task<bool> ApproveEmployee(int employeeId, int staffId)
         {
             try
             {
                 var employee = await dBContext.Employees.FindAsync(employeeId);
+                var staff = await dBContext.Staffs.FindAsync(staffId);
                 employee.IdentityState = await dBContext.IdentityStates.FindAsync((int)IdentityEnum.IdentiyStatus.Approve);
                 dBContext.Employees.Update(employee);
                 await dBContext.SaveChangesAsync();
+                emailService.SendEmailForIdentityApproval(employee.Account.Gmail, employee.FirstName, staff);
+
                 return true;
             }
             catch (Exception ex)
@@ -302,16 +307,16 @@ namespace HouseKeeper.Respositories
             }
         }
 
-        public async Task<bool> DisapproveEmployee(EmployeeDetailViewModel model)
+        public async Task<bool> DisapproveEmployee(EmployeeDetailViewModel model, int staffId)
         {
             try
             {
-                // send email to employee
-
                 var employee = await dBContext.Employees.FindAsync(model.Employee.EmployeeId);
+                var staff = await dBContext.Staffs.FindAsync(staffId);
                 employee.IdentityState = await dBContext.IdentityStates.FindAsync((int)IdentityEnum.IdentiyStatus.Disapprove);
                 dBContext.Employees.Update(employee);
                 await dBContext.SaveChangesAsync();
+                emailService.SendEmailForIdentityDisapproval(employee.Account.Gmail, employee.FirstName, model.DisapprovalReason, staff);
                 return true;
             }
             catch (Exception ex)
