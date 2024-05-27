@@ -375,5 +375,14 @@ namespace HouseKeeper.Controllers
             return RedirectToAction("ChangePassword");
         }
 
+        public async Task<IActionResult> EmployerProfile(int employerId)
+        {
+            EmployerProfileViewModel model = new EmployerProfileViewModel();
+            int.TryParse(HttpContext.Session.GetString("UserId"), out int employeeId);
+            model.Employee = await employeeRespository.GetEmployee(employeeId);
+            model.Employer = await employeeRespository.GetEmployer(employerId);
+            return View(model);
+        }
+
     }
 }
