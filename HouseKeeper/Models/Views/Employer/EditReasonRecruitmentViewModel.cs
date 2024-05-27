@@ -33,5 +33,7 @@ namespace HouseKeeper.Models.Views.Employer
         public List<LOAICONGVIEC> SelectedJobs { get; set; }
 
         public Dictionary<DateTime,List<CHITIETTUCHOI>> RejectionDetails { get; set; }
+
+        public NHANVIEN Staff { get; set; }
     }
 }

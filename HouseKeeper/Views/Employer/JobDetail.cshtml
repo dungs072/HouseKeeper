@@ -71,7 +71,7 @@
         <!-- Spinner End -->
         <!-- Navbar Start -->
         <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
-            <a href="index.html" class="navbar-brand d-flex align-items-center text-center py-0 px-2 px-lg-3">
+            <a href="@Url.Action("IndexEmployer", "Home")" class="navbar-brand d-flex align-items-center text-center py-0 px-2 px-lg-3">
                 <h1 class="m-0 text-primary">HouseKeeper</h1>
             </a>
             <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -197,32 +197,49 @@
                     </div>
 
                     <div class="col-lg-4">
-                        <div class="bg-light rounded p-5 mb-4 wow slideInUp" data-wow-delay="0.1s">
-                            <h4 class="mb-4">Job Summery</h4>
-                            <p><i class="fa fa-angle-right text-primary me-2"></i>Published On: @Model.Recruitment.PostTime.ToString("dd/MM/yyyy")</p>
-                            <p><i class="fa fa-angle-right text-primary me-2"></i>Vacancy: @Model.Recruitment.MaxApplications</p>
-                            @if (Model.Recruitment.FullTime)
-                            {
-                                <p><i class="fa fa-angle-right text-primary me-2"></i>Job Nature: Full Time</p>
-                            }
-                            else
-                            {
-                                <p><i class="fa fa-angle-right text-primary me-2"></i>Job Nature: Part Time</p>
-                            }
+                            <div class="bg-light rounded p-5 mb-4 wow slideInUp" data-wow-delay="0.1s">
+                            <div id="jobSummery">
+                                <h4 class="mb-4">Job Summery</h4>
+                                <p><i class="fa fa-angle-right text-primary me-2"></i>Published On: @Model.Recruitment.PostTime.ToString("dd/MM/yyyy")</p>
+                                <p><i class="fa fa-angle-right text-primary me-2"></i>Vacancy: @Model.Recruitment.MaxApplications</p>
+                                @if (Model.Recruitment.FullTime)
+                                {
+                                    <p><i class="fa fa-angle-right text-primary me-2"></i>Job Nature: Full Time</p>
+                                }
+                                else
+                                {
+                                    <p><i class="fa fa-angle-right text-primary me-2"></i>Job Nature: Part Time</p>
+                                }
 
-                            <p><i class="fa fa-angle-right text-primary me-2"></i>Age range: @Model.Recruitment.Age</p>
-                            <p><i class="fa fa-angle-right text-primary me-2"></i>Experience: @Model.Recruitment.Experience.ExperienceName</p>
-                            @if(Model.Recruitment.Gender==null)
-                            {
-                                <p><i class="fa fa-angle-right text-primary me-2"></i>Gender: Not require</p>
-                            }
-                            else
-                            {
-                                <p><i class="fa fa-angle-right text-primary me-2"></i>Gender: @Model.Recruitment.Gender</p>
-                            }
+                                <p><i class="fa fa-angle-right text-primary me-2"></i>Age range: @Model.Recruitment.Age</p>
+                                <p><i class="fa fa-angle-right text-primary me-2"></i>Experience: @Model.Recruitment.Experience.ExperienceName</p>
+                                @if(Model.Recruitment.Gender==null)
+                                {
+                                    <p><i class="fa fa-angle-right text-primary me-2"></i>Gender: Not require</p>
+                                }
+                                else
+                                {
+                                    <p><i class="fa fa-angle-right text-primary me-2"></i>Gender: @Model.Recruitment.Gender</p>
+                                }
                             
-                            <p><i class="fa fa-angle-right text-primary me-2"></i>Paid type: @Model.Recruitment.SalaryForm.SalaryFormName</p>
-                            <p class="m-0"><i class="fa fa-angle-right text-primary me-2"></i>Deadline: @Model.Recruitment.RecruitDeadlineDate.ToString("dd/MM/yyyy")</p>
+                                <p><i class="fa fa-angle-right text-primary me-2"></i>Paid type: @Model.Recruitment.SalaryForm.SalaryFormName</p>
+                                <p class="m-0"><i class="fa fa-angle-right text-primary me-2"></i>Deadline: @Model.Recruitment.RecruitDeadlineDate.ToString("dd/MM/yyyy")</p>
+                            </div>
+                            <hr />
+                            <div id="supportGroup">
+                                <h4 class="mb-4">Contact for support</h4>
+                                @if (Model.Recruitment.Staff == null)
+                                {
+                                    <p>Please wait for the Staff to moderate your recruiment</p>
+                                }
+                                else
+                                {
+                                    <p><i class="fa fa-phone-alt me-2"></i>Phone: @Model.Recruitment.Staff.Account.PhoneNumber</p>
+                                    <p><i class="fa fa-envelope me-2"></i>Email: @Model.Recruitment.Staff.Account.Gmail</p>
+                                    <p><i class="bi bi-info-circle-fill me-2"></i>Id: @Model.Recruitment.RecruitmentId (Provide it to Staff)</p>
+                                }
+
+                            </div>
                         </div>
                         @* <div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
                             <h4 class="mb-4">Company Detail</h4>

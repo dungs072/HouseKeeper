@@ -10,6 +10,9 @@
         .btn_function {
             margin-right: 10px; /* Adjust this value as needed */
         }
+        .search-bar {
+            margin-bottom: 10px;
+        }
     </style>
     <partial name="HeaderInclude" />
 </head>
@@ -29,6 +32,11 @@
         <div class="container-xxl py-5 align-items-center">
             <div class="container">
                 <h1>Recruitments Are Handled By Me</h1>
+                <!-- Search Bar-->
+                <div class="d-flex search-bar">
+                    <input id="input-search" class="form-control me-2" type="search" placeholder="Search by Customer-provided Support Id" aria-label="Search" value="">
+                    <a href="" id="btn-search" class="btn btn-outline-success" type="submit" disabled>Search</a>
+                </div>
                 <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.3s">
                     <ul class="nav nav-pills d-inline-flex justify-content-center border-bottom mb-5">
                         <li class="nav-item">
@@ -126,12 +134,28 @@
                 </div>
             </div>
 
+            <!-- Footer -->
+            <partial name="FooterPage" />
+
             <!-- Back to Top -->
             <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
         </div>
         <!-- Jobs End -->
     </div>
 
+    <script>
+        var inputSearch = $('#input-search')
+        var btnSearch = $('#btn-search')
+        inputSearch.on('change', function () {
+            
+            if (inputSearch.val() == '') {
+                btnSearch.prop('href', '');
+            }
+            else {
+                btnSearch.prop('href', 'ShowRecruitmentDetail?recruitmentId=' + inputSearch.val());
+            }
+        });
+    </script>
     <!-- Script -->
     <partial name="ScriptInclude" />
 </body>

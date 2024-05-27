@@ -81,7 +81,7 @@ namespace HouseKeeper.Controllers
         // Controller get recruitment detail by recruitmentId
         // isPending = 1: show recruitment detail in PendingApprovalRecruitments
         // isPending = 0: show recruitment detail in DisapprovalRecruitments
-        public async Task<IActionResult> ShowRecruitmentDetail(int recruitmentId, int isPending)
+        public async Task<IActionResult> ShowRecruitmentDetail(int recruitmentId, int isPending = 0)
         {
             if (!CheckCurrentToken())
             {
@@ -110,9 +110,11 @@ namespace HouseKeeper.Controllers
                 TempData["Error"] = Configs.ModerationConfig.RecruitmentHandledByOtherNotification;
                 return RedirectToAction("ShowRecruitmentAreHandled", model.StaffId);
             }
+
             model.Recruitment = result.Item2;
             var rejectionsDetailsList = await staffRespository.GetRejectionsDetail(recruitmentId);
-            
+            isPending = (model.Recruitment.Status.StatusId == (int)RecruitmentEnum.RecruitmentStatus.PendingApproval) ? 1 : 0;
+            bool isRejected = (model.Recruitment.Status.StatusId == (int)RecruitmentEnum.RecruitmentStatus.RejectApproval) ? true : false;
             model.RejectionsDetails = new Dictionary<DateTime, List<CHITIETTUCHOI>>();
             foreach (var rejectionDetail in rejectionsDetailsList)
             {
@@ -134,11 +136,11 @@ namespace HouseKeeper.Controllers
                 }
             }
             model.NoteIndexCanEdit = 1;
-            if (DateTime.Now > model.LastTimeCanEditNotes.AddHours(Configs.ModerationConfig.HoursAllowForEditRejectionNotes) )
+            if (DateTime.Now > model.LastTimeCanEditNotes.AddHours(Configs.ModerationConfig.HoursAllowForEditRejectionNotes) || isRejected == false)
             {
                 model.NoteIndexCanEdit = 0;
             }
-
+            
             // get list note can edit
             if (model.NoteIndexCanEdit > 0) {
                 model.NoteCanEditList = new List<string?>();
@@ -165,7 +167,8 @@ namespace HouseKeeper.Controllers
             {
                 return View("PendingRecruitmentDetail", model);
             }
-            return View("RejectionRecruitmentDetail", model);
+
+            return View("NotPendingRecruitmentDetail", model);
         }
 
         // edit note of rejection

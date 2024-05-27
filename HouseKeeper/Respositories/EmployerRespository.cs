@@ -320,6 +320,7 @@ namespace HouseKeeper.Respositories
                 recruitment.MaxSalary = model.MaxSalary;
                 recruitment.Address = model.Address;
                 recruitment.Status = await dBContext.RecruitmentStatus.FirstOrDefaultAsync(a => a.StatusName == status[0]);
+                model.Staff = recruitment.Staff;
                 dBContext.Recruitments.Update(recruitment);
                 await dBContext.SaveChangesAsync();
                 transaction.Commit();

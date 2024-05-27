@@ -408,13 +408,14 @@ namespace HouseKeeper.Controllers
             model.CityId = recruitment.District.City.CityId;
             model.RecruitmentId = recruitmentId;
             model.Address = recruitment.Address;
+
             List<LOAICONGVIEC> selectedJobs = new List<LOAICONGVIEC>();
             foreach (var c in recruitment.HouseworkDetails.ToList())
             {
                 selectedJobs.Add(c.Job);
             }
             model.SelectedJobs = selectedJobs;
-
+            model.Staff = recruitment.Staff;
             return View(model);
         }
 
@@ -443,6 +444,7 @@ namespace HouseKeeper.Controllers
                 selectedJobs.Add(c.Job);
             }
             model.SelectedJobs = selectedJobs;
+            model.Staff = recruitment.Staff;
 
             return View("EditRecruitment", model);
         }
@@ -796,7 +798,7 @@ namespace HouseKeeper.Controllers
                 selectedJobs.Add(c.Job);
             }
             model.SelectedJobs = selectedJobs;
-
+            model.Staff = recruitment.Staff;
             return View(model);
         }
 

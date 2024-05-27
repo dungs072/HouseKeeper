@@ -112,33 +112,44 @@
 
                 <div class="col-lg-4">
                     <div class="bg-light rounded p-5 mb-4 wow slideInUp" data-wow-delay="0.1s">
-                        <h4 class="mb-4">Job Summery</h4>
-                        <p><i class="fa fa-angle-right text-primary me-2"></i>Published On: @Model.Recruitment.PostTime.ToString("dd/MM/yyyy")</p>
-                        <p><i class="fa fa-angle-right text-primary me-2"></i>Vacancy: @Model.Recruitment.MaxApplications</p>
-                        @if (Model.Recruitment.FullTime)
-                        {
-                            <p><i class="fa fa-angle-right text-primary me-2"></i>Job Nature: Full Time</p>
-                        }
-                        else
-                        {
-                            <p><i class="fa fa-angle-right text-primary me-2"></i>Job Nature: Part Time</p>
-                        }
+                        <div id="jobSummary">
+                            <h4 class="mb-4">Job Summery</h4>
+                            <p><i class="fa fa-angle-right text-primary me-2"></i>Published On: @Model.Recruitment.PostTime.ToString("dd/MM/yyyy")</p>
+                            <p><i class="fa fa-angle-right text-primary me-2"></i>Vacancy: @Model.Recruitment.MaxApplications</p>
+                            @if (Model.Recruitment.FullTime)
+                            {
+                                <p><i class="fa fa-angle-right text-primary me-2"></i>Job Nature: Full Time</p>
+                            }
+                            else
+                            {
+                                <p><i class="fa fa-angle-right text-primary me-2"></i>Job Nature: Part Time</p>
+                            }
 
-                        <p><i class="fa fa-angle-right text-primary me-2"></i>Age range: @Model.Recruitment.Age</p>
-                        <p><i class="fa fa-angle-right text-primary me-2"></i>Experience: @Model.Recruitment.Experience.ExperienceName</p>
-                        @if(Model.Recruitment.Gender==null)
-                        {
-                            <p><i class="fa fa-angle-right text-primary me-2"></i>Gender: Not require</p>
-                        }
-                        else
-                        {
-                            <p><i class="fa fa-angle-right text-primary me-2"></i>Gender: @Model.Recruitment.Gender</p>
-                        }
-                        <p><i class="fa fa-angle-right text-primary me-2"></i>Paid type: @Model.Recruitment.SalaryForm.SalaryFormName</p>
+                            <p><i class="fa fa-angle-right text-primary me-2"></i>Age range: @Model.Recruitment.Age</p>
+                            <p><i class="fa fa-angle-right text-primary me-2"></i>Experience: @Model.Recruitment.Experience.ExperienceName</p>
+                            @if(Model.Recruitment.Gender==null)
+                            {
+                                <p><i class="fa fa-angle-right text-primary me-2"></i>Gender: Not require</p>
+                            }
+                            else
+                            {
+                                <p><i class="fa fa-angle-right text-primary me-2"></i>Gender: @Model.Recruitment.Gender</p>
+                            }
+                            <p><i class="fa fa-angle-right text-primary me-2"></i>Paid type: @Model.Recruitment.SalaryForm.SalaryFormName</p>
+                        </div>
+                        <hr />
+                        <div id="posterInfoGroup">
+                            <h4 class="mb-4">Employer Info</h4>
+                            <p><i class="bi bi-info-circle-fill me-2"></i>Full name: @Model.Recruitment.Employer.LastName @Model.Recruitment.Employer.FirstName</p>
+                            <p><i class="fa fa-phone-alt me-2"></i>Phone: @Model.Recruitment.Employer.Account.PhoneNumber</p>
+                            <p><i class="fa fa-envelope me-2"></i>Email: @Model.Recruitment.Employer.Account.Gmail</p>
+                        </div>
                     </div>
                     
                 </div>
             </div>
+
+
         </div>
 
         <!-- Footer -->
@@ -185,7 +196,6 @@
             </div>
         </div>
     </div>
-
 
     <!-- Rejection History Modal -->
     <div class="modal fade" id="historyModel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="historyModelLabel" aria-hidden="true">
