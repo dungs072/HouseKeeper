@@ -136,11 +136,22 @@
             </div>
         </nav>
         <!-- Navbar End -->
+        <!-- Search Bar-->
+       @*  <div class="d-flex">
+            <input id="input-search" class="form-control me-2" type="search" placeholder="Search" aria-label="Search" value="@Model.QueryInput">
+            <a href="ShowStaffs?q=@Model.QueryInput" id="btn-search" class="btn btn-outline-success" type="submit">Search</a>
+        </div> *@
         <!-- Jobs Start -->
         <div class="container-xxl py-5">
             <div class="container">
                 <h1 class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">Job Type</h1>
                 <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.3s">
+                    <!-- Search Bar-->
+                    <div class="d-flex">
+                        <input id="input-search" class="form-control me-2" type="search" placeholder="Search job type name" aria-label="Search" value="@Model.QueryInput">
+                        <a href="" id="btn-search" class="btn btn-outline-success me-2" type="submit">Search</a>
+                        <button class="btn btn-secondary addButton py-1 px-5" data-toggle="modal" data-target="#addJobTypeModal" value="AddJobType">Add</button>
+                    </div>
                     <div class="tab-content">
                         <div id="tab-1" class="tab-pane fade show p-0 active">
                             @foreach(var item in Model.JobTypes)
@@ -238,6 +249,15 @@
             </div>
         </div>
     </div>
+    <script src="/js/main.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#input-search').on('input', function () {
+                console.log($('#input-search').val())
+                $('#btn-search').attr('href', 'ShowQueryJobTypes?q=' + $('#input-search').val())
+            });
+        });
+    </script>
 </body>
 
 </html>

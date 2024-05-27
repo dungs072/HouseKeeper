@@ -13,7 +13,7 @@ namespace HouseKeeper.Models.DB
         [Column("SDT")]
         public string PhoneNumber { get; set; }
         [Column("GMAIL")]
-        public string? Gmail { get; set; }
+        public string Gmail { get; set; }
         [Column("MATKHAU")]
         public string Password { get; set; }
         [Column("HINHDAIDIEN")]
