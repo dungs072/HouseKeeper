@@ -9,6 +9,9 @@ namespace HouseKeeper.Models.Views.Employee
         public List<TINHTHANHPHO> Cities { get; set; }
         public NGUOIGIUPVIEC Employee { get; set; }
         
+        public int? CityId { get; set; }
+        public int? DistrictId { get; set; }
+        public string SearchKey { get; set; }
 
     }
 }

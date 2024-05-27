@@ -515,7 +515,7 @@ namespace HouseKeeper.Controllers
                 return RedirectToAction("Login", "Home");
             }
             RejectionViewModel model = new RejectionViewModel();
-            model.Rejections = await adminRespository.GetRejections();
+            model.Rejections = await adminRespository.GetRejections(q);
             model.QueryInput = q;
             return View("Rejection", model);
         }

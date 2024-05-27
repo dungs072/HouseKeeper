@@ -56,18 +56,23 @@ namespace HouseKeeper.Controllers
                 return BadRequest("Error occurred while fetching recruitments: " + ex.Message);
             }
         }
-        public async Task<ActionResult> LoadMoreItems(int currentPage)
+        public async Task<ActionResult> LoadMoreItems(int currentPage, string searchKey, int? cityId, int? districtId)
         {
             if (!CheckCurrentToken())
             {
                 TempData["Error"] = "Error. Please dont intrude to other personality";
                 return RedirectToAction("Login", "Home");
             }
-            var items = await employeeRespository.GetRecruitments(currentPage, "", null, null);
+            cityId=cityId==-999?null:cityId;
+            districtId = districtId == -999 ? null : districtId;
+            var items = await employeeRespository.GetRecruitments(currentPage, searchKey, cityId, districtId);
             Models.Views.Employee.ListRecruitmentViewModel model = new Models.Views.Employee.ListRecruitmentViewModel();
             model.Recruitments = items;
             int.TryParse(HttpContext.Session.GetString("UserId"), out int employeeId);
             model.Employee = await employeeRespository.GetEmployee(employeeId);
+            model.CityId = cityId;
+            model.DistrictId = districtId;  
+            model.SearchKey = searchKey;
             return PartialView("ListRecruitmentPartital", model);
         }
         public async Task<ActionResult> JobDetail(int recruitmentId)
@@ -139,12 +144,17 @@ namespace HouseKeeper.Controllers
                 TempData["Error"] = "Error. Please dont intrude to other personality";
                 return RedirectToAction("Login", "Home");
             }
+            cityId = cityId == -999 ? null : cityId;
+            districtId = districtId == -999 ? null : districtId;
             Models.Views.Employee.ListRecruitmentViewModel listRecruitmentViewModel = new Models.Views.Employee.ListRecruitmentViewModel();
             listRecruitmentViewModel.Recruitments = await employeeRespository.GetRecruitments(1, keyword, cityId, districtId);
             listRecruitmentViewModel.Cities = await employeeRespository.GetCities();
             listRecruitmentViewModel.Districts = await employeeRespository.GetDistricts();
             int.TryParse(HttpContext.Session.GetString("UserId"), out int employeeId);
             listRecruitmentViewModel.Employee = await employeeRespository.GetEmployee(employeeId);
+            listRecruitmentViewModel.CityId = cityId;
+            listRecruitmentViewModel.DistrictId = districtId;
+            listRecruitmentViewModel.SearchKey = keyword;
             return View("IndexEmployee", listRecruitmentViewModel);
         }
         public async Task<ActionResult> GetAppliedRecruitment()

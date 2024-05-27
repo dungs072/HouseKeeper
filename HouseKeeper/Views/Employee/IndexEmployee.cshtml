@@ -40,7 +40,12 @@
                 $.ajax({
                     url: '@Url.Action("LoadMoreItems", "Employee")',
                     type: 'GET',
-                    data: { currentPage: currentPage },
+                    data: 
+                    {   currentPage: currentPage,
+                        searchKey: '@Model.SearchKey',
+                        cityId: '@Model.CityId',
+                        districtId: '@Model.DistrictId'
+                    },
                     success: function (result) {
                         $('#itemList').append(result);
                     }
@@ -191,23 +196,33 @@
                         <div class="col-md-10">
                             <div class="row g-2">
                                 <div class="col-md-4">
-                                    <input type="text" name="keyword" class="form-control border-0" placeholder="Keyword" />
+                                    <input type="text" name="keyword" class="form-control border-0" placeholder="Keyword" value="@Model.SearchKey" />
                                 </div>
                                 <div class="col-md-4">
                                     <select class="form-select border-0" id="citySelect" name="cityId">
-                                        <option selected disabled>City</option>
+                                        <option value="-999" selected>All cities</option>
                                         @foreach (var city in Model.Cities)
                                         {
-                                            <option value="@city.CityId">@city.CityName</option>
+                                            if(city.CityId==Model.CityId)
+                                            {
+                                                <option value="@city.CityId" selected>@city.CityName</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@city.CityId">@city.CityName</option>
+                                            }
+                                            
+                                           
                                         }
                                     </select>
                                 </div>
                                 <div class="col-md-4">
                                     <select class="form-select border-0" id="districtSelect" name="districtId">
-                                        <option selected disabled>District</option>
+                                        <option value="-999" selected>All district</option>
                                         @foreach (var district in Model.Districts)
                                         {
                                             <option value="@district.DistrictId" data-cityid="@district.City.CityId">@district.DistrictName</option>
+
                                         }
                                     </select>
                                 </div>
@@ -332,10 +347,18 @@
                 if (option.getAttribute('data-cityid') === selectedCityId || option.getAttribute('data-cityid') === null) {
                     districtSelect.appendChild(option.cloneNode(true));
                 }
+                
             });
-
-            // Set the first option as selected by default
-            districtSelect.selectedIndex = 0;
+            // // Set the first option as selected by default
+            // // fix here
+            // districtSelect.selectedIndex = 0;
+            // for (var i = 0; i < districtSelect.options.length; i++) {
+            //     if (districtOptions[i].value === '@Model.DistrictId') {
+            //         alert(i);
+            //         districtSelect.options[i] = i;
+            //     }
+            // }
+           
         });
 
         // Trigger change event initially to set the initial state

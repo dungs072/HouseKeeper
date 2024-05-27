@@ -52,21 +52,32 @@ namespace HouseKeeper.Controllers
         {
             model.Cities = await employeeRespository.GetCities();
             model.Districts = await employeeRespository.GetDistricts();
+
             return View("Index",model);
         }
-        public async Task<ActionResult> LoadMoreItems(int currentPage)
+        public async Task<ActionResult> LoadMoreItems(int currentPage, string searchKey, int? cityId, int? districtId)
         {
-            var items = await employeeRespository.GetRecruitments(currentPage, "", null, null);
+            cityId = cityId == -999 ? null : cityId;
+            districtId = districtId == -999 ? null : districtId;
+            var items = await employeeRespository.GetRecruitments(currentPage, searchKey, cityId, districtId);
             Models.Views.Employee.ListRecruitmentViewModel model = new Models.Views.Employee.ListRecruitmentViewModel();
             model.Recruitments = items;
+            model.SearchKey = searchKey;
+            model.CityId = cityId;
+            model.DistrictId = districtId;
             return PartialView("ListRecruitmentPartital", model);
         }
         public async Task<ActionResult> SearchJob(string keyword, int? cityId, int? districtId)
         {
+            cityId = cityId == -999 ? null : cityId;
+            districtId = districtId == -999 ? null : districtId;
             ListRecruitmentViewModel listRecruitmentViewModel = new ListRecruitmentViewModel();
             listRecruitmentViewModel.Recruitments = await employeeRespository.GetRecruitments(1, keyword, cityId, districtId);
             listRecruitmentViewModel.Cities = await employeeRespository.GetCities();
             listRecruitmentViewModel.Districts = await employeeRespository.GetDistricts();
+            listRecruitmentViewModel.CityId = cityId;
+            listRecruitmentViewModel.DistrictId = districtId;
+            listRecruitmentViewModel.SearchKey = keyword;
             return View("Index", listRecruitmentViewModel);
         }
         public IActionResult Login()
