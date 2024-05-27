@@ -166,6 +166,11 @@
     <script src="/js/main.js"></script>
 
     <script>
+        $('#ListEmployers').addClass('active');
+        $('#ListEmployers').parent().parent().find('.nav-link').addClass('active');
+    </script>
+
+    <script>
         // set default value for select
         $('#identityStatusSelect').val('@Model.currentIdentityStatus');
         

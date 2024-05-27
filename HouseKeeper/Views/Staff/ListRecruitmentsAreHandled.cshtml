@@ -34,8 +34,8 @@
                 <h1>Recruitments Are Handled By Me</h1>
                 <!-- Search Bar-->
                 <div class="d-flex search-bar">
-                    <input id="input-search" class="form-control me-2" type="search" placeholder="Search by Customer-provided Support Id" aria-label="Search" value="">
-                    <a href="" id="btn-search" class="btn btn-outline-success" type="submit" disabled>Search</a>
+                    <input id="input-search" class="form-control me-2" type="search" placeholder="Search by Customer-provided Support Id" aria-label="Search" pattern="[0-9]+" title="Only Accepct Number" required>
+                    <a href="" id="btn-search" class="btn btn-outline-success" type="submit">Search</a>
                 </div>
                 <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.3s">
                     <ul class="nav nav-pills d-inline-flex justify-content-center border-bottom mb-5">
@@ -142,6 +142,12 @@
         </div>
         <!-- Jobs End -->
     </div>
+
+    <script>
+        $('#ListRecruitmentsAreHandled').addClass('active');
+        $('#ListRecruitmentsAreHandled').parent().parent().find('.nav-link').addClass('active');
+
+    </script>
 
     <script>
         var inputSearch = $('#input-search')
