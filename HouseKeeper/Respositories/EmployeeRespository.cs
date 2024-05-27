@@ -145,6 +145,10 @@ namespace HouseKeeper.Respositories
         {
             return await dBContext.Employees.FindAsync(employeeId);
         }
+        public async Task<NGUOITHUE> GetEmployer(int employerId)
+        {
+            return await dBContext.Employers.FindAsync(employerId);
+        }
         public async Task<List<LOAICONGVIEC>> GetJobsForEmployee(int employeeId)
         {
             var jobs = await dBContext.Jobs.ToListAsync();
