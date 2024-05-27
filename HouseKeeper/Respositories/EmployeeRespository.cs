@@ -39,10 +39,10 @@ namespace HouseKeeper.Respositories
 
             if(!string.IsNullOrEmpty(searchKey))
             {
-                recruitments = recruitments
-                                .Where(a => a.HouseworkDetails != null && a.HouseworkDetails.Any(b =>
-                                    b.Job != null && b.Job.JobName.Contains(searchKey)))
-                                .ToList();
+                recruitments = recruitments.Where(a => a.HouseWorkName.Contains(searchKey.Trim())).ToList();
+                                //.Where(a => a.HouseworkDetails != null && a.HouseworkDetails.Any(b =>
+                                //    b.Job != null && b.Job.JobName.Contains(searchKey.Trim())))
+                                //.ToList();
                 if (cityId!=null)
                 {
                     recruitments = recruitments.Where(a=>a.District.City.CityId==cityId).ToList();
