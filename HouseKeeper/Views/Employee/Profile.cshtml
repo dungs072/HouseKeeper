@@ -361,7 +361,15 @@
                                                 <tr>
                                                     <td>@item.Job.JobName</td>
                                                     <td>
-                                                        <button class="btn btn-danger deleteButton btn_function" data-toggle="modal" data-target="#deleteWarningModal" value="DeleteJobDetail:@item.Job.JobId">Delete</button>
+                                                        @if (Model.Employee.IdentityState != null && Model.Employee.IdentityState.IdentityStateId == 2)
+                                                        {
+                                                            <button class="btn btn-danger deleteButton btn_function" data-toggle="modal" data-target="#deleteWarningModal" value="DeleteJobDetail:@item.Job.JobId">Delete</button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <button class="btn btn-danger deleteButton btn_function disabled" data-toggle="modal" data-target="#deleteWarningModal" value="DeleteJobDetail:@item.Job.JobId">Delete</button>
+                                                        }
+                                                        
                                                     </td>
                                                 </tr>
                                             }
@@ -405,7 +413,15 @@
                                                 <tr>
                                                     <td>@item.District.City.CityName \ @item.District.DistrictName</td>
                                                     <td>
-                                                        <button class="btn btn-danger deleteButton btn_function" data-toggle="modal" data-target="#deleteWarningModal" value="DeleteDistrictDetail:@item.District.DistrictId">Delete</button>
+                                                        @if (Model.Employee.IdentityState != null && Model.Employee.IdentityState.IdentityStateId == 2)
+                                                        {
+                                                            <button class="btn btn-danger deleteButton btn_function" data-toggle="modal" data-target="#deleteWarningModal" value="DeleteDistrictDetail:@item.District.DistrictId">Delete</button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <button class="btn btn-danger deleteButton btn_function disabled" data-toggle="modal" data-target="#deleteWarningModal" value="DeleteDistrictDetail:@item.District.DistrictId">Delete</button>
+                                                        }
+                                                        
                                                     </td>
                                                 </tr>
                                             }

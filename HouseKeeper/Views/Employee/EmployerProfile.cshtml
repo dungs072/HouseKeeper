@@ -32,22 +32,6 @@
 
     <!-- Template Stylesheet -->
     <link href="/css/style.css" rel="stylesheet">
-    <script>
-        var currentPage = 1;
-        $(document).ready(function () {
-            $('#loadMoreBtn').click(function () {
-                currentPage = currentPage + 1;
-                $.ajax({
-                    url: '@Url.Action("LoadMoreItems", "Employee")',
-                    type: 'GET',
-                    data: { currentPage: currentPage },
-                    success: function (result) {
-                        $('#itemList').append(result);
-                    }
-                });
-            });
-        });
-    </script>
     <style>
         /* Style for the table */
         table {
@@ -389,7 +373,7 @@
                                 }
                             </div>
 
-                            <button id="loadMoreBtn" class="btn btn-primary py-3 px-5">Load More</button>
+                         
                         </div>
 
                     </div>

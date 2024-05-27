@@ -162,7 +162,7 @@ namespace HouseKeeper.Controllers
                     return RedirectToAction("Index", "Home");
                 }
                 model.PriceTags = await employerRespository.GetPriceTags();
-                TempData["Success"] = "Please set your price to display above other recruitments!";
+                TempData["Success"] = "Please set your bid price to display above other recruitments (min bid price is 30.000 vnd)!";
                 return View(model);
             }
             TempData["Error"] = "Server error!";

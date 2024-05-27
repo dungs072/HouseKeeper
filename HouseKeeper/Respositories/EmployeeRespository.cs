@@ -35,11 +35,12 @@ namespace HouseKeeper.Respositories
                 page = 1;
             }
 
-            var recruitments = await dBContext.Recruitments.Where(a => a.Status.StatusName == status[2]).OrderByDescending(a=>a.BidPrice).ToListAsync();
+            var recruitments = await dBContext.Recruitments.Where(a => a.Status.StatusName == status[2])
+                                                        .OrderByDescending(a=>a.BidPrice).ToListAsync();
 
             if(!string.IsNullOrEmpty(searchKey))
             {
-                recruitments = recruitments.Where(a => a.HouseWorkName.Contains(searchKey.Trim())).ToList();
+                recruitments = recruitments.Where(a => a.HouseWorkName.ToLower().Contains(searchKey.Trim().ToLower())).ToList();
                                 //.Where(a => a.HouseworkDetails != null && a.HouseworkDetails.Any(b =>
                                 //    b.Job != null && b.Job.JobName.Contains(searchKey.Trim())))
                                 //.ToList();
@@ -432,7 +433,8 @@ namespace HouseKeeper.Respositories
                 page = 1;
             }
 
-            var recruitments = await dBContext.Recruitments.Where(a => a.Employer.EmployerId == employerId && a.Status.StatusId == (int)recruitmentStatus).OrderByDescending(a => a.BidPrice).ToListAsync();
+            var recruitments = await dBContext.Recruitments.Where(a => a.Employer.EmployerId == employerId && a.Status.StatusId == (int)recruitmentStatus).
+                                                            OrderByDescending(a => a.BidPrice).ToListAsync();
             recruitments = recruitments.Skip((page - 1) * pageSize).Take(pageSize).ToList();
             return recruitments;
         }

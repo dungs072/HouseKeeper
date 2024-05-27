@@ -129,15 +129,22 @@
                                 <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@Model.Recruitment.Address, 
                                     <a href="@Url.Action("SearchJob", "Employee", new{cityID=@Model.Recruitment.District.City.CityId, districtID=@Model.Recruitment.District.DistrictId})">@Model.Recruitment.District.DistrictName</a>,
                                     <a href="@Url.Action("SearchJob", "Employee", new{cityID=@Model.Recruitment.District.City.CityId})">@Model.Recruitment.District.City.CityName</a>
-                                @if(Model.Recruitment.FullTime)
-                                {
-                                    <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Full Time</span>
-                                }
-                                else
-                                {
-                                    <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Part Time</span>
-                                }
-                                <span class="text-truncate me-0"><i class="far fa-money-bill-alt text-primary me-2"></i>@string.Format("{0:0,0} VND", @Model.Recruitment.MinSalary) - @string.Format("{0:0,0} VND", @Model.Recruitment.MaxSalary)</span>
+                                </span>
+                                <div>
+                                        @if (Model.Recruitment.FullTime)
+                                        {
+                                            <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Full Time</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Part Time</span>
+                                        }
+                                </div>
+                             
+                                <div>
+                                        <span class="text-truncate me-0"><i class="far fa-money-bill-alt text-primary me-2"></i>@string.Format("{0:0,0} VND", @Model.Recruitment.MinSalary) - @string.Format("{0:0,0} VND", @Model.Recruitment.MaxSalary)</span>
+                                </div>
+                                
                             </div>
                         </div>
 

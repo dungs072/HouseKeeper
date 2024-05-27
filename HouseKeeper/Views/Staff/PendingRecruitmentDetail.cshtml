@@ -56,16 +56,19 @@
                         <div class="text-start ps-4">
                             <h3 class="mb-3">@Model.Recruitment.HouseWorkName</h3>
                             <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@Model.Recruitment.Address, @Model.Recruitment.District.DistrictName, @Model.Recruitment.District.City.CityName</span>
-                            @if (Model.Recruitment.FullTime)
-                            {
-                                <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Full Time</span>
-                            }
-                            else
-                            {
-                                <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Part Time</span>
-                            }
-
-                            <span class="text-truncate me-0"><i class="far fa-money-bill-alt text-primary me-2"></i>@string.Format("{0:0,0} VND", @Model.Recruitment.MinSalary) - @string.Format("{0:0,0} VND", @Model.Recruitment.MaxSalary)</span>
+                            <div>
+                                @if (Model.Recruitment.FullTime)
+                                {
+                                    <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Full Time</span>
+                                }
+                                else
+                                {
+                                    <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Part Time</span>
+                                }
+                            </div>
+                            <div>
+                                <span class="text-truncate me-0"><i class="far fa-money-bill-alt text-primary me-2"></i>@string.Format("{0:0,0} VND", @Model.Recruitment.MinSalary) - @string.Format("{0:0,0} VND", @Model.Recruitment.MaxSalary)</span>
+                            </div>
                         </div>
                     </div>
 

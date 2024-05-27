@@ -48,6 +48,18 @@
 
                 </div>
                 <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Deadline: @item.RecruitDeadlineDate.ToString("dd/MM/yyyy")</small>
+                <small class="text-truncate">
+                    <i class="fa fa-user-alt text-primary me-2"></i>
+                    @if (Model.Employee.IdentityState.IdentityStateId == 2)
+                    {
+                        <a href="@Url.Action("EmployerProfile","Employee", new{employerId=item.Employer.EmployerId})">@item.Employer.LastName @item.Employer.FirstName</a>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("EmployerProfile","Employee", new{employerId=item.Employer.EmployerId})" class="disabled-link">@item.Employer.LastName @item.Employer.FirstName</a>
+                    }
+
+                </small>
                 @if (item.ApplyDetails.FirstOrDefault(a => a.Employee == Model.Employee) != null)
                 {
                     <small class="text-truncate text-primary"><i class="text-primary me-2"></i><strong>Applied</strong></small>
