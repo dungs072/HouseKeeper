@@ -192,7 +192,7 @@
             <div class="container">
                 @using (Html.BeginForm("SearchJob", "Employee", FormMethod.Get))
                 {
-                    <div class="row g-2">
+                    <div id="search-bar" class="row g-2">
                         <div class="col-md-10">
                             <div class="row g-2">
                                 <div class="col-md-4">
@@ -261,7 +261,10 @@
 
                                                 <div class="text-start ps-4">
                                                     <h5 class="mb-3">@item.HouseWorkName</h5>
-                                                    <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@item.Address, @item.District.DistrictName, @item.District.City.CityName</span>
+                                                    <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@item.Address,
+                                                        <a href="@Url.Action("SearchJob", "Employee", new{cityID=@item.District.City.CityId, districtID=@item.District.DistrictId})">@item.District.DistrictName</a>,
+                                                        <a href="@Url.Action("SearchJob", "Employee", new{cityID=@item.District.City.CityId})">@item.District.City.CityName</a>
+                                                    </span>
                                                     @if (item.FullTime)
                                                     {
                                                         <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Full Time</span>
@@ -363,6 +366,11 @@
 
         // Trigger change event initially to set the initial state
         citySelect.dispatchEvent(new Event('change'));
+
+    </script>
+
+    <script>
+        
     </script>
 </body>
 

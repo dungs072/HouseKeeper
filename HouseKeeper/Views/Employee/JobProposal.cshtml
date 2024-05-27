@@ -71,7 +71,7 @@
         <!-- Spinner End -->
         <!-- Navbar Start -->
         <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
-            <a href="index.html" class="navbar-brand d-flex align-items-center text-center py-0 px-2 px-lg-3">
+            <a href="@Url.Action("DisplayList", "Employee",1)" class="navbar-brand d-flex align-items-center text-center py-0 px-2 px-lg-3">
                 <h1 class="m-0 text-primary">HouseKeeper</h1>
             </a>
             <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -135,7 +135,11 @@
                                                 }
                                                 <div class="text-start ps-4">
                                                     <h5 class="mb-3">@item.HouseWorkName</h5>
-                                                    <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@item.Address, @item.District.DistrictName, @item.District.City.CityName</span>
+                                                    <span class="text-truncate me-3">
+                                                        <i class="fa fa-map-marker-alt text-primary me-2"></i>@item.Address,
+                                                        <a href="@Url.Action("SearchJob", "Employee", new{cityID=@item.District.City.CityId, districtID=@item.District.DistrictId})">@item.District.DistrictName</a>,
+                                                        <a href="@Url.Action("SearchJob", "Employee", new{cityID=@item.District.City.CityId})">@item.District.City.CityName</a>
+                                                    </span>
                                                     @if (item.FullTime)
                                                     {
                                                         <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Full Time</span>

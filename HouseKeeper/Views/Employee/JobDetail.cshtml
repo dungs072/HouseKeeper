@@ -54,7 +54,7 @@
         <!-- Spinner End -->
         <!-- Navbar Start -->
         <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
-            <a href="index.html" class="navbar-brand d-flex align-items-center text-center py-0 px-2 px-lg-3">
+            <a href="@Url.Action("DisplayList", "Employee",1)" class="navbar-brand d-flex align-items-center text-center py-0 px-2 px-lg-3">
                 <h1 class="m-0 text-primary">HouseKeeper</h1>
             </a>
             <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -91,7 +91,7 @@
                         </div>
                     </div>
                 </div>
-                <a href="@Url.Action("DisplayList", "Employee",1)" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Search A Job<i class="fa fa-arrow-right ms-3"></i></a>
+                <a href="@Url.Action("DisplayList", "Employee", 1)" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Search A Job<i class="fa fa-arrow-right ms-3"></i></a>
             </div>
         </nav>
         <!-- Navbar End -->
@@ -101,8 +101,7 @@
                 <h1 class="display-3 text-white mb-3 animated slideInDown">Job Detail</h1>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb text-uppercase">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item"><a href="#">Pages</a></li>
+                        <li class="breadcrumb-item"><a href="@Url.Action("DisplayList", "Employee",1)">Home</a></li>
                         <li class="breadcrumb-item text-white active" aria-current="page">Job Detail</li>
                     </ol>
                 </nav>
@@ -127,7 +126,9 @@
                             
                             <div class="text-start ps-4">
                                 <h3 class="mb-3">@Model.Recruitment.HouseWorkName</h3>
-                                <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@Model.Recruitment.Address, @Model.Recruitment.District.DistrictName, @Model.Recruitment.District.City.CityName</span>
+                                <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@Model.Recruitment.Address, 
+                                    <a href="@Url.Action("SearchJob", "Employee", new{cityID=@Model.Recruitment.District.City.CityId, districtID=@Model.Recruitment.District.DistrictId})">@Model.Recruitment.District.DistrictName</a>,
+                                    <a href="@Url.Action("SearchJob", "Employee", new{cityID=@Model.Recruitment.District.City.CityId})">@Model.Recruitment.District.City.CityName</a>
                                 @if(Model.Recruitment.FullTime)
                                 {
                                     <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Full Time</span>
@@ -172,7 +173,7 @@
                     <div class="col-lg-4">
                         <div class="bg-light rounded p-5 mb-4 wow slideInUp" data-wow-delay="0.1s">
                             <h4 class="mb-4">Job Summery</h4>
-                            <p><i class="fa fa-angle-right text-primary me-2"></i>Recruiter: @Model.Recruitment.Employer.LastName @Model.Recruitment.Employer.FirstName</p>
+                            <p><i class="fa fa-angle-right text-primary me-2"></i>Recruiter: <a href="@Url.Action("EmployerProfile","Employee", new{employerId=Model.Recruitment.Employer.EmployerId})">@Model.Recruitment.Employer.LastName @Model.Recruitment.Employer.FirstName</a></p>
                             <p><i class="fa fa-angle-right text-primary me-2"></i>Published On: @Model.Recruitment.PostTime.ToString("dd/MM/yyyy")</p>
                             <p><i class="fa fa-angle-right text-primary me-2"></i>Vacancy: @Model.Recruitment.MaxApplications</p>
                             @if(Model.Recruitment.FullTime)

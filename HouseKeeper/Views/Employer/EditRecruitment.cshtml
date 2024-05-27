@@ -9,6 +9,11 @@
     <title>Housekeeper Job</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
     <link rel="stylesheet" href="~/css/Input.css">
     <partial name="LibraryHeaderInclude" />
@@ -53,6 +58,19 @@
                 background-color: #f0f0f0;
                 border-radius: 3px;
             }
+        #support > p {
+            line-height: 0.2rem;
+        }
+        
+        #support > h2 {
+            display: block;
+            font-size: 1.5em;
+            margin-top: 0.83em;
+            margin-bottom: 0.83em;
+            margin-left: 0;
+            margin-right: 0;
+            font-weight: bold;
+        }
     </style>
     <script>
         function formatCurrency(input) {
@@ -214,12 +232,27 @@
                         <a href="@Url.Action("ListRecruitment", "Employer")" class="btn btn-danger">Cancel</a>
                         <button type="submit" class="btn btn-success">Update</button>
                     </div>
-
                 </form>
+                <div id="support">
+                    <hr />
+
+                    <h2>
+                        <i class="bi bi-wrench"></i> Contact for support
+                    </h2>
+                    @if (Model.Staff == null)
+                    {
+                        <p>Please wait for the Staff to moderate your recruiment</p>
+                    }
+                    else
+                    {
+                        <p><i class="fa fa-phone-alt me-3"></i>Phone: @Model.Staff.Account.PhoneNumber</p>
+                        <p><i class="fa fa-envelope me-3"></i>Email: @Model.Staff.Account.Gmail</p>
+                        <p><i class="bi bi-info-circle-fill me-3"></i>Id: @Model.RecruitmentId (Provide it to Staff)</p>
+                    }
+                </div>
             </section>
             <footer>Easy-Fast-Afordable</footer>
-        </main>
-    </div>
+        </main>    </div>
     <script>
         // JavaScript to handle selection change
         const select = document.querySelector('.multiselect select');

@@ -31,5 +31,7 @@ namespace HouseKeeper.Models.Views.Employer
         public string JobIds { get; set; }
 
         public List<LOAICONGVIEC> SelectedJobs { get; set; }
+
+        public NHANVIEN Staff { get; set; }
     }
 }

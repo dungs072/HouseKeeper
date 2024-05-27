@@ -1,6 +1,6 @@
 ﻿<!-- Navbar Start -->
 <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
-    <a href="index.html" class="navbar-brand d-flex align-items-center text-center py-0 px-4 px-lg-5">
+    <a href="@Url.Action("Index","Staff")" class="navbar-brand d-flex align-items-center text-center py-0 px-4 px-lg-5">
         <h1 class="m-0 text-primary">HouseKeeper</h1>
     </a>
     <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -8,26 +8,26 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <div class="navbar-nav ms-auto p-4 p-lg-0">
-            <a href="@Url.Action("Index","Staff")" class="nav-item nav-link active">Home</a>
+            <a id=IndexStaff href="@Url.Action("Index","Staff")" class="nav-item nav-link" active">Home</a>
             <div class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Identities Moderation</a>
                 <div class="dropdown-menu rounded-0 m-0">
-                    <a href="@Url.Action("ShowListEmployers", "Staff")" class="dropdown-item">Employers</a>
-                    <a href="@Url.Action("ShowListEmployees", "Staff")" class="dropdown-item">Employees</a>
+                    <a id="ListEmployers" href="@Url.Action("ShowListEmployers", "Staff")" class="dropdown-item">Employers</a>
+                    <a id="ListEmployees" href="@Url.Action("ShowListEmployees", "Staff")" class="dropdown-item dropdown-item-employees">Employees</a>
                 </div>
             </div>
             <div class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Recruitments Moderation</a>
                 <div class="dropdown-menu rounded-0 m-0">
-                    <a href="@Url.Action("ShowRecruitmentAreHandled", "Staff")" class="dropdown-item">Recruitments handled by me</a>
-                    <a href="@Url.Action("ShowRecruitmentNotHandled", "Staff")" class="dropdown-item">Recruitments not handled yet</a>
+                    <a id="ListRecruitmentsAreHandled" href="@Url.Action("ShowRecruitmentAreHandled", "Staff")" class="dropdown-item">Recruitments handled by me</a>
+                    <a id="ListRecruitmentsNotHandled" href="@Url.Action("ShowRecruitmentNotHandled", "Staff")" class="dropdown-item">Recruitments not handled yet</a>
                 </div>
             </div>
             <div class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Personal</a>
                 <div class="dropdown-menu rounded-0 m-0">
-                    <a href="@Url.Action("Profile", "Staff")" class="dropdown-item">Your infor</a>
-                    <a href="@Url.Action("ChangePassword", "Staff")" class="dropdown-item">Change password</a>
+                    <a id="Profile" href="@Url.Action("Profile", "Staff")" class="dropdown-item">Your infor</a>
+                    <a id="ChangePassword" href="@Url.Action("ChangePassword", "Staff")" class="dropdown-item">Change password</a>
                     <a href="/Home/LogOut" class="dropdown-item">Log out</a>
                 </div>
             </div>

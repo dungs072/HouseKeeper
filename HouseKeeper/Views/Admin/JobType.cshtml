@@ -35,6 +35,9 @@
         .btn_function {
             margin-right: 10px; /* Adjust the value as needed */
         }
+        #search-bar {
+            margin-bottom: 10px;
+        }
     </style>
     <partial name="HeaderInclude" />
     <script>
@@ -87,7 +90,7 @@
         <!-- Spinner End -->
         <!-- Navbar Start -->
         <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
-            <a href="index.html" class="navbar-brand d-flex align-items-center text-center py-0 px-4 px-lg-5">
+            <a href="/Admin/DrawChart" class="navbar-brand d-flex align-items-center text-center py-0 px-4 px-lg-5">
                 <h1 class="m-0 text-primary">HouseKeeper</h1>
             </a>
             <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -147,7 +150,7 @@
                 <h1 class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">Job Type</h1>
                 <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.3s">
                     <!-- Search Bar-->
-                    <div class="d-flex">
+                    <div id="search-bar" class="d-flex">
                         <input id="input-search" class="form-control me-2" type="search" placeholder="Search job type name" aria-label="Search" value="@Model.QueryInput">
                         <a href="" id="btn-search" class="btn btn-outline-success me-2" type="submit">Search</a>
                         <button class="btn btn-secondary addButton py-1 px-5" data-toggle="modal" data-target="#addJobTypeModal" value="AddJobType">Add</button>
