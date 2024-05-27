@@ -32,7 +32,6 @@ namespace HouseKeeper.Respositories
         Task<List<TRANGTHAIDANHTINH>> GetIdentityStatus();
         Task<TAIKHOAN> GetAccount(int employeeId);
         Task<NGUOITHUE> GetEmployer(int employerId);
-
-
+        Task<List<TINTUYENDUNG>> GetRecruitmentsByEmployer(int page, int employerId, RecruitmentEnum.RecruitmentStatus recruitmentStatus);
     }
 }

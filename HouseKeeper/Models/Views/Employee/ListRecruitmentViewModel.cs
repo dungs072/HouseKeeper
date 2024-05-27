@@ -8,7 +8,5 @@ namespace HouseKeeper.Models.Views.Employee
         public List<HUYEN> Districts { get; set; }  
         public List<TINHTHANHPHO> Cities { get; set; }
         public NGUOIGIUPVIEC Employee { get; set; }
-        
-
     }
 }

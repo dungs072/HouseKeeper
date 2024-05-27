@@ -18,8 +18,8 @@
                     <h5 class="mb-3">@item.HouseWorkName</h5>
                     <span class="text-truncate me-3">
                         <i class="fa fa-map-marker-alt text-primary me-2"></i>@item.Address, 
-                        <a href="@Url.Action("SearchJob", "Employee", new{cityID=item.District.City.CityId, districtID=item.District.DistrictId})">@item.District.DistrictName</a>,
-                        <a href="@Url.Action("SearchJob", "Employee", new{cityID=item.District.City.CityId})">@item.District.City.CityName</a>
+                        <a href="@Url.Action("SearchJob", "Employee", new{cityID=@item.District.City.CityId, districtID=@item.District.DistrictId})">@item.District.DistrictName</a>,
+                        <a href="@Url.Action("SearchJob", "Employee", new{cityID=@item.District.City.CityId})">@item.District.City.CityName</a>
                     </span>
                     @if (item.FullTime)
                     {

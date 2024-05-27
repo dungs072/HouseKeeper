@@ -180,7 +180,11 @@
                                                 }
                                                 <div class="text-start ps-4">
                                                     <h5 class="mb-3">@item.Recruitment.HouseWorkName</h5>
-                                                    <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@item.Recruitment.Address, @item.Recruitment.District.DistrictName, @item.Recruitment.District.City.CityName</span>
+                                                    <span class="text-truncate me-3">
+                                                        <i class="fa fa-map-marker-alt text-primary me-2"></i>@item.Recruitment.Address,
+                                                        <a href="@Url.Action("SearchJob", "Employee", new{cityID=@item.Recruitment.District.City.CityId, districtID=@item.Recruitment.District.DistrictId})">@item.Recruitment.District.DistrictName</a>,
+                                                        <a href="@Url.Action("SearchJob", "Employee", new{cityID=@item.Recruitment.District.City.CityId})">@item.Recruitment.District.City.CityName</a>
+                                                    </span>
                                                     @if (item.Recruitment.FullTime)
                                                     {
                                                         <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Full Time</span>

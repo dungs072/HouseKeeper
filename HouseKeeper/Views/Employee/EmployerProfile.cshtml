@@ -32,6 +32,22 @@
 
     <!-- Template Stylesheet -->
     <link href="/css/style.css" rel="stylesheet">
+    <script>
+        var currentPage = 1;
+        $(document).ready(function () {
+            $('#loadMoreBtn').click(function () {
+                currentPage = currentPage + 1;
+                $.ajax({
+                    url: '@Url.Action("LoadMoreItems", "Employee")',
+                    type: 'GET',
+                    data: { currentPage: currentPage },
+                    success: function (result) {
+                        $('#itemList').append(result);
+                    }
+                });
+            });
+        });
+    </script>
     <style>
         /* Style for the table */
         table {
@@ -302,6 +318,86 @@
                 </div>
             </div>
         </div>
+        <!-- Jobs Start -->
+        <div class="container-xxl py-5">
+            <div class="container">
+                <h1 class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">Job Listing</h1>
+                <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="tab-content">
+                        <div id="tab-1" class="tab-pane fade show p-0 active">
+                            <div id="itemList">
+                                @foreach (var item in Model.Recruitments)
+                                {
+                                    <div class="job-item p-4 mb-4">
+                                        <div class="row g-4">
+                                            <div class="col-sm-12 col-md-8 d-flex align-items-center">
+                                                @if (item.Employer.Account.AvatarUrl != null)
+                                                {
+                                                    <img class="flex-shrink-0 img-fluid border rounded" src="@item.Employer.Account.AvatarUrl" alt="" style="width: 80px; height: 80px;">
+                                                }
+                                                else
+                                                {
+                                                    <img class="flex-shrink-0 img-fluid border rounded" src="/images/Avatar.png" alt="" style="width: 80px; height: 80px;">
+                                                }
+
+                                                <div class="text-start ps-4">
+                                                    <h5 class="mb-3">@item.HouseWorkName</h5>
+                                                    <span class="text-truncate me-3">
+                                                        <i class="fa fa-map-marker-alt text-primary me-2"></i>@item.Address,
+                                                        <a href="@Url.Action("SearchJob", "Employee", new{cityID=@item.District.City.CityId, districtID=@item.District.DistrictId})">@item.District.DistrictName</a>,
+                                                        <a href="@Url.Action("SearchJob", "Employee", new{cityID=@item.District.City.CityId})">@item.District.City.CityName</a>
+                                                    </span>
+                                                    @if (item.FullTime)
+                                                    {
+                                                        <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Full Time</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Part Time</span>
+                                                    }
+                                                    <span class="text-truncate me-3"><i class="far fa-money-bill-alt text-primary me-2"></i>@string.Format("{0:0,0} VND", @item.MinSalary) - @string.Format("{0:0,0} VND", @item.MaxSalary)</span>
+                                                    <span class="text-truncate me-0"><i class="fa fa-hourglass-half text-primary me-2"></i>@item.SalaryForm.SalaryFormName</span>
+
+
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
+                                                <div class="d-flex mb-3">
+                                                    @* <a class="btn btn-light btn-square me-3" href=""><i class="far fa-heart text-primary"></i></a> *@
+                                                    @if (Model.Employee.IdentityState.IdentityStateId == 2)
+                                                    {
+                                                        <a class="btn btn-primary btn_function" href="JobDetail?recruitmentId=@item.RecruitmentId">See more</a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a class="btn btn-primary btn_function disabled" href="JobDetail?recruitmentId=@item.RecruitmentId">See more</a>
+                                                    }
+
+                                                </div>
+                                                <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Deadline: @item.RecruitDeadlineDate.ToString("dd/MM/yyyy")</small>
+                                                <small class="text-truncate">
+                                                    <i class="fa fa-user-alt text-primary me-2"></i>
+                                                    <a href="@Url.Action("EmployerProfile","Employee", new{employerId=item.Employer.EmployerId})">@item.Employer.LastName @item.Employer.FirstName</a>
+                                                </small>
+                                                @if (item.ApplyDetails.FirstOrDefault(a => a.Employee == Model.Employee) != null)
+                                                {
+                                                    <small class="text-truncate text-primary"><i class="text-primary me-2"></i><strong>Applied</strong></small>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <button id="loadMoreBtn" class="btn btn-primary py-3 px-5">Load More</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Jobs End -->
+
         <!-- Job Detail End -->
         <partial name="FooterPage" />
         <!-- Back to Top -->

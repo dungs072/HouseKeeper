@@ -1,4 +1,5 @@
-﻿using HouseKeeper.DBContext;
+﻿using Azure;
+using HouseKeeper.DBContext;
 using HouseKeeper.Enum;
 using HouseKeeper.IServices;
 using HouseKeeper.Models.DB;
@@ -40,7 +41,7 @@ namespace HouseKeeper.Respositories
             {
                 recruitments = recruitments
                                 .Where(a => a.HouseworkDetails != null && a.HouseworkDetails.Any(b =>
-                                    b.Job != null && searchKey.Contains(b.Job.JobName)))
+                                    b.Job != null && b.Job.JobName.Contains(searchKey)))
                                 .ToList();
                 if (cityId!=null)
                 {
@@ -421,6 +422,19 @@ namespace HouseKeeper.Respositories
         {
             var employee = await GetEmployee(employeeId);
             return employee.Account;
+        }
+
+        public async Task<List<TINTUYENDUNG>> GetRecruitmentsByEmployer(int page, int employerId, RecruitmentEnum.RecruitmentStatus recruitmentStatus)
+        {
+            int pageSize = 5;
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            var recruitments = await dBContext.Recruitments.Where(a => a.Employer.EmployerId == employerId && a.Status.StatusId == (int)recruitmentStatus).OrderByDescending(a => a.BidPrice).ToListAsync();
+            recruitments = recruitments.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            return recruitments;
         }
     }
 }

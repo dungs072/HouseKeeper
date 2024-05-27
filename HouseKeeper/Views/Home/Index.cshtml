@@ -131,7 +131,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <select class="form-select border-0" id="citySelect" name="cityId">
-                                        <option selected disabled>City</option>
+                                        <option value="0">All</option>
                                         @foreach (var city in Model.Cities)
                                         {
                                             <option value="@city.CityId">@city.CityName</option>
@@ -140,7 +140,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <select class="form-select border-0" id="districtSelect" name="districtId">
-                                        <option selected disabled>District</option>
+                                        <option value="0">All</option>
                                         @foreach (var district in Model.Districts)
                                         {
                                             <option value="@district.DistrictId" data-cityid="@district.City.CityId">@district.DistrictName</option>
@@ -184,8 +184,8 @@
                                                     <h5 class="mb-3">@item.HouseWorkName</h5>
                                                     <span class="text-truncate me-3">
                                                         <i class="fa fa-map-marker-alt text-primary me-2"></i>@item.Address, 
-                                                        <a href="@Url.Action("SearchJob", "Employee", new{cityID=item.District.City.CityId, districtID=item.District.DistrictId})">@item.District.DistrictName</a>,
-                                                        <a href="@Url.Action("SearchJob", "Employee", new{cityID=item.District.City.CityId})">@item.District.City.CityName</a>
+                                                        <a href="@Url.Action("SearchJob", "Home", new{cityID=item.District.City.CityId, districtID=item.District.DistrictId})">@item.District.DistrictName</a>,
+                                                        <a href="@Url.Action("SearchJob", "Home", new{cityID=item.District.City.CityId})">@item.District.City.CityName</a>
                                                     </span>
                                                     @if (item.FullTime)
                                                     {

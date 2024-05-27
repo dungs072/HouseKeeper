@@ -128,7 +128,7 @@
                             <div class="text-start ps-4">
                                 <h3 class="mb-3">@Model.Recruitment.HouseWorkName</h3>
                                 <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@Model.Recruitment.Address, 
-                                    <a href="@Url.Action("SearchJob", "Employee", new{cityID=Model.Recruitment.District.City.CityId, districtID=Model.Recruitment.District.DistrictId})">@Model.Recruitment.District.DistrictName</a>, 
+                                    <a href="@Url.Action("SearchJob", "Employee", new{cityID=@Model.Recruitment.District.City.CityId, districtID=@Model.Recruitment.District.DistrictId})">@Model.Recruitment.District.DistrictName</a>,
                                     <a href="@Url.Action("SearchJob", "Employee", new{cityID=@Model.Recruitment.District.City.CityId})">@Model.Recruitment.District.City.CityName</a>
                                 @if(Model.Recruitment.FullTime)
                                 {

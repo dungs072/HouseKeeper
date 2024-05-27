@@ -6,5 +6,6 @@ namespace HouseKeeper.Models.Views.Employer
     {
         public NGUOITHUE Employer { get; set; }
         public NGUOIGIUPVIEC Employee { get; set; }
+        public List<TINTUYENDUNG> Recruitments { get; set; }
     }
 }
